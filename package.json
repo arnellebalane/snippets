@@ -32,5 +32,8 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "vue": "2.5.13"
   }
 }
