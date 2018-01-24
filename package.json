@@ -10,8 +10,15 @@
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
     "commitizen": "2.9.6",
-    "cz-conventional-changelog": "2.1.0"
+    "css-loader": "0.28.9",
+    "cz-conventional-changelog": "2.1.0",
+    "style-loader": "0.19.1",
+    "vue-loader": "13.7.0",
+    "vue-template-compiler": "2.5.13",
+    "webpack": "3.10.0"
   },
   "config": {
     "commitizen": {
