@@ -4,7 +4,7 @@
   "description": "Host code snippets online",
   "main": "index.js",
   "scripts": {
-    "commit": "git-cz",
+    "commit": "./node_modules/.bin/git-cz",
     "build": "./node_modules/.bin/webpack .",
     "build:watch": "./node_modules/.bin/webpack . --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
