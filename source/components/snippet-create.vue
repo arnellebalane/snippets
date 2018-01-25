@@ -15,7 +15,7 @@
         data() {
             return {
                 value: null,
-                createSnippetEndpoint: 'http://www.mocky.io/v2/5a6971112e0000760a7a7461'
+                createSnippetEndpoint: 'http://www.mocky.io/v2/5a6973672e0000030b7a7475'
             };
         },
 
@@ -37,7 +37,13 @@
                         snippet: this.value
                     })
                 }).then(response => response.json());
-                console.log(response);
+
+                this.$router.push({
+                    name: 'snippet-detail',
+                    params: {
+                        hash: response.hash
+                    }
+                });
             }
         },
 
