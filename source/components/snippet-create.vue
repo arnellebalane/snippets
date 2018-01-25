@@ -1,7 +1,7 @@
 <template>
     <div class="snippet-create">
         <app-header></app-header>
-        <code-snippet :readonly="isSaving" @input="onSnippetInput"></code-snippet>
+        <code-snippet :value="snippet" :readonly="isSaving" @input="onSnippetInput"></code-snippet>
         <app-footer></app-footer>
     </div>
 </template>
@@ -55,6 +55,15 @@
             'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
             'code-snippet': require('./code-snippet.vue').default
+        },
+
+        async beforeRouteEnter(to, from, next) {
+            if (!to.query.hash) return next();
+
+            const getSnippetEndpoint = 'http://www.mocky.io/v2/5a6973672e0000030b7a7475';
+            const response = await fetch(getSnippetEndpoint)
+                .then(response => response.json());
+            next(vm => vm.snippet = response.snippet);
         }
     };
 </script>
