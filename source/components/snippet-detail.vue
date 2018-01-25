@@ -7,7 +7,11 @@
 </template>
 
 <script>
+    import Shortcuts from '../mixins/shortcuts';
+
     export default {
+        mixins: [Shortcuts],
+
         props: {
             hash: {
                 type: String,
