@@ -8,6 +8,10 @@ const store = new Vuex.Store({
     mutations: {
         setSnippet(state, snippet) {
             state.snippet = snippet;
+        },
+
+        clearSnippet(state) {
+            state.snippet = null;
         }
     }
 });
