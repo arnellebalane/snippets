@@ -1,10 +1,24 @@
 <template>
     <footer class="app-footer">
         <ul>
-            <li><span>^S</span> Save</li>
+            <template v-if="id">
+                <li><span>^A</span> Select All</li>
+                <li><span>^E</span> Edit New</li>
+                <li><span>^D</span> Duplicate</li>
+                <li><span>^R</span> Raw</li>
+            </template>
+            <template v-else>
+                <li><span>^S</span> Save</li>
+            </template>
         </ul>
     </footer>
 </template>
+
+<script>
+    export default {
+        props: ['id']
+    };
+</script>
 
 <style scoped>
     .app-footer {
@@ -13,9 +27,14 @@
     }
 
     ul {
+        display: flex;
         padding: 0;
         margin: 0;
         list-style: none;
+    }
+
+    li {
+        width: 120px;
     }
 
     span {
