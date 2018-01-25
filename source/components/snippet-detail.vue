@@ -1,7 +1,7 @@
 <template>
     <div class="snippet-detail">
         <app-header></app-header>
-        <code-snippet :value="value"></code-snippet>
+        <code-snippet :value="value" readonly></code-snippet>
         <app-footer :hash="hash"></app-footer>
     </div>
 </template>

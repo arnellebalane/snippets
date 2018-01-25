@@ -1,6 +1,6 @@
 <template>
     <section class="code-snippet">
-        <textarea ref="snippet" :placeholder="placeholder" spellcheck="false" autofocus @input="onInput">{{ value }}</textarea>
+        <textarea ref="snippet" :placeholder="placeholder" :readonly="readonly" spellcheck="false" autofocus @input="onInput">{{ value }}</textarea>
     </section>
 </template>
 
@@ -11,6 +11,10 @@
             placeholder: {
                 type: String,
                 default: 'console.log(\'hello world\');'
+            },
+            readonly: {
+                type: Boolean,
+                default: false
             }
         },
 
