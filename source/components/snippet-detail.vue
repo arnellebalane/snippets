@@ -37,16 +37,12 @@
             },
 
             editNew() {
+                this.$store.commit('clearSnippet');
                 this.$router.push({ name: 'snippet-create' });
             },
 
             duplicate() {
-                this.$router.push({
-                    name: 'snippet-create',
-                    query: {
-                        hash: this.hash
-                    }
-                });
+                this.$router.push({ name: 'snippet-create' });
             }
         },
 
