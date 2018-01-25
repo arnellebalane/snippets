@@ -7,7 +7,9 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex';
     import Shortcuts from '../mixins/shortcuts';
+    import store from '../store';
 
     export default {
         mixins: [Shortcuts],
@@ -19,11 +21,7 @@
             }
         },
 
-        data() {
-            return {
-                snippet: null
-            };
-        },
+        computed: mapState(['snippet']),
 
         methods: {
             getShortcuts() {
@@ -62,7 +60,8 @@
             const getSnippetEndpoint = 'http://www.mocky.io/v2/5a6973672e0000030b7a7475';
             const response = await fetch(getSnippetEndpoint)
                 .then(response => response.json());
-            next(vm => vm.snippet = response.snippet);
+            store.commit('setSnippet', response.snippet);
+            next();
         }
     };
 </script>
