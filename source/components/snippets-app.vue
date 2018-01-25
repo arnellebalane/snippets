@@ -1,5 +1,13 @@
 <template>
     <div class="snippets-app">
-        <h1>Hello World</h1>
+        <app-header></app-header>
     </div>
 </template>
+
+<script>
+    export default {
+        components: {
+            'app-header': require('./app-header.vue').default
+        }
+    };
+</script>
