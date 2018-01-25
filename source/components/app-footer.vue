@@ -15,6 +15,8 @@
 </template>
 
 <script>
+    import pubsub from '../pubsub';
+
     export default {
         props: ['id'],
 
@@ -24,7 +26,7 @@
             },
 
             selectAll() {
-                console.log('select all');
+                pubsub.$emit('select-all');
             },
 
             editNew() {

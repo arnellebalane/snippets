@@ -1,8 +1,20 @@
 <template>
     <section class="app-snippet">
-        <textarea name="snippet" placeholder="console.log('hello world')" spellcheck="false" autofocus></textarea>
+        <textarea ref="snippet" placeholder="console.log('hello world')" spellcheck="false" autofocus></textarea>
     </section>
 </template>
+
+<script>
+    import pubsub from '../pubsub';
+
+    export default {
+        created() {
+            pubsub.$on('select-all', () => {
+                this.$refs.snippet.select();
+            });
+        }
+    };
+</script>
 
 <style scoped>
     textarea {
