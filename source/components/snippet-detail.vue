@@ -25,6 +25,16 @@
             };
         },
 
+        methods: {
+            getShortcuts() {
+                return {
+                    KeyE: () => {
+                        this.$router.push({ name: 'snippet-create' });
+                    }
+                };
+            }
+        },
+
         components: {
             'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
