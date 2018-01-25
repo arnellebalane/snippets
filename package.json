@@ -35,6 +35,7 @@
     }
   },
   "dependencies": {
+    "server": "1.0.17",
     "vue": "2.5.13",
     "vue-router": "3.0.1",
     "vuex": "3.0.1"
