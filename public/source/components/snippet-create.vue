@@ -15,8 +15,7 @@
 
         data() {
             return {
-                isSaving: false,
-                createSnippetEndpoint: 'http://www.mocky.io/v2/5a6973672e0000030b7a7475'
+                isSaving: false
             };
         },
 
@@ -44,7 +43,7 @@
             },
 
             async save() {
-                const response = await fetch(this.createSnippetEndpoint, {
+                const response = await fetch('/snippets', {
                     method: 'POST',
                     body: JSON.stringify({
                         snippet: this.snippet

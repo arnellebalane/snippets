@@ -65,8 +65,7 @@
         },
 
         async beforeRouteEnter(to, from, next) {
-            const getSnippetEndpoint = 'http://www.mocky.io/v2/5a6973672e0000030b7a7475';
-            const response = await fetch(getSnippetEndpoint)
+            const response = await fetch('/snippets/' + to.params.hash)
                 .then(response => response.json());
             store.commit('setSnippet', response.snippet);
             next();
