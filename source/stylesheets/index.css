@@ -1,0 +1,16 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Roboto Mono", monospace;
+    font-size: 1.2em;
+}
