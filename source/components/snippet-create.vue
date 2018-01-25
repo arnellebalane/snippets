@@ -43,8 +43,8 @@
                 this.$store.commit('setSnippet', snippet);
             },
 
-            save() {
-                const response = fetch(this.createSnippetEndpoint, {
+            async save() {
+                const response = await fetch(this.createSnippetEndpoint, {
                     method: 'POST',
                     body: JSON.stringify({
                         snippet: this.snippet
