@@ -22,7 +22,16 @@
         methods: {
             getShortcuts() {
                 return {
-                    KeyS: this.save
+                    KeyS: async () => {
+                        const response = await this.save();
+
+                        this.$router.push({
+                            name: 'snippet-detail',
+                            params: {
+                                hash: response.hash
+                            }
+                        });
+                    }
                 };
             },
 
@@ -30,20 +39,13 @@
                 this.value = value;
             },
 
-            async save() {
-                const response = await fetch(this.createSnippetEndpoint, {
+            save() {
+                return fetch(this.createSnippetEndpoint, {
                     method: 'POST',
                     body: JSON.stringify({
                         snippet: this.value
                     })
                 }).then(response => response.json());
-
-                this.$router.push({
-                    name: 'snippet-detail',
-                    params: {
-                        hash: response.hash
-                    }
-                });
             }
         },
 
