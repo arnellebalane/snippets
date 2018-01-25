@@ -1,7 +1,7 @@
 <template>
     <div class="snippets-app">
         <app-header></app-header>
-        <app-snippet></app-snippet>
+        <app-snippet ref="snippet"></app-snippet>
         <app-footer></app-footer>
     </div>
 </template>
@@ -14,7 +14,7 @@
             },
 
             selectAll() {
-                console.log('select all');
+                this.$refs.snippet.selectAll();
             },
 
             editNew() {

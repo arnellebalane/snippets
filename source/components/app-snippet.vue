@@ -5,13 +5,11 @@
 </template>
 
 <script>
-    import pubsub from '../pubsub';
-
     export default {
-        created() {
-            pubsub.$on('select-all', () => {
+        methods: {
+            selectAll() {
                 this.$refs.snippet.select();
-            });
+            }
         }
     };
 </script>
