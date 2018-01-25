@@ -1,7 +1,7 @@
 <template>
     <div class="snippet-detail">
         <app-header></app-header>
-        <code-snippet :value="value" readonly></code-snippet>
+        <code-snippet :value="snippet" readonly></code-snippet>
         <app-footer :hash="hash"></app-footer>
     </div>
 </template>
@@ -21,7 +21,7 @@
 
         data() {
             return {
-                value: null
+                snippet: null
             };
         },
 
@@ -45,7 +45,7 @@
             const getSnippetEndpoint = 'http://www.mocky.io/v2/5a6973672e0000030b7a7475';
             const response = await fetch(getSnippetEndpoint)
                 .then(response => response.json());
-            next(vm => vm.value = response.snippet);
+            next(vm => vm.snippet = response.snippet);
         }
     };
 </script>

@@ -14,7 +14,7 @@
 
         data() {
             return {
-                value: null,
+                snippet: null,
                 isSaving: false,
                 createSnippetEndpoint: 'http://www.mocky.io/v2/5a6973672e0000030b7a7475'
             };
@@ -37,15 +37,15 @@
                 };
             },
 
-            onSnippetInput(value) {
-                this.value = value;
+            onSnippetInput(snippet) {
+                this.snippet = snippet;
             },
 
             save() {
                 return fetch(this.createSnippetEndpoint, {
                     method: 'POST',
                     body: JSON.stringify({
-                        snippet: this.value
+                        snippet: this.snippet
                     })
                 }).then(response => response.json());
             }
