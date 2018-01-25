@@ -1,7 +1,7 @@
 <template>
     <div class="snippet-create">
         <app-header></app-header>
-        <code-snippet></code-snippet>
+        <code-snippet @input="onSnippetInput"></code-snippet>
         <app-footer></app-footer>
     </div>
 </template>
@@ -12,6 +12,13 @@
     export default {
         mixins: [Shortcuts],
 
+        data() {
+            return {
+                value: null,
+                createSnippetEndpoint: 'http://www.mocky.io/v2/5a6971112e0000760a7a7461'
+            };
+        },
+
         methods: {
             getShortcuts() {
                 return {
@@ -19,8 +26,18 @@
                 };
             },
 
-            save() {
-                console.log('save');
+            onSnippetInput(value) {
+                this.value = value;
+            },
+
+            async save() {
+                const response = await fetch(this.createSnippetEndpoint, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        snippet: this.value
+                    })
+                }).then(response => response.json());
+                console.log(response);
             }
         },
 
