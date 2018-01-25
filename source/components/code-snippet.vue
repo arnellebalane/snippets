@@ -26,6 +26,12 @@
             onInput(e) {
                 this.$emit('input', e.target.value);
             }
+        },
+
+        mounted() {
+            if (!this.readonly) {
+                this.$refs.snippet.focus();
+            }
         }
     };
 </script>
