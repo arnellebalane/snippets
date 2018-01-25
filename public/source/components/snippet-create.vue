@@ -9,6 +9,7 @@
 <script>
     import { mapState } from 'vuex';
     import Shortcuts from '../mixins/shortcuts';
+    import { post } from '../api';
 
     export default {
         mixins: [Shortcuts],
@@ -43,15 +44,8 @@
             },
 
             async save() {
-                const response = await fetch('/snippets', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        snippet: this.snippet
-                    })
-                }).then(response => response.json());
-
+                const response = await post('/snippets', { snippet: this.snippet });
                 this.$store.commit('clearSnippet');
-
                 return response;
             }
         },

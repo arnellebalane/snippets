@@ -7,6 +7,7 @@
 <script>
     import store from '../store';
     import { mapState } from 'vuex';
+    import { get } from '../api';
 
     export default {
         props: {
@@ -19,8 +20,7 @@
         computed: mapState(['snippet']),
 
         async beforeRouteEnter(to, from, next) {
-            const response = await fetch('/snippets/' + to.params.hash)
-                .then(response => response.json());
+            const response = await get('/snippets/' + to.params.hash);
             store.commit('setSnippet', response.snippet);
             next();
         }
