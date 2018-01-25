@@ -7,7 +7,23 @@
 </template>
 
 <script>
+    import Shortcuts from '../mixins/shortcuts';
+
     export default {
+        mixins: [Shortcuts],
+
+        methods: {
+            getShortcuts() {
+                return {
+                    KeyS: this.save
+                };
+            },
+
+            save() {
+                console.log('save');
+            }
+        },
+
         components: {
             'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
