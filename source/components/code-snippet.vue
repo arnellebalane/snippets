@@ -1,5 +1,5 @@
 <template>
-    <section class="app-snippet">
+    <section class="code-snippet">
         <textarea ref="snippet" placeholder="console.log('hello world')" spellcheck="false" autofocus @input="onInput">{{ value }}</textarea>
     </section>
 </template>
