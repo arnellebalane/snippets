@@ -1,7 +1,7 @@
 <template>
     <div class="snippet-create">
         <app-header></app-header>
-        <code-snippet @input="onSnippetInput"></code-snippet>
+        <code-snippet :readonly="isSaving" @input="onSnippetInput"></code-snippet>
         <app-footer></app-footer>
     </div>
 </template>
@@ -15,6 +15,7 @@
         data() {
             return {
                 value: null,
+                isSaving: false,
                 createSnippetEndpoint: 'http://www.mocky.io/v2/5a6973672e0000030b7a7475'
             };
         },
@@ -23,6 +24,7 @@
             getShortcuts() {
                 return {
                     KeyS: async () => {
+                        this.isSaving = true;
                         const response = await this.save();
 
                         this.$router.push({
