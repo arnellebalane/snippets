@@ -28,13 +28,17 @@
         methods: {
             getShortcuts() {
                 return {
-                    KeyA: () => {
-                        this.$refs.snippet.select();
-                    },
-                    KeyE: () => {
-                        this.$router.push({ name: 'snippet-create' });
-                    }
+                    KeyA: this.selectAll,
+                    KeyE: this.editNew
                 };
+            },
+
+            selectAll() {
+                this.$refs.snippet.select();
+            },
+
+            editNew() {
+                this.$router.push({ name: 'snippet-create' });
             }
         },
 
