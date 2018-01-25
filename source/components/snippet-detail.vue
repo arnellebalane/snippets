@@ -28,7 +28,8 @@
                 return {
                     KeyA: this.selectAll,
                     KeyE: this.editNew,
-                    KeyD: this.duplicate
+                    KeyD: this.duplicate,
+                    KeyR: this.raw
                 };
             },
 
@@ -43,6 +44,17 @@
 
             duplicate() {
                 this.$router.push({ name: 'snippet-create' });
+            },
+
+            raw() {
+                // TODO: This should ideally redirect to a page not controlled
+                // by vue-router.
+                this.$router.push({
+                    name: 'snippet-raw',
+                    params: {
+                        hash: this.hash
+                    }
+                });
             }
         },
 
