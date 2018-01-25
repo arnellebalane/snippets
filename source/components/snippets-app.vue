@@ -1,13 +1,19 @@
 <template>
     <div class="snippets-app">
         <app-header></app-header>
-        <app-snippet ref="snippet"></app-snippet>
+        <app-snippet ref="snippet" :value="value" @input="onSnippetInput"></app-snippet>
         <app-footer></app-footer>
     </div>
 </template>
 
 <script>
     export default {
+        data() {
+            return {
+                value: null
+            };
+        },
+
         methods: {
             save() {
                 console.log('save');
@@ -27,6 +33,10 @@
 
             raw() {
                 console.log('raw');
+            },
+
+            onSnippetInput(value) {
+                this.value = value;
             }
         },
 

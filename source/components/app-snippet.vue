@@ -1,14 +1,20 @@
 <template>
     <section class="app-snippet">
-        <textarea ref="snippet" placeholder="console.log('hello world')" spellcheck="false" autofocus></textarea>
+        <textarea ref="snippet" placeholder="console.log('hello world')" spellcheck="false" autofocus @input="onInput">{{ value }}</textarea>
     </section>
 </template>
 
 <script>
     export default {
+        props: ['value'],
+
         methods: {
             selectAll() {
                 this.$refs.snippet.select();
+            },
+
+            onInput(e) {
+                this.$emit('input', e.target.value);
             }
         }
     };
