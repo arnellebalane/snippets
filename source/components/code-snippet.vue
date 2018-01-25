@@ -19,7 +19,7 @@
         },
 
         methods: {
-            selectAll() {
+            select() {
                 this.$refs.snippet.select();
             },
 

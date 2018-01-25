@@ -1,7 +1,7 @@
 <template>
     <div class="snippet-detail">
         <app-header></app-header>
-        <code-snippet :value="snippet" readonly></code-snippet>
+        <code-snippet ref="snippet" :value="snippet" readonly></code-snippet>
         <app-footer :hash="hash"></app-footer>
     </div>
 </template>
@@ -28,6 +28,9 @@
         methods: {
             getShortcuts() {
                 return {
+                    KeyA: () => {
+                        this.$refs.snippet.select();
+                    },
                     KeyE: () => {
                         this.$router.push({ name: 'snippet-create' });
                     }
