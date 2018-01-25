@@ -7,7 +7,8 @@ const routes = [ {
 }, {
     path: '/:hash',
     component: require('./components/snippet-detail.vue').default,
-    name: 'snippet-detail'
+    name: 'snippet-detail',
+    props: true
 } ];
 
 const router = new VueRouter({
