@@ -7,6 +7,7 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex';
     import Shortcuts from '../mixins/shortcuts';
 
     export default {
@@ -14,11 +15,12 @@
 
         data() {
             return {
-                snippet: null,
                 isSaving: false,
                 createSnippetEndpoint: 'http://www.mocky.io/v2/5a6973672e0000030b7a7475'
             };
         },
+
+        computed: mapState(['snippet']),
 
         methods: {
             getShortcuts() {
@@ -38,16 +40,20 @@
             },
 
             onSnippetInput(snippet) {
-                this.snippet = snippet;
+                this.$store.commit('setSnippet', snippet);
             },
 
             save() {
-                return fetch(this.createSnippetEndpoint, {
+                const response = fetch(this.createSnippetEndpoint, {
                     method: 'POST',
                     body: JSON.stringify({
                         snippet: this.snippet
                     })
                 }).then(response => response.json());
+
+                this.$store.commit('clearSnippet');
+
+                return response;
             }
         },
 
@@ -55,15 +61,6 @@
             'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
             'code-snippet': require('./code-snippet.vue').default
-        },
-
-        async beforeRouteEnter(to, from, next) {
-            if (!to.query.hash) return next();
-
-            const getSnippetEndpoint = 'http://www.mocky.io/v2/5a6973672e0000030b7a7475';
-            const response = await fetch(getSnippetEndpoint)
-                .then(response => response.json());
-            next(vm => vm.snippet = response.snippet);
         }
     };
 </script>
