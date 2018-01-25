@@ -29,7 +29,8 @@
             getShortcuts() {
                 return {
                     KeyA: this.selectAll,
-                    KeyE: this.editNew
+                    KeyE: this.editNew,
+                    KeyD: this.duplicate
                 };
             },
 
@@ -39,6 +40,15 @@
 
             editNew() {
                 this.$router.push({ name: 'snippet-create' });
+            },
+
+            duplicate() {
+                this.$router.push({
+                    name: 'snippet-create',
+                    query: {
+                        hash: this.hash
+                    }
+                });
             }
         },
 
