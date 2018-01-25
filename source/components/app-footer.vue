@@ -16,7 +16,46 @@
 
 <script>
     export default {
-        props: ['id']
+        props: ['id'],
+
+        methods: {
+            save() {
+                console.log('save');
+            },
+
+            selectAll() {
+                console.log('select all');
+            },
+
+            editNew() {
+                console.log('edit new');
+            },
+
+            duplicate() {
+                console.log('duplicate');
+            },
+
+            raw() {
+                console.log('raw');
+            }
+        },
+
+        created() {
+            const keybindings = {
+                KeyA: this.selectAll,
+                KeyD: this.duplicate,
+                KeyE: this.editNew,
+                KeyR: this.raw,
+                KeyS: this.save
+            };
+
+            window.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.code in keybindings) {
+                    e.preventDefault();
+                    keybindings[e.code]();
+                }
+            });
+        }
     };
 </script>
 
