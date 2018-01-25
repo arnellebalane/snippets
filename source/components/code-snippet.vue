@@ -1,12 +1,18 @@
 <template>
     <section class="code-snippet">
-        <textarea ref="snippet" placeholder="console.log('hello world')" spellcheck="false" autofocus @input="onInput">{{ value }}</textarea>
+        <textarea ref="snippet" :placeholder="placeholder" spellcheck="false" autofocus @input="onInput">{{ value }}</textarea>
     </section>
 </template>
 
 <script>
     export default {
-        props: ['value'],
+        props: {
+            value: String,
+            placeholder: {
+                type: String,
+                default: 'console.log(\'hello world\');'
+            }
+        },
 
         methods: {
             selectAll() {
