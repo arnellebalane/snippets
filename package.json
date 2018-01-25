@@ -19,6 +19,7 @@
     "commitizen": "2.9.6",
     "css-loader": "0.28.9",
     "cz-conventional-changelog": "2.1.0",
+    "nodemon": "1.14.11",
     "style-loader": "0.19.1",
     "vue-loader": "13.7.0",
     "vue-template-compiler": "2.5.13",
