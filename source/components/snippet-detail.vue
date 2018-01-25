@@ -2,7 +2,7 @@
     <div class="snippet-detail">
         <app-header></app-header>
         <code-snippet :value="value"></code-snippet>
-        <app-footer></app-footer>
+        <app-footer :hash="hash"></app-footer>
     </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
     <footer class="app-footer">
         <ul>
-            <template v-if="id">
+            <template v-if="hash">
                 <li><span>^A</span> Select All</li>
                 <li><span>^E</span> Edit New</li>
                 <li><span>^D</span> Duplicate</li>
@@ -16,7 +16,12 @@
 
 <script>
     export default {
-        props: ['id']
+        props: {
+            hash: {
+                type: String,
+                default: null
+            }
+        }
     };
 </script>
 
