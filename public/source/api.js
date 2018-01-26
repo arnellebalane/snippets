@@ -1,5 +1,9 @@
 export function get(url) {
-    return fetch(url).then(response => response.json());
+    return fetch(url, {
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => response.json());
 }
 
 export function post(url, body) {
