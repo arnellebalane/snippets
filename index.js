@@ -1,6 +1,7 @@
 const server = require('server');
 const { get, post, error } = server.router;
 const { status, render, send, json } = server.reply;
+const { Snippet } = require('./database/models');
 
 server(
     get('/', ctx => render('index.html')),
@@ -25,15 +26,14 @@ server(
         return render('raw.html', { snippet });
     }),
 
-    post('/snippets', ctx => {
-        return json({
-            id: 1,
-            hash: 'abcde',
-            body: 'console.log("hello world");'
-        });
+    post('/snippets', async ctx => {
+        const snippet = await Snippet.create({ body: ctx.data.snippet });
+        return json(snippet.get());
     }),
 
-    error(ctx => status(500).send(ctx.error.message))
+    error(ctx => {
+        throw ctx.error;
+    })
 ).then(ctx => {
     ctx.log.info(`Server is now running at localhost:${ctx.options.port}`);
 });
