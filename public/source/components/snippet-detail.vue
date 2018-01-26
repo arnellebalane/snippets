@@ -67,7 +67,7 @@
 
         async beforeRouteEnter(to, from, next) {
             const response = await get('/' + to.params.hash);
-            store.commit('setSnippet', response.snippet);
+            store.commit('setSnippet', response.body);
             next();
         }
     };

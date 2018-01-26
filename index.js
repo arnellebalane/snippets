@@ -9,7 +9,8 @@ server(
         if (ctx.headers.accept === 'application/json') {
             return json({
                 id: 1,
-                hash: ctx.params.hash
+                hash: ctx.params.hash,
+                body: 'console.log("hello world");'
             });
         }
         return render('index.html');
@@ -27,7 +28,8 @@ server(
     post('/snippets', ctx => {
         return json({
             id: 1,
-            hash: 'abcde'
+            hash: 'abcde',
+            body: 'console.log("hello world");'
         });
     }),
 
