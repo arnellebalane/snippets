@@ -2,11 +2,11 @@ import VueRouter from 'vue-router';
 
 const routes = [ {
     path: '/',
-    component: require('./components/snippet-create.vue').default,
+    component: () => import(/* webpackChunkName: "snippet-create" */ './components/snippet-create.vue'),
     name: 'snippet-create'
 }, {
     path: '/:hash',
-    component: require('./components/snippet-detail.vue').default,
+    component: () => import(/* webpackChunkName: "snippet-detail" */ './components/snippet-detail.vue'),
     name: 'snippet-detail',
     props: true
 } ];
