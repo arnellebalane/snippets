@@ -41,6 +41,7 @@
     }
   },
   "dependencies": {
+    "auto-load": "3.0.0",
     "dotenv": "4.0.0",
     "pg": "7.4.1",
     "sequelize": "4.32.1",
