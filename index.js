@@ -6,13 +6,11 @@ const { Snippet } = require('./database/models');
 server(
     get('/', ctx => render('index.html')),
 
-    get('/:hash', ctx => {
+    get('/:hash', async ctx => {
         if (ctx.headers.accept === 'application/json') {
-            return json({
-                id: 1,
-                hash: ctx.params.hash,
-                body: 'console.log("hello world");'
-            });
+            const hash = ctx.params.hash;
+            const snippet = await Snippet.findOne({ where: { hash } });
+            return json(snippet.get());
         }
         return render('index.html');
     }),
