@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "commit": "./node_modules/.bin/git-cz",
+    "prebuild": "rm -rf public/build",
     "build": "./node_modules/.bin/webpack",
     "build:watch": "./node_modules/.bin/webpack --watch",
     "start": "node index.js",
