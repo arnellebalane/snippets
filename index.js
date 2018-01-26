@@ -15,6 +15,15 @@ server(
         return render('index.html');
     }),
 
+    get('/raw/:hash', ctx => {
+        const snippet = {
+            id: 1,
+            hash: ctx.params.hash,
+            body: 'console.log("hello world");'
+        };
+        return render('raw.html', { snippet });
+    }),
+
     post('/snippets', ctx => {
         return json({
             id: 1,
