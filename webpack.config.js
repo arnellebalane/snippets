@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     entry: [
@@ -15,7 +16,10 @@ module.exports = {
     module: {
         rules: [ {
             test: /\.vue$/,
-            loader: 'vue-loader'
+            loader: 'vue-loader',
+            options: {
+                extractCSS: true
+            }
         }, {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
@@ -29,6 +33,7 @@ module.exports = {
         }),
         new UglifyJsPlugin({
             sourceMap: true
-        })
+        }),
+        new ExtractTextPlugin('main.css')
     ]
 };
