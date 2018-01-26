@@ -15,13 +15,10 @@ server(
         return render('index.html');
     }),
 
-    get('/raw/:hash', ctx => {
-        const snippet = {
-            id: 1,
-            hash: ctx.params.hash,
-            body: 'console.log("hello world");'
-        };
-        return render('raw.html', { snippet });
+    get('/raw/:hash', async ctx => {
+        const hash = ctx.params.hash;
+        const snippet = await Snippet.findOne({ where: { hash } });
+        return render('raw.html', { snippet: snippet.get() });
     }),
 
     post('/snippets', async ctx => {
