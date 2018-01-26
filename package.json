@@ -38,6 +38,8 @@
     }
   },
   "dependencies": {
+    "pg": "7.4.1",
+    "sequelize": "4.32.1",
     "server": "1.0.17",
     "vue": "2.5.13",
     "vue-router": "3.0.1",
