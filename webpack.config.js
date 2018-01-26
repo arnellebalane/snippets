@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: [
@@ -9,6 +10,7 @@ module.exports = {
         path: path.resolve(__dirname, 'public/build'),
         filename: '[name].js'
     },
+    devtool: 'source-map',
     module: {
         rules: [ {
             test: /\.vue$/,
@@ -17,5 +19,12 @@ module.exports = {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
         } ]
-    }
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: process.env.NODE_ENV || 'development'
+            }
+        })
+    ]
 };
