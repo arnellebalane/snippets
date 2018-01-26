@@ -1,5 +1,13 @@
 const crypto = require('crypto');
 
+function generateHash(data) {
+    return crypto.createHash('sha256')
+        .update(data)
+        .digest('ascii')
+        .replace(/[^\w\d]/g, '')
+        .substring(0, 5);
+}
+
 module.exports = (database, DataTypes) => {
     const Snippet = database.define('snippet', {
         hash: {
@@ -11,18 +19,12 @@ module.exports = (database, DataTypes) => {
         hooks: {
             async beforeValidate(instance, options) {
                 let body = instance.body + Date.now();
-                let hash = crypto.createHash('sha256')
-                    .update(body)
-                    .digest('base64')
-                    .substring(0, 5);
+                let hash = generateHash(body);
                 let existing = await Snippet.findOne({ where: { hash } });
 
                 while (existing) {
                     body = instance.body + Date.now();
-                    hash = crypto.createHash('sha256')
-                        .update(body)
-                        .digest('base64')
-                        .substring(0, 5);
+                    hash = generateHash(body);
                     existing = await Snippet.findOne({ where: { hash } });
                 }
 
