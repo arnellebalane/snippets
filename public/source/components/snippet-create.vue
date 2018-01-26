@@ -26,6 +26,8 @@
             getShortcuts() {
                 return {
                     KeyS: async () => {
+                        if (!this.snippet) return;
+
                         this.isSaving = true;
                         const response = await this.save();
 
@@ -44,6 +46,8 @@
             },
 
             async save() {
+                if (!this.snippet) return;
+
                 const response = await post('/snippets', { snippet: this.snippet });
                 this.$store.commit('clearSnippet');
                 return response;
