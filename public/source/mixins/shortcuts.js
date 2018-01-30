@@ -14,7 +14,7 @@ export default {
         }
     },
 
-    created() {
+    mounted() {
         window.addEventListener('keydown', this._keydownHandler);
     },
 
