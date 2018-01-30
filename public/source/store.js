@@ -3,20 +3,20 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-const store = new Vuex.Store({
-    state: {
-        snippet: null
-    },
-
-    mutations: {
-        setSnippet(state, snippet) {
-            state.snippet = snippet;
+export default function createStore() {
+    return new Vuex.Store({
+        state: {
+            snippet: null
         },
 
-        clearSnippet(state) {
-            state.snippet = null;
-        }
-    }
-});
+        mutations: {
+            setSnippet(state, snippet) {
+                state.snippet = snippet;
+            },
 
-export default store;
+            clearSnippet(state) {
+                state.snippet = null;
+            }
+        }
+    })
+};
