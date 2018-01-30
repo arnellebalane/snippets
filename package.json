@@ -6,8 +6,9 @@
   "scripts": {
     "commit": "./node_modules/.bin/git-cz",
     "prebuild": "rm -rf public/build",
-    "build": "./node_modules/.bin/webpack",
-    "build:watch": "./node_modules/.bin/webpack --watch",
+    "build": "npm-run-all --parallel build:client build:server",
+    "build:client": "webpack --config webpack.client.config.js",
+    "build:server": "webpack --config webpack.server.config.js",
     "start": "node index.js",
     "dev": "./node_modules/.bin/nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
