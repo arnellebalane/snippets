@@ -3,10 +3,7 @@ const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-    entry: [
-        'babel-polyfill',
-        path.resolve(__dirname, 'public/source/index.js')
-    ],
+    entry: path.resolve(__dirname, 'public/source/index.js'),
     output: {
         path: path.resolve(__dirname, 'public/build'),
         filename: '[name].js',
@@ -26,7 +23,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: `'${process.env.NODE_ENV}'` || '"development"'
+                NODE_ENV: JSON.stringify(`${process.env.NODE_ENV || 'development'}`)
             }
         }),
         new UglifyJsPlugin({
