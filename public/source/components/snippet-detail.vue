@@ -58,10 +58,11 @@
             'code-snippet': require('./code-snippet.vue').default
         },
 
-        async beforeRouteEnter(to, from, next) {
-            const response = await get('/' + to.params.hash);
-            store.commit('setSnippet', response.body);
-            next();
+        beforeRouteEnter(to, from, next) {
+            return get('/' + to.params.hash).then(response => {
+                store.commit('setSnippet', response.body);
+                next();
+            });
         }
     };
 </script>
