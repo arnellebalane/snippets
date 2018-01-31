@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { get } from './api';
 
 Vue.use(Vuex);
 
@@ -16,6 +17,14 @@ export default function createStore() {
 
             clearSnippet(state) {
                 state.snippet =  null;
+            }
+        },
+
+        actions: {
+            fetchSnippet(context, hash) {
+                return get('/' + hash).then(response => {
+                    context.commit('setSnippet', response.body);
+                });
             }
         }
     });

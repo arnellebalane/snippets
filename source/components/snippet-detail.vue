@@ -9,7 +9,6 @@
 <script>
     import { mapState } from 'vuex';
     import Shortcuts from '../mixins/shortcuts';
-    import { get } from '../api';
 
     export default {
         mixins: [Shortcuts],
@@ -58,9 +57,7 @@
         },
 
         serverData(store, route) {
-            return get('/' + route.params.hash).then(response => {
-                store.commit('setSnippet', response.body);
-            });
+            return store.dispatch('fetchSnippet', route.params.hash);
         }
     };
 </script>
