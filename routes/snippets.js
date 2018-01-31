@@ -1,5 +1,6 @@
-const { json, render } = require('server/reply');
+const { json, render, send } = require('server/reply');
 const { Snippet } = require('../database/models');
+const renderer = require('./_renderer');
 
 async function createSnippet(ctx) {
     const snippet = await Snippet.create({ body: ctx.data.snippet });
@@ -12,7 +13,9 @@ async function getSnippet(ctx) {
         const snippet = await Snippet.findOne({ where: { hash } });
         return json(snippet.get());
     }
-    return render('index.html');
+
+    const response = await renderer.renderToString({ url: ctx.url });
+    return send(response);
 }
 
 async function getRawSnippet(ctx) {
