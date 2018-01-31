@@ -11,7 +11,10 @@ module.exports = {
     module: {
         rules: [ {
             test: /\.vue$/,
-            loader: 'vue-loader'
+            loader: 'vue-loader',
+            options: {
+                extractCSS: true
+            }
         }, {
             test: /\.css$/,
             use: ExtractTextPlugin.extract({
