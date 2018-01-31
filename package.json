@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "commit": "./node_modules/.bin/git-cz",
-    "prebuild": "rm -rf public/build",
+    "prebuild": "rm -rf public",
     "build": "npm-run-all --parallel build:client build:server",
     "build:client": "webpack --config webpack.client.config.js",
     "build:server": "webpack --config webpack.server.config.js",
