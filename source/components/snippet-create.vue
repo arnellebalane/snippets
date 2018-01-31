@@ -1,13 +1,23 @@
 <template>
     <div class="snippet-create">
         <app-header></app-header>
-        <code-snippet></code-snippet>
+        <code-snippet :value="snippet" @input="onSnippetInput"></code-snippet>
         <app-footer></app-footer>
     </div>
 </template>
 
 <script>
+    import { mapState } from 'vuex';
+
     export default {
+        computed: mapState(['snippet']),
+
+        methods: {
+            onSnippetInput(snippet) {
+                this.$store.commit('setSnippet', snippet);
+            }
+        },
+
         components: {
             'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
