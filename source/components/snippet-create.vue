@@ -1,20 +1,57 @@
 <template>
     <div class="snippet-create">
         <app-header></app-header>
-        <code-snippet :value="snippet" @input="onSnippetInput"></code-snippet>
+        <code-snippet :value="snippet" :readonly="isSaving" @input="onSnippetInput"></code-snippet>
         <app-footer></app-footer>
     </div>
 </template>
 
 <script>
     import { mapState } from 'vuex';
+    import Shortcuts from '../mixins/shortcuts';
+    import { post } from '../api';
 
     export default {
+        mixins: [Shortcuts],
+
+        data() {
+            return {
+                isSaving: false
+            };
+        },
+
         computed: mapState(['snippet']),
 
         methods: {
+            getShortcuts() {
+                return {
+                    KeyS: () => {
+                        if (!this.snippet) return;
+
+                        this.isSaving = true;
+                        this.save().then(response => {
+                            this.$router.push({
+                                name: 'snippet-detail',
+                                params: {
+                                    hash: response.hash
+                                }
+                            });
+                        });
+                    }
+                };
+            },
+
             onSnippetInput(snippet) {
                 this.$store.commit('setSnippet', snippet);
+            },
+
+            save() {
+                if (!this.snippet) return;
+
+                return post('/snippets', { snippet: this.snippet }).then(response => {
+                    this.$store.commit('clearSnippet');
+                    return response;
+                });
             }
         },
 
