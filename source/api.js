@@ -1,18 +1,21 @@
+import axios from 'axios';
+
+const instance = axios.create({
+    baseURL: `http://localhost:${process.env.PORT || 3000}`
+});
+
 export function get(url) {
-    return fetch(url, {
+    return instance.get(url, {
         headers: {
             'Accept': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(response => response.data);
 }
 
 export function post(url, body) {
-    return fetch(url, {
-        method: 'POST',
+    return instance.post(url, body, {
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body),
-        credentials: 'include'
-    }).then(response => response.json());
+        }
+    }).then(response => response.data);
 }
