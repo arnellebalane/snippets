@@ -6,7 +6,7 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
 module.exports = merge(baseConfig, {
     entry: {
-        client: path.resolve(__dirname, 'source/entry-client.js')
+        client: path.resolve(__dirname, '../source/entry-client.js')
     },
     plugins: [
         new UglifyJSPlugin(),

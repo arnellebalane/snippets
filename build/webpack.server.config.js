@@ -5,7 +5,7 @@ const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 
 module.exports = merge(baseConfig, {
     entry: {
-        server: path.resolve(__dirname, 'source/entry-server.js')
+        server: path.resolve(__dirname, '../source/entry-server.js')
     },
     output: {
         libraryTarget: 'commonjs2'
