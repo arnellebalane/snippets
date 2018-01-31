@@ -25,17 +25,17 @@
         methods: {
             getShortcuts() {
                 return {
-                    KeyS: async () => {
+                    KeyS: () => {
                         if (!this.snippet) return;
 
                         this.isSaving = true;
-                        const response = await this.save();
-
-                        this.$router.push({
-                            name: 'snippet-detail',
-                            params: {
-                                hash: response.hash
-                            }
+                        this.save().then(response => {
+                            this.$router.push({
+                                name: 'snippet-detail',
+                                params: {
+                                    hash: response.hash
+                                }
+                            });
                         });
                     }
                 };
@@ -45,12 +45,13 @@
                 this.$store.commit('setSnippet', snippet);
             },
 
-            async save() {
+            save() {
                 if (!this.snippet) return;
 
-                const response = await post('/snippets', { snippet: this.snippet });
-                this.$store.commit('clearSnippet');
-                return response;
+                return post('/snippets', { snippet: this.snippet }).then(response => {
+                    this.$store.commit('clearSnippet');
+                    return response;
+                });
             }
         },
 

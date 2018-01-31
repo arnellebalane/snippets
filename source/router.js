@@ -1,4 +1,7 @@
+import Vue from 'vue';
 import VueRouter from 'vue-router';
+
+Vue.use(VueRouter);
 
 const routes = [ {
     path: '/',
@@ -11,9 +14,9 @@ const routes = [ {
     props: true
 } ];
 
-const router = new VueRouter({
-    routes,
-    mode: 'history'
-});
-
-export default router;
+export default function createRouter() {
+    return new VueRouter({
+        routes,
+        mode: 'history'
+    });
+};

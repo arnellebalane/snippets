@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "commit": "./node_modules/.bin/git-cz",
-    "prebuild": "rm -rf public/build",
-    "build": "./node_modules/.bin/webpack",
-    "build:watch": "./node_modules/.bin/webpack --watch",
+    "prebuild": "rm -rf public",
+    "build": "npm-run-all --parallel build:client build:server",
+    "build:client": "webpack --config webpack.client.config.js",
+    "build:server": "webpack --config webpack.server.config.js",
     "start": "node index.js",
     "dev": "./node_modules/.bin/nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,13 +23,16 @@
     "commitizen": "2.9.6",
     "css-loader": "0.28.9",
     "cz-conventional-changelog": "2.1.0",
+    "extract-text-webpack-plugin": "3.0.2",
     "nodemon": "1.14.11",
+    "npm-run-all": "4.1.2",
     "sequelize-cli": "3.2.0",
     "style-loader": "0.19.1",
     "uglifyjs-webpack-plugin": "1.1.6",
     "vue-loader": "13.7.0",
     "vue-template-compiler": "2.5.13",
-    "webpack": "3.10.0"
+    "webpack": "3.10.0",
+    "webpack-merge": "4.1.1"
   },
   "babel": {
     "presets": [
@@ -42,12 +46,14 @@
   },
   "dependencies": {
     "auto-load": "3.0.0",
+    "axios": "0.17.1",
     "dotenv": "4.0.0",
     "pg": "7.4.1",
     "sequelize": "4.32.1",
     "server": "1.0.17",
     "vue": "2.5.13",
     "vue-router": "3.0.1",
+    "vue-server-renderer": "2.5.13",
     "vuex": "3.0.1"
   }
 }

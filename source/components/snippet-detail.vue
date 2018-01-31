@@ -9,8 +9,6 @@
 <script>
     import { mapState } from 'vuex';
     import Shortcuts from '../mixins/shortcuts';
-    import store from '../store';
-    import { get } from '../api';
 
     export default {
         mixins: [Shortcuts],
@@ -58,10 +56,8 @@
             'code-snippet': require('./code-snippet.vue').default
         },
 
-        async beforeRouteEnter(to, from, next) {
-            const response = await get('/' + to.params.hash);
-            store.commit('setSnippet', response.body);
-            next();
+        serverData(store, route) {
+            return store.dispatch('fetchSnippet', route.params.hash);
         }
     };
 </script>
