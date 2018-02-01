@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -32,7 +33,8 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+                BASE_URL: JSON.stringify(process.env.BASE_URL || 'http://localhost:3000/')
             }
         }),
         new ExtractTextPlugin('index.css')
