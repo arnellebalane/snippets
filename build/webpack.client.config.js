@@ -15,9 +15,8 @@ module.exports = merge(baseConfig, {
         new WorkboxPlugin({
             globDirectory: path.resolve(__dirname, '../public'),
             globPatterns: ['**/*.{css,js}'],
-            swDest: path.resolve(__dirname, '../public/sw.js'),
-            clientsClaim: true,
-            skipWaiting: true
+            swSrc: path.resolve(__dirname, '../source/sw.js'),
+            swDest: path.resolve(__dirname, '../public/sw.js')
         })
     ]
 });
