@@ -8,6 +8,8 @@ server(
     get('/raw/:hash', routes.snippets.raw),
     post('/snippets', routes.snippets.create),
 
+    routes.statics,
+
     error(ctx => {
         throw ctx.error;
     })
