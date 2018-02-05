@@ -1,4 +1,4 @@
-const { json, render, send } = require('server/reply');
+const { json, render, send, status } = require('server/reply');
 const { Snippet } = require('../database/models');
 const renderer = require('./_renderer');
 
@@ -11,7 +11,10 @@ async function getSnippet(ctx) {
     if (ctx.headers.accept === 'application/json') {
         const hash = ctx.params.hash;
         const snippet = await Snippet.findOne({ where: { hash } });
-        return json(snippet.get());
+
+        return snippet
+            ? json(snippet.get())
+            : status(404).send('Snippet not found.');
     }
 
     const response = await renderer.renderToString({ url: ctx.url });
@@ -21,7 +24,10 @@ async function getSnippet(ctx) {
 async function getRawSnippet(ctx) {
     const hash = ctx.params.hash;
     const snippet = await Snippet.findOne({ where: { hash } });
-    return render('raw.html', { snippet: snippet.get() });
+
+    return snippet
+        ? render('raw.html', { snippet: snippet.get() })
+        : status(404).send('Snippet not found.');
 }
 
 exports.create = createSnippet;
