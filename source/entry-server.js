@@ -19,7 +19,7 @@ export default function(context) {
             })).then(() => {
                 context.state = store.state;
                 resolve(app);
-            });
+            }).catch(reject);
         }, reject);
     });
 };

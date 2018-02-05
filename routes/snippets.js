@@ -17,8 +17,20 @@ async function getSnippet(ctx) {
             : status(404).send('Snippet not found.');
     }
 
-    const response = await renderer.renderToString({ url: ctx.url });
-    return send(response);
+    try {
+        const response = await renderer.renderToString({ url: ctx.url });
+        return send(response);
+    } catch (err) {
+        const context = {
+            code: 500,
+            message: 'Something went wrong on our side'
+        };
+        if (err.response.status === 404) {
+            context.code = 404;
+            context.message = 'Snippet not found';
+        }
+        return render('error.html', context);
+    }
 }
 
 async function getRawSnippet(ctx) {
