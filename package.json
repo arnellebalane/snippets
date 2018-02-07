@@ -11,7 +11,8 @@
     "build:server": "webpack --config build/webpack.server.config.js",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start tests/unit/karma.conf.js --single-run",
+    "test:watch": "karma start tests/unit/karma.conf.js"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
