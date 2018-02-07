@@ -4,13 +4,13 @@
   "description": "Host code snippets online",
   "main": "index.js",
   "scripts": {
-    "commit": "./node_modules/.bin/git-cz",
+    "commit": "git-cz",
     "prebuild": "rm -rf public",
     "build": "npm-run-all --parallel build:client build:server",
     "build:client": "webpack --config build/webpack.client.config.js",
     "build:server": "webpack --config build/webpack.server.config.js",
     "start": "node index.js",
-    "dev": "./node_modules/.bin/nodemon index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
