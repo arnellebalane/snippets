@@ -18,9 +18,6 @@ module.exports = {
                 extractCSS: true
             }
         }, {
-            test: /\.js$/,
-            loader: 'babel-loader'
-        }, {
             test: /\.css$/,
             loader: ExtractTextPlugin.extract({
                 fallback: 'style-loader',
