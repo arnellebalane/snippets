@@ -11,8 +11,8 @@
     "build:server": "webpack --config build/webpack.server.config.js",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "karma start tests/unit/karma.conf.js --single-run",
-    "test:watch": "karma start tests/unit/karma.conf.js"
+    "test": "mocha-webpack --webpack-config build/webpack.test.config.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
+    "test:watch": "npm run test -- --watch"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
