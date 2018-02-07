@@ -1,16 +1,15 @@
-import Vue from 'vue';
+import { mount } from '@vue/test-utils';
 import assert from 'assert';
 import CodeSnippet from 'source/components/code-snippet.vue';
 
 describe('code-snippet.vue', () => {
-    function renderComponent(propsData={}) {
-        const Constructor = Vue.extend(CodeSnippet);
-        return new Constructor({ propsData }).$mount();
+    function mountComponent(propsData={}) {
+        return mount(CodeSnippet, { propsData });
     }
 
     it('renders a textarea element with default props', () => {
-        const vm = renderComponent();
-        const textarea = vm.$el.querySelector('textarea');
+        const { element } = mountComponent();
+        const textarea = element.querySelector('textarea');
 
         assert(textarea);
         assert.equal('', textarea.value);
@@ -26,8 +25,8 @@ describe('code-snippet.vue', () => {
         ];
 
         testCases.forEach(([expected, propsData]) => {
-            const vm = renderComponent(propsData);
-            const actual = vm.$el.querySelector('textarea').value;
+            const { element } = mountComponent(propsData);
+            const actual = element.querySelector('textarea').value;
             assert.equal(expected, actual);
         });
     });
@@ -40,8 +39,8 @@ describe('code-snippet.vue', () => {
         ];
 
         testCases.forEach(([expected, propsData]) => {
-            const vm = renderComponent(propsData);
-            const actual = vm.$el.querySelector('textarea').placeholder;
+            const { element } = mountComponent(propsData);
+            const actual = element.querySelector('textarea').placeholder;
             assert.equal(expected, actual);
         });
     });
@@ -54,8 +53,8 @@ describe('code-snippet.vue', () => {
         ];
 
         testCases.forEach(([expected, propsData]) => {
-            const vm = renderComponent(propsData);
-            const actual = vm.$el.querySelector('textarea').readOnly;
+            const { element } = mountComponent(propsData);
+            const actual = element.querySelector('textarea').readOnly;
             assert.equal(expected, actual);
         });
     });

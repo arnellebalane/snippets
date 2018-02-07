@@ -1,17 +1,16 @@
-import Vue from 'vue';
+import { mount } from '@vue/test-utils';
 import assert from 'assert';
 import AppFooter from 'source/components/app-footer.vue';
 
 describe('app-footer.vue', () => {
-    function renderComponent(propsData={}) {
-        const Constructor = Vue.extend(AppFooter);
-        return new Constructor({ propsData }).$mount();
+    function mountComponent(propsData={}) {
+        return mount(AppFooter, { propsData });
     }
 
     it('renders the correct actions when hash is not available', () => {
-        const vm = renderComponent();
+        const { element } = mountComponent();
 
-        const children = vm.$el.querySelector('ul').children;
+        const children = element.querySelector('ul').children;
         const actual = [];
         for (let i = 0; i < children.length; i++) {
             actual.push(children[i].textContent);
@@ -22,9 +21,9 @@ describe('app-footer.vue', () => {
     });
 
     it('render the correct actions when hash is available', () => {
-        const vm = renderComponent({ hash: 'hello' });
+        const { element } = mountComponent({ hash: 'hello' });
 
-        const children = vm.$el.querySelector('ul').children;
+        const children = element.querySelector('ul').children;
         const actual = [];
         for (let i = 0; i < children.length; i++) {
             actual.push(children[i].textContent);
