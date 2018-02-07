@@ -3,7 +3,7 @@ import assert from 'assert';
 import AppHeader from 'source/components/app-header.vue';
 
 describe('app-header.vue', () => {
-    it('should render the correct title', () => {
+    it('renders the correct title', () => {
         const Constructor = Vue.extend(AppHeader);
         const vm = new Constructor().$mount();
 

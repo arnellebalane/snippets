@@ -3,7 +3,7 @@ import assert from 'assert';
 import AppFooter from 'source/components/app-footer.vue';
 
 describe('app-footer.vue', () => {
-    it('should render correct actions when hash is not available', () => {
+    it('renders the correct actions when hash is not available', () => {
         const Constructor = Vue.extend(AppFooter);
         const vm = new Constructor().$mount();
 
@@ -17,7 +17,7 @@ describe('app-footer.vue', () => {
         assert.deepStrictEqual(expected, actual);
     });
 
-    it('should render correct actions when hash is available', () => {
+    it('render the correct actions when hash is available', () => {
         const Constructor = Vue.extend(AppFooter);
         const propsData = { hash: 'hello' };
         const vm = new Constructor({ propsData }).$mount();
