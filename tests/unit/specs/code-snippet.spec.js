@@ -58,4 +58,21 @@ describe('code-snippet.vue', () => {
             assert.equal(expected, actual);
         });
     });
+
+    it('emits input event when textarea value changes', () => {
+        const wrapper = mountComponent();
+        const textarea = wrapper.find('textarea');
+
+        const testCases = ['hello', 'world'];
+
+        testCases.forEach((value, i) => {
+            textarea.element.value = value;
+            textarea.trigger('input');
+
+            const emittedInput = wrapper.emitted().input;
+            assert.equal(emittedInput[i][0], value);
+        });
+
+        assert.equal(testCases.length, wrapper.emitted().input.length);
+    });
 });
