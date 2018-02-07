@@ -3,9 +3,13 @@ import assert from 'assert';
 import AppFooter from 'source/components/app-footer.vue';
 
 describe('app-footer.vue', () => {
-    it('renders the correct actions when hash is not available', () => {
+    function renderComponent(propsData={}) {
         const Constructor = Vue.extend(AppFooter);
-        const vm = new Constructor().$mount();
+        return new Constructor({ propsData }).$mount();
+    }
+
+    it('renders the correct actions when hash is not available', () => {
+        const vm = renderComponent();
 
         const children = vm.$el.querySelector('ul').children;
         const actual = [];
@@ -18,9 +22,7 @@ describe('app-footer.vue', () => {
     });
 
     it('render the correct actions when hash is available', () => {
-        const Constructor = Vue.extend(AppFooter);
-        const propsData = { hash: 'hello' };
-        const vm = new Constructor({ propsData }).$mount();
+        const vm = renderComponent({ hash: 'hello' });
 
         const children = vm.$el.querySelector('ul').children;
         const actual = [];
