@@ -1,6 +1,6 @@
 <template>
     <section class="code-snippet">
-        <textarea ref="snippet" :placeholder="placeholder" :readonly="readonly" spellcheck="false" autofocus @input="onInput">{{ value }}</textarea>
+        <textarea ref="snippet" :placeholder="placeholder" :readonly="readonly" spellcheck="false" autofocus v-model="snippet"></textarea>
     </section>
 </template>
 
@@ -18,13 +18,21 @@
             }
         },
 
+        data() {
+            return {
+                snippet: this.value
+            };
+        },
+
+        watch: {
+            snippet(snippet) {
+                this.$emit('input', snippet);
+            }
+        },
+
         methods: {
             select() {
                 this.$refs.snippet.select();
-            },
-
-            onInput(e) {
-                this.$emit('input', e.target.value);
             }
         },
 
