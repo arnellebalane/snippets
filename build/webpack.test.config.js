@@ -5,6 +5,17 @@ const nodeExternals = require('webpack-node-externals');
 const baseConfig = require('./webpack.base.config');
 
 module.exports = merge(baseConfig, {
+    module: {
+        rules: [ {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            options: {
+                presets: [
+                    ['env', { modules: false }]
+                ]
+            }
+        } ]
+    },
     devtool: 'inline-cheap-module-source-map',
     plugins: [
         new webpack.DefinePlugin({
