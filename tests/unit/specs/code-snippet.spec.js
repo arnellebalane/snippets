@@ -75,4 +75,19 @@ describe('code-snippet.vue', () => {
 
         assert.equal(testCases.length, wrapper.emitted().input.length);
     });
+
+    describe('#select()', () => {
+        it('highlights the entire contents of the textarea', () => {
+            const wrapper = mountComponent();
+            const textarea = wrapper.find('textarea');
+
+            const testValue = 'hello world';
+            textarea.element.value = testValue;
+
+            wrapper.vm.select();
+
+            assert.equal(0, textarea.element.selectionStart);
+            assert.equal(testValue.length, textarea.element.selectionEnd);
+        });
+    });
 });
