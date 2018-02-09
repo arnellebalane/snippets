@@ -17,6 +17,20 @@ describe('code-snippet.vue', () => {
         assert.equal(false, textarea.readOnly);
     });
 
+    it('focuses the textarea element if not set to readonly', () => {
+        const wrapper = mountComponent();
+        const focused = wrapper.find('textarea:focus');
+
+        assert(focused.exists());
+    });
+
+    it('does not focus the textarea element if set to readonly', () => {
+        const wrapper = mountComponent({ readonly: true });
+        const focused = wrapper.find('textarea:focus');
+
+        assert.equal(false, focused.exists());
+    });
+
     it('sets the textarea value based on the props', () => {
         const testCases = [
             ['hello world', { value: 'hello world' }],
