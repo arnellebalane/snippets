@@ -107,4 +107,26 @@ describe('snippet-detail.vue', () => {
             });
         });
     });
+
+    describe('#duplicate()', () => {
+        it('redirects to snippet-create route', () => {
+            const wrapper = mountComponent();
+            wrapper.vm.duplicate();
+
+            assert(wrapper.vm.$router.push.calledWith({ name: 'snippet-create' }));
+        });
+
+        it('keeps the snippet state in the store', done => {
+            const testValue = 'hello world';
+            store.commit('setSnippet', testValue);
+
+            const wrapper = mountComponent();
+            wrapper.vm.duplicate();
+
+            Vue.nextTick(() => {
+                assert.equal(testValue, store.state.snippet);
+                done();
+            });
+        });
+    });
 });
