@@ -1,6 +1,8 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import VueRouter from 'vue-router';
 import assert from 'assert';
+import sinon from 'sinon';
 import SnippetDetail from 'source/components/snippet-detail.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
 import AppFooter from 'source/components/app-footer.vue';
@@ -13,7 +15,14 @@ describe('snippet-detail.vue', () => {
     let store;
 
     function mountComponent(mountData={}) {
-        return mount(SnippetDetail, { store, localVue: Vue });
+        const $router = {
+            push: sinon.stub()
+        };
+        return mount(SnippetDetail, {
+            store,
+            localVue: Vue,
+            mocks: { $router }
+        });
     }
 
     beforeEach(() => {
@@ -72,6 +81,28 @@ describe('snippet-detail.vue', () => {
 
                 assert.equal(0, textarea.element.selectionStart);
                 assert.equal(testValue.length, textarea.element.selectionEnd);
+                done();
+            });
+        });
+    });
+
+    describe('#editNew()', () => {
+        it('redirects to snippet-create route', () => {
+            const wrapper = mountComponent();
+            wrapper.vm.editNew();
+
+            assert(wrapper.vm.$router.push.calledWith({ name: 'snippet-create' }));
+        });
+
+        it('resets the snippet state in the store', done => {
+            const testValue = 'hello world';
+            store.commit('setSnippet', testValue);
+
+            const wrapper = mountComponent();
+            wrapper.vm.editNew();
+
+            Vue.nextTick(() => {
+                assert.equal(null, store.state.snippet);
                 done();
             });
         });
