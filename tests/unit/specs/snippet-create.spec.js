@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import assert from 'assert';
-import SnippetCreateInjector from '!!vue-loader?inject!source/components/snippet-create.vue';
+import SnippetCreate from 'source/components/snippet-create.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
 import createStore from 'source/store';
 
@@ -11,8 +11,8 @@ Vue.use(Vuex);
 describe('snippet-create.vue', () => {
     let store;
 
-    function mountComponent(mocks={}) {
-        return mount(SnippetCreateInjector(mocks), { store, localVue: Vue });
+    function mountComponent() {
+        return mount(SnippetCreate, { store, localVue: Vue });
     }
 
     beforeEach(() => {
