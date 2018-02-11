@@ -30,6 +30,8 @@
 
                         this.isSaving = true;
                         this.save().then(response => {
+                            this.$store.commit('clearSnippet');
+
                             this.$router.push({
                                 name: 'snippet-detail',
                                 params: {
@@ -46,12 +48,9 @@
             },
 
             save() {
-                if (!this.snippet) return;
-
-                return post('/snippets', { snippet: this.snippet }).then(response => {
-                    this.$store.commit('clearSnippet');
-                    return response;
-                });
+                return this.snippet
+                    ? post('/snippets', { snippet: this.snippet })
+                    : null;
             }
         },
 
