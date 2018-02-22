@@ -1,11 +1,13 @@
 <template>
     <section class="code-snippet">
-        <pre v-if="readonly"><code>{{ snippet }}</code></pre>
+        <pre v-if="readonly"><code class="snippet" ref="snippet">{{ snippet }}</code></pre>
         <textarea v-else ref="snippet" :placeholder="placeholder" spellcheck="false" autofocus v-model="snippet"></textarea>
     </section>
 </template>
 
 <script>
+    import hljs from 'node_modules/highlightjs/highlight.pack.min';
+
     export default {
         props: {
             value: String,
@@ -38,13 +40,16 @@
         },
 
         mounted() {
-            if (!this.readonly) {
+            if (this.readonly) {
+                hljs.highlightBlock(this.$refs.snippet);
+            } else {
                 this.$refs.snippet.focus();
             }
         }
     };
 </script>
 
+<style scoped src="node_modules/highlightjs/styles/railscasts.css"></style>
 <style scoped>
     textarea, pre, code {
         display: block;
@@ -52,12 +57,12 @@
         height: 100%;
         font: inherit;
         line-height: 14px;
-        color: #c5c8c6;
     }
 
     textarea {
         padding: 3px 5px;
         border: none;
+        color: #c5c8c6;
         background-color: transparent;
         outline: none;
         resize: none;
@@ -66,5 +71,10 @@
     pre {
         padding: 3px 5px;
         margin: 0;
+    }
+
+    .code-snippet code.snippet {  /* make specificity greater than hljs */
+        padding: 0;
+        background-color: transparent;
     }
 </style>
