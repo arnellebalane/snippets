@@ -1,6 +1,6 @@
 <template>
     <section class="code-snippet">
-        <pre v-if="readonly"><code class="snippet" ref="snippet">{{ snippet }}</code></pre>
+        <pre v-if="readonly"><code :class="language" ref="snippet">{{ snippet }}</code></pre>
         <textarea v-else ref="snippet" :placeholder="placeholder" spellcheck="false" autofocus v-model="snippet"></textarea>
     </section>
 </template>
@@ -18,7 +18,8 @@
             readonly: {
                 type: Boolean,
                 default: false
-            }
+            },
+            language: String
         },
 
         data() {
