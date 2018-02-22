@@ -59,11 +59,6 @@
 
         serverData(store, route) {
             return store.dispatch('fetchSnippet', route.params.hash);
-        },
-
-        beforeRouteLeave(to, from, next) {
-            this.$store.commit('clearSnippet');
-            next();
         }
     };
 </script>
