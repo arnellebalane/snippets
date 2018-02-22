@@ -38,5 +38,10 @@ module.exports = {
             }
         }),
         new ExtractTextPlugin('index.css')
-    ]
+    ],
+    resolve: {
+        alias: {
+            node_modules: path.resolve(__dirname, '../node_modules')
+        }
+    }
 };
