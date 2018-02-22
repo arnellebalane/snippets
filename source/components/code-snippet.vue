@@ -50,7 +50,7 @@
     };
 </script>
 
-<style src="node_modules/highlightjs/styles/railscasts.css"></style>
+<style src="node_modules/highlightjs/styles/monokai-sublime.css"></style>
 <style scoped>
     textarea, pre, code {
         display: block;
