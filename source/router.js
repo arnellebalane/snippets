@@ -8,7 +8,7 @@ const routes = [ {
     component: () => import(/* webpackChunkName: "snippet-create" */ './components/snippet-create.vue'),
     name: 'snippet-create'
 }, {
-    path: '/:hash',
+    path: '/:hash(\\w+).:extension(\\w+)?',
     component: () => import(/* webpackChunkName: "snippet-detail" */ './components/snippet-detail.vue'),
     name: 'snippet-detail',
     props: true
