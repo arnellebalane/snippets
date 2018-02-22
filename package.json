@@ -57,6 +57,7 @@
     "auto-load": "3.0.0",
     "axios": "0.17.1",
     "dotenv": "5.0.0",
+    "highlightjs": "9.10.0",
     "pg": "7.4.1",
     "sequelize": "4.33.2",
     "server": "1.0.17",
