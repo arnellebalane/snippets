@@ -1,6 +1,7 @@
 <template>
     <section class="code-snippet">
-        <textarea ref="snippet" :placeholder="placeholder" :readonly="readonly" spellcheck="false" autofocus v-model="snippet"></textarea>
+        <pre v-if="readonly"><code>{{ snippet }}</code></pre>
+        <textarea v-else ref="snippet" :placeholder="placeholder" spellcheck="false" autofocus v-model="snippet"></textarea>
     </section>
 </template>
 
@@ -45,17 +46,25 @@
 </script>
 
 <style scoped>
-    textarea {
+    textarea, pre, code {
         display: block;
         width: 100%;
         height: 100%;
-        padding: 3px 5px;
-        border: none;
         font: inherit;
         line-height: 14px;
         color: #c5c8c6;
+    }
+
+    textarea {
+        padding: 3px 5px;
+        border: none;
         background-color: transparent;
         outline: none;
         resize: none;
+    }
+
+    pre {
+        padding: 3px 5px;
+        margin: 0;
     }
 </style>
