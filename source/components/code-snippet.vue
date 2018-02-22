@@ -49,7 +49,7 @@
     };
 </script>
 
-<style scoped src="node_modules/highlightjs/styles/railscasts.css"></style>
+<style src="node_modules/highlightjs/styles/railscasts.css"></style>
 <style scoped>
     textarea, pre, code {
         display: block;
@@ -57,12 +57,12 @@
         height: 100%;
         font: inherit;
         line-height: 14px;
+        color: #c5c8c6;
     }
 
     textarea {
         padding: 3px 5px;
         border: none;
-        color: #c5c8c6;
         background-color: transparent;
         outline: none;
         resize: none;
@@ -73,7 +73,7 @@
         margin: 0;
     }
 
-    .code-snippet code.snippet {  /* make specificity greater than hljs */
+    code {
         padding: 0;
         background-color: transparent;
     }
