@@ -17,7 +17,8 @@
             hash: {
                 type: String,
                 required: true
-            }
+            },
+            extension: String
         },
 
         computed: mapState(['snippet']),
