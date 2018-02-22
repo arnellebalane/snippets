@@ -36,7 +36,16 @@
 
         methods: {
             select() {
-                this.$refs.snippet.select();
+                if (this.readonly) {
+                    const range = document.createRange();
+                    range.selectNode(this.$refs.snippet);
+
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                } else {
+                    this.$refs.snippet.select();
+                }
             }
         },
 
