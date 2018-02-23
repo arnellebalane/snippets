@@ -13,8 +13,8 @@ export default function (context) {
             }
 
             Promise.all(matchedComponents.map(Component => Component.serverData
-                    ? Component.serverData(store, router.currentRoute)
-                    : null
+                ? Component.serverData(store, router.currentRoute)
+                : null
             )).then(() => {
                 context.state = store.state;
                 resolve(app);

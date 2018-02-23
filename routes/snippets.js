@@ -12,9 +12,9 @@ async function getSnippet(ctx) {
         const hash = ctx.params.hash;
         const snippet = await Snippet.findOne({where: {hash}});
 
-        return snippet ?
-            json(snippet.get()) :
-            status(404).send('Snippet not found.');
+        return snippet
+            ? json(snippet.get())
+            : status(404).send('Snippet not found.');
     }
 
     try {
@@ -37,9 +37,9 @@ async function getRawSnippet(ctx) {
     const hash = ctx.params.hash;
     const snippet = await Snippet.findOne({where: {hash}});
 
-    return snippet ?
-        render('raw.html', {snippet: snippet.get()}) :
-        status(404).send('Snippet not found.');
+    return snippet
+        ? render('raw.html', {snippet: snippet.get()})
+        : status(404).send('Snippet not found.');
 }
 
 exports.create = createSnippet;

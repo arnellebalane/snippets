@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    import hljs from 'node_modules/highlightjs/highlight.pack.min';
+    import hljs from 'nodeModules/highlightjs/highlight.pack.min';
 
     export default {
         props: {

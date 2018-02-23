@@ -59,8 +59,31 @@
     "space": 4,
     "envs": [
       "browser",
-      "mocha"
-    ]
+      "mocha",
+      "serviceworker"
+    ],
+    "rules": {
+      "operator-linebreak": ["error", "before"],
+      "no-await-in-loop": ["off"],
+      "import/extensions": ["off"],
+      "import/no-unresolved": ["off"],
+      "import/no-unassigned-import": ["error", {
+        "allow": [
+          "**/*.css"
+        ]
+      }]
+    },
+    "globals": [
+      "WorkboxSW"
+    ],
+    "overrides": [{
+      "files": "database/models/!(index).js",
+      "rules": {
+        "unicorn/filename-case": ["error", {
+          "case": "pascalCase"
+        }]
+      }
+    }]
   },
   "dependencies": {
     "auto-load": "3.0.0",
