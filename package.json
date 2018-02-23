@@ -13,7 +13,7 @@
     "dev": "nodemon index.js",
     "test": "mocha-webpack --webpack-config build/webpack.test.config.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
     "test:watch": "npm run test -- --watch",
-    "lint": "xo --reporter stylish"
+    "lint": "xo --reporter table"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
