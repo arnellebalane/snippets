@@ -57,6 +57,7 @@
     }
   },
   "xo": {
+    "parser": "babel-eslint",
     "space": 4,
     "envs": [
       "browser",
