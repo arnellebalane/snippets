@@ -13,7 +13,13 @@ router.onReady(() => {
         const previousMatched = router.getMatchedComponents(from);
 
         let diffed = false;
-        const rendered = matched.filter((c, i) => diffed || (diffed = previousMatched[i] !== c));
+        const rendered = matched.filter((c, i) => {
+            if (diffed) {
+                return true;
+            }
+            diffed = previousMatched[i] !== c;
+            return diffed;
+        });
 
         if (rendered.length === 0) {
             return next();
