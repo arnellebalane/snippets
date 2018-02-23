@@ -41,7 +41,8 @@
     "webpack": "3.10.0",
     "webpack-merge": "4.1.1",
     "webpack-node-externals": "1.6.0",
-    "workbox-webpack-plugin": "2.1.2"
+    "workbox-webpack-plugin": "2.1.2",
+    "xo": "0.20.3"
   },
   "babel": {
     "presets": [
