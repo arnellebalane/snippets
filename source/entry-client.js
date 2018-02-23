@@ -15,15 +15,14 @@ router.onReady(() => {
         let diffed = false;
         const rendered = matched.filter((c, i) => diffed || (diffed = previousMatched[i] !== c));
 
-        if (!rendered.length) {
+        if (rendered.length === 0) {
             return next();
         }
 
-        Promise.all(rendered.map(Component => {
-            if (Component.serverData) {
-                return Component.serverData(store, to);
-            }
-        })).then(next);
+        Promise.all(rendered.map(Component => Component.serverData
+            ? Component.serverData(store, to)
+            : null
+        )).then(next);
     });
 
     app.$mount('#app');

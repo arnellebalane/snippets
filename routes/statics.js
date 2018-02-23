@@ -2,11 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const {get} = require('server/router');
-const {header, send} = require('server/reply');
+const {header} = require('server/reply');
 
 const readFile = util.promisify(fs.readFile);
 
-async function workbox(ctx) {
+async function workbox() {
     const workboxSwPath = path.resolve(__dirname, '../node_modules/workbox-sw/build/importScripts/workbox-sw.prod.v2.1.2.js');
     const file = await readFile(workboxSwPath, 'utf-8');
     return header({

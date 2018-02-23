@@ -1,6 +1,6 @@
+import assert from 'assert';
 import {mount, createLocalVue} from '@vue/test-utils';
 import Vuex from 'vuex';
-import assert from 'assert';
 import SnippetCreate from 'source/components/snippet-create.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
 import createStore from 'source/store';

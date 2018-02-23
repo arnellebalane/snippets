@@ -8,15 +8,14 @@ export default function (context) {
 
         router.onReady(() => {
             const matchedComponents = router.getMatchedComponents();
-            if (!matchedComponents.length) {
-                return reject({code: 404});
+            if (matchedComponents.length === 0) {
+                return reject(new Error({code: 404}));
             }
 
-            Promise.all(matchedComponents.map(Component => {
-                if (Component.serverData) {
-                    return Component.serverData(store, router.currentRoute);
-                }
-            })).then(() => {
+            Promise.all(matchedComponents.map(Component => Component.serverData
+                    ? Component.serverData(store, router.currentRoute)
+                    : null
+            )).then(() => {
                 context.state = store.state;
                 resolve(app);
             }).catch(reject);

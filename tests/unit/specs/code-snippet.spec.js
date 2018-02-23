@@ -1,5 +1,5 @@
-import {mount} from '@vue/test-utils';
 import assert from 'assert';
+import {mount} from '@vue/test-utils';
 import CodeSnippet from 'source/components/code-snippet.vue';
 
 describe('code-snippet.vue', () => {

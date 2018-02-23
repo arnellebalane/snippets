@@ -1,8 +1,7 @@
-import {mount, createLocalVue} from '@vue/test-utils';
-import Vuex from 'vuex';
-import VueRouter from 'vue-router';
 import assert from 'assert';
+import {mount, createLocalVue} from '@vue/test-utils';
 import sinon from 'sinon';
+import Vuex from 'vuex';
 import SnippetDetail from 'source/components/snippet-detail.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
 import AppFooter from 'source/components/app-footer.vue';
@@ -14,7 +13,7 @@ Vue.use(Vuex);
 describe('snippet-detail.vue', () => {
     let store;
 
-    function mountComponent(mountData = {}) {
+    function mountComponent() {
         const $router = {
             push: sinon.stub()
         };

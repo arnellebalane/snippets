@@ -10,6 +10,6 @@ exports.up = (database, DataTypes) => {
     });
 };
 
-exports.down = (database, DataTypes) => {
+exports.down = database => {
     return database.dropTable('snippets');
 };
