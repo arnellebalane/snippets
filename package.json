@@ -56,6 +56,9 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
+    },
+    "ghooks": {
+      "pre-push": "npm run lint"
     }
   },
   "xo": {
