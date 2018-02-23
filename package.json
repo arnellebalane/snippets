@@ -56,7 +56,11 @@
     }
   },
   "xo": {
-    "space": 4
+    "space": 4,
+    "envs": [
+      "browser",
+      "mocha"
+    ]
   },
   "dependencies": {
     "auto-load": "3.0.0",
