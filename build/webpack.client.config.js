@@ -11,9 +11,9 @@ module.exports = merge(baseConfig, {
         client: path.resolve(__dirname, '../source/entry-client.js')
     },
     plugins: [
-        new CopyPlugin([ {
+        new CopyPlugin([{
             from: path.resolve(__dirname, '../source/images/favicon.png')
-        } ]),
+        }]),
         new UglifyJSPlugin(),
         new VueSSRClientPlugin(),
         new WorkboxPlugin({

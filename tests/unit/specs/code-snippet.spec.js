@@ -1,14 +1,14 @@
-import { mount } from '@vue/test-utils';
+import {mount} from '@vue/test-utils';
 import assert from 'assert';
 import CodeSnippet from 'source/components/code-snippet.vue';
 
 describe('code-snippet.vue', () => {
-    function mountComponent(propsData={}) {
-        return mount(CodeSnippet, { propsData });
+    function mountComponent(propsData = {}) {
+        return mount(CodeSnippet, {propsData});
     }
 
     it('renders a textarea element with default props', () => {
-        const { element } = mountComponent();
+        const {element} = mountComponent();
         const textarea = element.querySelector('textarea');
 
         assert(textarea);
@@ -25,7 +25,7 @@ describe('code-snippet.vue', () => {
     });
 
     it('does not focus the textarea element if set to readonly', () => {
-        const wrapper = mountComponent({ readonly: true });
+        const wrapper = mountComponent({readonly: true});
         const focused = wrapper.find('textarea:focus');
 
         assert.equal(false, focused.exists());
@@ -33,13 +33,13 @@ describe('code-snippet.vue', () => {
 
     it('sets the textarea value based on the props', () => {
         const testCases = [
-            ['hello world', { value: 'hello world' }],
-            ['the value', { value: 'the value' }],
+            ['hello world', {value: 'hello world'}],
+            ['the value', {value: 'the value'}],
             ['', {}]
         ];
 
         testCases.forEach(([expected, propsData]) => {
-            const { element } = mountComponent(propsData);
+            const {element} = mountComponent(propsData);
             const actual = element.querySelector('textarea').value;
             assert.equal(expected, actual);
         });
@@ -47,13 +47,13 @@ describe('code-snippet.vue', () => {
 
     it('sets the textarea placeholder attribute based on the props', () => {
         const testCases = [
-            ['hello world', { placeholder: 'hello world' }],
-            ['a placeholder', { placeholder: 'a placeholder' }],
+            ['hello world', {placeholder: 'hello world'}],
+            ['a placeholder', {placeholder: 'a placeholder'}],
             [`console.log('hello world');`, {}]
         ];
 
         testCases.forEach(([expected, propsData]) => {
-            const { element } = mountComponent(propsData);
+            const {element} = mountComponent(propsData);
             const actual = element.querySelector('textarea').placeholder;
             assert.equal(expected, actual);
         });
@@ -61,13 +61,13 @@ describe('code-snippet.vue', () => {
 
     it('sets the textarea readonly attribute based on the props', () => {
         const testCases = [
-            [true, { readonly: true }],
-            [false, { readonly: false }],
-            [false, {}],
+            [true, {readonly: true}],
+            [false, {readonly: false}],
+            [false, {}]
         ];
 
         testCases.forEach(([expected, propsData]) => {
-            const { element } = mountComponent(propsData);
+            const {element} = mountComponent(propsData);
             const actual = element.querySelector('textarea').readOnly;
             assert.equal(expected, actual);
         });

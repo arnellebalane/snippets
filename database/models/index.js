@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const db = require('../index');
+const db = require('..');
 
 const modelsPath = __dirname;
 const baseName = path.basename(__filename);

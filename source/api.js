@@ -7,7 +7,7 @@ const instance = axios.create({
 export function get(url) {
     return instance.get(url, {
         headers: {
-            'Accept': 'application/json'
+            Accept: 'application/json'
         }
     }).then(response => response.data);
 }

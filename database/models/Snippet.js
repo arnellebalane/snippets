@@ -20,12 +20,12 @@ module.exports = (database, DataTypes) => {
             async beforeValidate(instance, options) {
                 let body = instance.body + Date.now();
                 let hash = generateHash(body);
-                let existing = await Snippet.findOne({ where: { hash } });
+                let existing = await Snippet.findOne({where: {hash}});
 
                 while (existing) {
                     body = instance.body + Date.now();
                     hash = generateHash(body);
-                    existing = await Snippet.findOne({ where: { hash } });
+                    existing = await Snippet.findOne({where: {hash}});
                 }
 
                 instance.hash = hash;

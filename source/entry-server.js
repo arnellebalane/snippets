@@ -1,15 +1,15 @@
 import createApp from './app';
 
-export default function(context) {
+export default function (context) {
     return new Promise((resolve, reject) => {
-        const { app, router, store } = createApp();
+        const {app, router, store} = createApp();
 
         router.push(context.url);
 
         router.onReady(() => {
             const matchedComponents = router.getMatchedComponents();
             if (!matchedComponents.length) {
-                return reject({ code: 404 });
+                return reject({code: 404});
             }
 
             Promise.all(matchedComponents.map(Component => {
@@ -22,4 +22,4 @@ export default function(context) {
             }).catch(reject);
         }, reject);
     });
-};
+}

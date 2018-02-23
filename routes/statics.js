@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
-const { get } = require('server/router');
-const { header, send } = require('server/reply');
+const {get} = require('server/router');
+const {header, send} = require('server/reply');
 
 const readFile = util.promisify(fs.readFile);
 

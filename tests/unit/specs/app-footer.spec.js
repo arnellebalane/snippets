@@ -1,14 +1,14 @@
-import { mount } from '@vue/test-utils';
+import {mount} from '@vue/test-utils';
 import assert from 'assert';
 import AppFooter from 'source/components/app-footer.vue';
 
 describe('app-footer.vue', () => {
-    function mountComponent(propsData={}) {
-        return mount(AppFooter, { propsData });
+    function mountComponent(propsData = {}) {
+        return mount(AppFooter, {propsData});
     }
 
     it('renders the correct actions when hash is not available', () => {
-        const { element } = mountComponent();
+        const {element} = mountComponent();
 
         const children = element.querySelector('ul').children;
         const actual = [];
@@ -21,7 +21,7 @@ describe('app-footer.vue', () => {
     });
 
     it('render the correct actions when hash is available', () => {
-        const { element } = mountComponent({ hash: 'hello' });
+        const {element} = mountComponent({hash: 'hello'});
 
         const children = element.querySelector('ul').children;
         const actual = [];

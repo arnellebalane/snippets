@@ -1,7 +1,7 @@
 import createApp from './app';
 import './stylesheets/index.css';
 
-const { app, router, store } = createApp();
+const {app, router, store} = createApp();
 
 if (window.__INITIAL_STATE__) {
     store.replaceState(window.__INITIAL_STATE__);
@@ -15,7 +15,9 @@ router.onReady(() => {
         let diffed = false;
         const rendered = matched.filter((c, i) => diffed || (diffed = previousMatched[i] !== c));
 
-        if (!rendered.length) return next();
+        if (!rendered.length) {
+            return next();
+        }
 
         Promise.all(rendered.map(Component => {
             if (Component.serverData) {
