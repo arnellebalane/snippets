@@ -54,6 +54,9 @@
       "path": "cz-conventional-changelog"
     }
   },
+  "xo": {
+    "space": 4
+  },
   "dependencies": {
     "auto-load": "3.0.0",
     "axios": "0.17.1",
