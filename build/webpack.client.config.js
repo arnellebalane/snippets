@@ -16,7 +16,7 @@ module.exports = merge(baseConfig, {
         }]),
         new UglifyJSPlugin(),
         new VueSSRClientPlugin(),
-        new WorkboxPlugin({
+        new WorkboxPlugin.GenerateSW({
             globDirectory: path.resolve(__dirname, '../public'),
             globPatterns: ['**/*.{css,js}'],
             swSrc: path.resolve(__dirname, '../source/sw.js'),
