@@ -59,9 +59,17 @@ describe('code-snippet.vue', () => {
         });
     });
 
-    it('sets the textarea readonly attribute based on the props', () => {
+    it('renders a pre and code element when readonly', () => {
+        const {element} = mountComponent({readonly: true});
+        const pre = element.querySelector('pre');
+        const code = element.querySelector('code');
+
+        assert.notEqual(null, pre);
+        assert.notEqual(null, code);
+    });
+
+    it('renders a textarea element when not readonly', () => {
         const testCases = [
-            [true, {readonly: true}],
             [false, {readonly: false}],
             [false, {}]
         ];
