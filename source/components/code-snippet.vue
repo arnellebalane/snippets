@@ -59,11 +59,7 @@
     };
 </script>
 
-<<<<<<< HEAD
 <style src="nodeModules/highlightjs/styles/monokai-sublime.css"></style>
-=======
-<style src="node_modules/highlightjs/styles/monokai-sublime.css"></style>
->>>>>>> origin/master
 <style scoped>
     textarea, pre, code {
         display: block;
