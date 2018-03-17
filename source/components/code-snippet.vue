@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    import hljs from 'node_modules/highlightjs/highlight.pack.min';
+    import hljs from 'nodeModules/highlightjs/highlight.pack.min';
 
     export default {
         props: {
@@ -59,7 +59,11 @@
     };
 </script>
 
+<<<<<<< HEAD
+<style src="nodeModules/highlightjs/styles/monokai-sublime.css"></style>
+=======
 <style src="node_modules/highlightjs/styles/monokai-sublime.css"></style>
+>>>>>>> origin/master
 <style scoped>
     textarea, pre, code {
         display: block;

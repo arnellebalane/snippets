@@ -1,8 +1,7 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-import VueRouter from 'vue-router';
 import assert from 'assert';
+import {mount, createLocalVue} from '@vue/test-utils';
 import sinon from 'sinon';
+import Vuex from 'vuex';
 import SnippetDetail from 'source/components/snippet-detail.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
 import AppFooter from 'source/components/app-footer.vue';
@@ -14,14 +13,14 @@ Vue.use(Vuex);
 describe('snippet-detail.vue', () => {
     let store;
 
-    function mountComponent(mountData={}) {
+    function mountComponent() {
         const $router = {
             push: sinon.stub()
         };
         return mount(SnippetDetail, {
             store,
             localVue: Vue,
-            mocks: { $router }
+            mocks: {$router}
         });
     }
 
@@ -52,7 +51,7 @@ describe('snippet-detail.vue', () => {
     it('renders app-footer component with hash prop', () => {
         const hash = 'hello-world';
         const wrapper = mountComponent();
-        wrapper.setProps({ hash });
+        wrapper.setProps({hash});
 
         const appFooter = wrapper.find(AppFooter);
         assert.equal(hash, appFooter.vm.hash);
@@ -91,7 +90,7 @@ describe('snippet-detail.vue', () => {
             const wrapper = mountComponent();
             wrapper.vm.editNew();
 
-            assert(wrapper.vm.$router.push.calledWith({ name: 'snippet-create' }));
+            assert(wrapper.vm.$router.push.calledWith({name: 'snippet-create'}));
         });
 
         it('resets the snippet state in the store', done => {
@@ -113,7 +112,7 @@ describe('snippet-detail.vue', () => {
             const wrapper = mountComponent();
             wrapper.vm.duplicate();
 
-            assert(wrapper.vm.$router.push.calledWith({ name: 'snippet-create' }));
+            assert(wrapper.vm.$router.push.calledWith({name: 'snippet-create'}));
         });
 
         it('keeps the snippet state in the store', done => {

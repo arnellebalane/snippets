@@ -11,7 +11,7 @@ module.exports = {
         publicPath: '/'
     },
     module: {
-        rules: [ {
+        rules: [{
             test: /\.vue$/,
             loader: 'vue-loader',
             options: {
@@ -21,14 +21,14 @@ module.exports = {
             test: /\.css$/,
             loader: ExtractTextPlugin.extract({
                 fallback: 'style-loader',
-                use: [ {
+                use: [{
                     loader: 'css-loader',
                     options: {
                         minimize: true
                     }
-                } ]
+                }]
             })
-        } ]
+        }]
     },
     plugins: [
         new webpack.DefinePlugin({
@@ -41,7 +41,7 @@ module.exports = {
     ],
     resolve: {
         alias: {
-            node_modules: path.resolve(__dirname, '../node_modules')
+            nodeModules: path.resolve(__dirname, '../node_modules')
         }
     }
 };

@@ -6,15 +6,15 @@ const baseConfig = require('./webpack.base.config');
 
 module.exports = merge(baseConfig, {
     module: {
-        rules: [ {
+        rules: [{
             test: /\.js$/,
             loader: 'babel-loader',
             options: {
                 presets: [
-                    ['env', { modules: false }]
+                    ['env', {modules: false}]
                 ]
             }
-        } ]
+        }]
     },
     devtool: 'inline-cheap-module-source-map',
     plugins: [

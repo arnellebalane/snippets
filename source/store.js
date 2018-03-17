@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { get } from './api';
+import {get} from './api';
 
 Vue.use(Vuex);
 
@@ -16,7 +16,7 @@ export default function createStore() {
             },
 
             clearSnippet(state) {
-                state.snippet =  null;
+                state.snippet = null;
             }
         },
 
@@ -28,4 +28,4 @@ export default function createStore() {
             }
         }
     });
-};
+}

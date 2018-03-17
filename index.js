@@ -1,5 +1,5 @@
 const server = require('server');
-const { get, post, error } = server.router;
+const {get, post, error} = require('server/router');
 const routes = require('auto-load')('routes');
 
 server(

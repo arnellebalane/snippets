@@ -13,5 +13,5 @@ export default function createApp() {
         render: h => h(SnippetsApp)
     });
 
-    return { app, router, store };
-};
+    return {app, router, store};
+}

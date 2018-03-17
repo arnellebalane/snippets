@@ -1,7 +1,7 @@
 import createApp from './app';
 import './stylesheets/index.css';
 
-const { app, router, store } = createApp();
+const {app, router, store} = createApp();
 
 if (window.__INITIAL_STATE__) {
     store.replaceState(window.__INITIAL_STATE__);
@@ -13,15 +13,22 @@ router.onReady(() => {
         const previousMatched = router.getMatchedComponents(from);
 
         let diffed = false;
-        const rendered = matched.filter((c, i) => diffed || (diffed = previousMatched[i] !== c));
-
-        if (!rendered.length) return next();
-
-        Promise.all(rendered.map(Component => {
-            if (Component.serverData) {
-                return Component.serverData(store, to);
+        const rendered = matched.filter((c, i) => {
+            if (diffed) {
+                return true;
             }
-        })).then(next);
+            diffed = previousMatched[i] !== c;
+            return diffed;
+        });
+
+        if (rendered.length === 0) {
+            return next();
+        }
+
+        Promise.all(rendered.map(Component => Component.serverData
+            ? Component.serverData(store, to)
+            : null
+        )).then(next);
     });
 
     app.$mount('#app');

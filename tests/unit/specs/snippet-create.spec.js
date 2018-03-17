@@ -1,6 +1,6 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
 import assert from 'assert';
+import {mount, createLocalVue} from '@vue/test-utils';
+import Vuex from 'vuex';
 import SnippetCreate from 'source/components/snippet-create.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
 import createStore from 'source/store';
@@ -12,7 +12,7 @@ describe('snippet-create.vue', () => {
     let store;
 
     function mountComponent() {
-        return mount(SnippetCreate, { store, localVue: Vue });
+        return mount(SnippetCreate, {store, localVue: Vue});
     }
 
     beforeEach(() => {
@@ -31,7 +31,7 @@ describe('snippet-create.vue', () => {
         const codeSnippet = wrapper.find(CodeSnippet);
         assert.equal(false, codeSnippet.vm.readonly);
 
-        wrapper.setData({ isSaving: true });
+        wrapper.setData({isSaving: true});
         assert(codeSnippet.vm.readonly);
     });
 
