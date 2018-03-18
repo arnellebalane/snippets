@@ -10,6 +10,7 @@ module.exports = {
         chunkFilename: '[name].js',
         publicPath: '/'
     },
+    mode: process.env.NODE_ENV || 'development',
     module: {
         rules: [{
             test: /\.vue$/,
