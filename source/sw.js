@@ -1,10 +1,6 @@
-importScripts('/statics/workbox-sw.js');
+workbox.skipWaiting();
+workbox.clientsClaim();
 
-const workbox = new WorkboxSW({
-    skipWaiting: true,
-    clientsClaim: true
-});
+workbox.routing.registerRoute('/', workbox.strategies.cacheFirst());
 
-workbox.router.registerRoute('/', workbox.strategies.cacheFirst());
-
-workbox.precache([]);
+workbox.precaching.precacheAndRoute(self.__precacheManifest);
