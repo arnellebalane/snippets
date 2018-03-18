@@ -93,7 +93,7 @@
       ]
     },
     "globals": [
-      "WorkboxSW"
+      "workbox"
     ],
     "overrides": [
       {
