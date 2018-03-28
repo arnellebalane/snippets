@@ -3,7 +3,19 @@ version: '3'
 services:
     web:
         build: .
-        ports:
-            - '3000:3000'
+        command: npm run dev
         volumes:
             - .:/usr/src/app
+        ports:
+            - '3000:3000'
+        depends_on:
+            - database
+        environment:
+            DATABASE_URL: postgres://snippetsuser@database/snippetsdb
+            SECURITY_CSRF: 'false'
+
+    database:
+        image: postgres:9.6
+        environment:
+            POSTGRES_USER: snippetsuser
+            POSTGRES_DB: snippetsdb
