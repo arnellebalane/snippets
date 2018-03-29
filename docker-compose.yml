@@ -10,9 +10,8 @@ services:
             - '3000:3000'
         depends_on:
             - database
-        environment:
-            DATABASE_URL: postgres://snippetsuser@database/snippetsdb
-            SECURITY_CSRF: 'false'
+        env_file:
+            - .env
 
     database:
         image: postgres:10.3
