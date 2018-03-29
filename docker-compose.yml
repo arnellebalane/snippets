@@ -3,7 +3,7 @@ version: '3'
 services:
     web:
         build: .
-        command: etc/wait-for.sh database:5432 -- npm run dev
+        command: etc/entrypoint.sh dev
         volumes:
             - .:/usr/src/app
         ports:
