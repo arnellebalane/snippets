@@ -3,7 +3,7 @@ version: '3'
 services:
     web:
         build: .
-        command: etc/docker.sh dev
+        command: etc/wait-for.sh database:5432 -- npm run dev
         volumes:
             - .:/usr/src/app
         ports:
@@ -11,13 +11,11 @@ services:
         depends_on:
             - database
         environment:
-            DATABASE_URL: postgres://snippetsuser@database:5432/snippetsdb
+            DATABASE_URL: postgres://snippetsuser@database/snippetsdb
             SECURITY_CSRF: 'false'
 
     database:
-        image: postgres:9.6
-        ports:
-            - '5432:5432'
+        image: postgres:10.3
         environment:
             POSTGRES_USER: snippetsuser
             POSTGRES_DB: snippetsdb
