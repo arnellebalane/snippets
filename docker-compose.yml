@@ -3,18 +3,10 @@ version: '3'
 services:
     web:
         build: .
-        command: etc/entrypoint.sh dev
         volumes:
             - .:/app
-        ports:
-            - '3000:3000'
         depends_on:
             - database
-        env_file:
-            - .env
 
     database:
         image: postgres:10.3
-        environment:
-            POSTGRES_USER: snippetsuser
-            POSTGRES_DB: snippetsdb
