@@ -1,33 +1,14 @@
-import createApp from './app';
+import Vue from 'vue';
+import router from './router';
+import store from './store';
+import SnippetsApp from './components/snippets-app.vue';
 import './stylesheets/index.css';
 
-const {app, router, store} = createApp();
-
-router.onReady(() => {
-    router.beforeResolve((to, from, next) => {
-        const matched = router.getMatchedComponents(to);
-        const previousMatched = router.getMatchedComponents(from);
-
-        let diffed = false;
-        const rendered = matched.filter((c, i) => {
-            if (diffed) {
-                return true;
-            }
-            diffed = previousMatched[i] !== c;
-            return diffed;
-        });
-
-        if (rendered.length === 0) {
-            return next();
-        }
-
-        Promise.all(rendered.map(Component => Component.serverData
-            ? Component.serverData(store, to)
-            : null
-        )).then(next);
-    });
-
-    app.$mount('#app');
+new Vue({
+    el: '#app',
+    router,
+    store,
+    render: h => h(SnippetsApp)
 });
 
 if ('serviceWorker' in navigator) {
