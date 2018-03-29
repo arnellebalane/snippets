@@ -7,6 +7,7 @@
 </template>
 
 <script>
+    import store from '../store';
     import { mapState } from 'vuex';
     import Shortcuts from '../mixins/shortcuts';
 
@@ -57,8 +58,9 @@
             'code-snippet': require('./code-snippet.vue').default
         },
 
-        serverData(store, route) {
-            return store.dispatch('fetchSnippet', route.params.hash);
+        beforeRouteEnter(to, from, next) {
+            store.dispatch('fetchSnippet', to.params.hash)
+                .then(() => next());
         }
     };
 </script>

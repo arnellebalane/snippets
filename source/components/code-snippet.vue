@@ -22,15 +22,15 @@
             language: String
         },
 
-        data() {
-            return {
-                snippet: this.value
-            };
-        },
+        computed: {
+            snippet: {
+                get() {
+                    return this.value;
+                },
 
-        watch: {
-            snippet(snippet) {
-                this.$emit('input', snippet);
+                set(value) {
+                    this.$emit('input', value);
+                }
             }
         },
 
