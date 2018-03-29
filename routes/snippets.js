@@ -1,6 +1,5 @@
-const {json, render, send, status} = require('server/reply');
+const {json, render, status} = require('server/reply');
 const {Snippet} = require('../database/models');
-const renderer = require('./_renderer');
 
 async function createSnippet(ctx) {
     const snippet = await Snippet.create({body: ctx.data.snippet});
@@ -17,20 +16,7 @@ async function getSnippet(ctx) {
             : status(404).send('Snippet not found.');
     }
 
-    try {
-        const response = await renderer.renderToString({url: ctx.url});
-        return send(response);
-    } catch (err) {
-        const context = {
-            code: 500,
-            message: 'Something went wrong on our side'
-        };
-        if (err.response.status === 404) {
-            context.code = 404;
-            context.message = 'Snippet not found';
-        }
-        return render('error.html', context);
-    }
+    return render('index.html');
 }
 
 async function getRawSnippet(ctx) {

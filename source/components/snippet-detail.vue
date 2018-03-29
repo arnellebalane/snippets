@@ -1,12 +1,12 @@
 <template>
     <div class="snippet-detail">
-        <app-header></app-header>
         <code-snippet ref="snippet" :value="snippet" :language="extension" readonly></code-snippet>
         <app-footer :hash="hash"></app-footer>
     </div>
 </template>
 
 <script>
+    import store from '../store';
     import { mapState } from 'vuex';
     import Shortcuts from '../mixins/shortcuts';
 
@@ -52,13 +52,13 @@
         },
 
         components: {
-            'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
             'code-snippet': require('./code-snippet.vue').default
         },
 
-        serverData(store, route) {
-            return store.dispatch('fetchSnippet', route.params.hash);
+        beforeRouteEnter(to, from, next) {
+            store.dispatch('fetchSnippet', to.params.hash)
+                .then(() => next());
         }
     };
 </script>

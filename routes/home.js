@@ -1,9 +1,7 @@
-const {send} = require('server/reply');
-const renderer = require('./_renderer');
+const {render} = require('server/reply');
 
-async function home(ctx) {
-    const response = await renderer.renderToString({url: ctx.url});
-    return send(response);
+async function home() {
+    return render('index.html');
 }
 
 module.exports = home;
