@@ -1,6 +1,5 @@
 <template>
     <div class="snippet-create">
-        <app-header></app-header>
         <code-snippet :value="snippet" :readonly="isSaving" @input="onSnippetInput"></code-snippet>
         <app-footer></app-footer>
     </div>
@@ -55,7 +54,6 @@
         },
 
         components: {
-            'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
             'code-snippet': require('./code-snippet.vue').default
         }

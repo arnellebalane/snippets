@@ -1,6 +1,5 @@
 <template>
     <div class="snippet-detail">
-        <app-header></app-header>
         <code-snippet ref="snippet" :value="snippet" :language="extension" readonly></code-snippet>
         <app-footer :hash="hash"></app-footer>
     </div>
@@ -53,7 +52,6 @@
         },
 
         components: {
-            'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
             'code-snippet': require('./code-snippet.vue').default
         },
