@@ -6,14 +6,14 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 const baseConfig = require('./webpack.base.config');
 
 module.exports = merge(baseConfig, {
-    entry: path.resolve(__dirname, '../source/index.js'),
+    entry: path.resolve(__dirname, '../source/static/index.js'),
     plugins: [
         new CopyPlugin([{
-            from: path.resolve(__dirname, '../source/images/favicon.png')
+            from: path.resolve(__dirname, '../source/static/images/favicon.png')
         }]),
         new UglifyJSPlugin(),
         new WorkboxPlugin.InjectManifest({
-            swSrc: path.resolve(__dirname, '../source/sw.js'),
+            swSrc: path.resolve(__dirname, '../source/static/sw.js'),
             swDest: 'sw.js'
         })
     ]

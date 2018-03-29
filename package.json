@@ -9,8 +9,8 @@
     "build": "webpack --config build/webpack.client.config.js",
     "build:watch": "npm run build -- --watch",
     "db:migrate": "sequelize db:migrate",
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node source/index.js",
+    "dev": "nodemon source/index.js",
     "test": "mocha-webpack --webpack-config build/webpack.test.config.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
     "test:watch": "npm run test -- --watch",
     "lint": "xo --reporter table",
@@ -97,7 +97,7 @@
     ],
     "overrides": [
       {
-        "files": "database/models/!(index).js",
+        "files": "source/database/models/!(index).js",
         "rules": {
           "unicorn/filename-case": [
             "error",
