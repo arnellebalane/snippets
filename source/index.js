@@ -4,7 +4,8 @@ import store from './store';
 import SnippetsApp from './components/snippets-app.vue';
 import './stylesheets/index.css';
 
-new Vue({
+// eslint-disable-next-line no-unused-vars
+const app = new Vue({
     el: '#app',
     router,
     store,

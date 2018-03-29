@@ -1,4 +1,4 @@
-const {json, render, send, status} = require('server/reply');
+const {json, render, status} = require('server/reply');
 const {Snippet} = require('../database/models');
 
 async function createSnippet(ctx) {
