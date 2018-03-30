@@ -4,7 +4,7 @@ services:
     web:
         build: .
         volumes:
-            - .:/app
+            - ./source:/app/source
         depends_on:
             - postgres
         env_file:
