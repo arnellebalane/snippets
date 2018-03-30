@@ -6,12 +6,12 @@
   "scripts": {
     "commit": "git-cz",
     "prebuild": "rm -rf public",
-    "build": "webpack --config build/webpack.client.config.js",
+    "build": "webpack --config webpack/webpack.client.config.js",
     "build:watch": "npm run build -- --watch",
     "db:migrate": "sequelize db:migrate",
     "start": "node source/index.js",
     "dev": "nodemon source/index.js",
-    "test": "mocha-webpack --webpack-config build/webpack.test.config.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
+    "test": "mocha-webpack --webpack-config webpack/webpack.test.config.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
     "test:watch": "npm run test -- --watch",
     "lint": "xo --reporter table",
     "lint:fix": "xo --reporter table --fix"
