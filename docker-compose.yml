@@ -6,11 +6,11 @@ services:
         volumes:
             - .:/app
         depends_on:
-            - database
+            - postgres
         env_file:
             - .env
 
-    database:
+    postgres:
         image: postgres:10.3
         environment:
             POSTGRES_USER: snippetsuser
