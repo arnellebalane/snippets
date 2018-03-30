@@ -1,23 +1,19 @@
-import Vue from 'vue';
-import router from './router';
-import store from './store';
-import SnippetsApp from './components/snippets-app.vue';
-import './stylesheets/index.css';
+const path = require('path');
+const server = require('server');
+const {get, post, error} = require('server/router');
+const routes = require('auto-load')(path.resolve(__dirname, 'routes'));
 
-// eslint-disable-next-line no-unused-vars
-const app = new Vue({
-    el: '#app',
-    router,
-    store,
-    render: h => h(SnippetsApp)
+server(
+    get('/', routes.home),
+    get('/:hash', routes.snippets.get),
+    get('/raw/:hash', routes.snippets.raw),
+    post('/snippets', routes.snippets.create),
+
+    routes.statics,
+
+    error(ctx => {
+        throw ctx.error;
+    })
+).then(ctx => {
+    ctx.log.info(`Server is now running at localhost:${ctx.options.port}`);
 });
-
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').then(registration => {
-            console.log('Service worker registered', registration);
-        }).catch(e => {
-            console.warn('Service worker registration failed', e);
-        });
-    });
-}

@@ -27,7 +27,7 @@ module.exports = merge(baseConfig, {
     externals: [nodeExternals()],
     resolve: {
         alias: {
-            source: path.resolve(__dirname, '../source')
+            source: path.resolve(__dirname, '../source/static')
         }
     }
 });
