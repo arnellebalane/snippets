@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "commit": "git-cz",
-    "prebuild": "rm -rf public",
+    "prebuild": "rm -rf source/public",
     "build": "webpack --config webpack/webpack.client.config.js",
     "build:watch": "npm run build -- --watch",
     "db:migrate": "sequelize db:migrate",
