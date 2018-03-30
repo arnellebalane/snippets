@@ -4,11 +4,4 @@ services:
     web:
         command: etc/entrypoint.sh start
         ports:
-            - '5000:3000'
-        env_file:
-            - .env.production
-
-    database:
-        environment:
-            POSTGRES_USER: snippetsuser
-            POSTGRES_DB: snippetsdb
+            - '80:3000'

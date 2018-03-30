@@ -7,6 +7,11 @@ services:
             - .:/app
         depends_on:
             - database
+        env_file:
+            - .env
 
     database:
         image: postgres:10.3
+        environment:
+            POSTGRES_USER: snippetsuser
+            POSTGRES_DB: snippetsdb

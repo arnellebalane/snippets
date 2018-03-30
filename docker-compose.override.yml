@@ -5,10 +5,3 @@ services:
         command: etc/entrypoint.sh dev
         ports:
             - '3000:3000'
-        env_file:
-            - .env
-
-    database:
-        environment:
-            POSTGRES_USER: snippetsuser
-            POSTGRES_DB: snippetsdb
