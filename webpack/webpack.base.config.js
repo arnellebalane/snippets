@@ -4,7 +4,7 @@ const webpack = require('webpack');
 
 module.exports = {
     output: {
-        path: path.resolve(__dirname, '../source/public'),
+        path: path.resolve(__dirname, '../build'),
         filename: '[name].js',
         chunkFilename: '[name].js',
         publicPath: '/'
