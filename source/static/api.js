@@ -10,7 +10,7 @@ export function get(url) {
             Accept: 'application/json'
         }
     }).then(response => response.data);
-};
+}
 
 export function post(url, body) {
     return instance.post(url, body, {
@@ -18,4 +18,4 @@ export function post(url, body) {
             'Content-Type': 'application/json'
         }
     }).then(response => response.data);
-};
+}

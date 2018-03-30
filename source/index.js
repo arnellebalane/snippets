@@ -1,4 +1,3 @@
-const path = require('path');
 const server = require('server');
 const {get, post, error} = require('server/router');
 const {json, status} = require('server/reply');
