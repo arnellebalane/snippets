@@ -10,6 +10,11 @@ services:
         env_file:
             - .env
 
+    nginx:
+        image: nginx:1.13
+        volumes:
+            - ./build:/usr/share/nginx/html
+
     postgres:
         image: postgres:10.3
         environment:

@@ -4,4 +4,8 @@ services:
     web:
         command: etc/entrypoint.sh dev
         ports:
-            - '3000:3000'
+            - '3001:3000'
+
+    nginx:
+        ports:
+            - '3000:80'
