@@ -1,15 +1,31 @@
-const path = require('path');
 const server = require('server');
 const {get, post, error} = require('server/router');
-const routes = require('auto-load')(path.resolve(__dirname, 'routes'));
+const {json, render, status} = require('server/reply');
+const {Snippet} = require('./database/models');
 
 server(
-    get('/', routes.home),
-    get('/:hash', routes.snippets.get),
-    get('/raw/:hash', routes.snippets.raw),
-    post('/snippets', routes.snippets.create),
+    get('/:hash', async ctx => {
+        const hash = ctx.params.hash;
+        const snippet = await Snippet.findOne({where: {hash}});
 
-    routes.statics,
+        return snippet
+            ? json(snippet.get())
+            : status(404).json({code: 404, message: 'Snippet not found.'});
+    }),
+
+    get('/raw/:hash', async ctx => {
+        const hash = ctx.params.hash;
+        const snippet = await Snippet.findOne({where: {hash}});
+
+        return snippet
+            ? render('raw.html', {snippet: snippet.get()})
+            : status(404).json({code: 404, message: 'Snippet not found.'});
+    }),
+
+    post('/snippets', async ctx => {
+        const snippet = await Snippet.create({body: ctx.data.snippet});
+        return json(snippet.get());
+    }),
 
     error(ctx => {
         throw ctx.error;

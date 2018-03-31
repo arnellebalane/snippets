@@ -4,12 +4,15 @@ const webpack = require('webpack');
 
 module.exports = {
     output: {
-        path: path.resolve(__dirname, '../source/public'),
+        path: path.resolve(__dirname, '../build'),
         filename: '[name].js',
         chunkFilename: '[name].js',
         publicPath: '/'
     },
     mode: process.env.NODE_ENV || 'development',
+    devtool: process.env.NODE_ENV === 'production'
+        ? 'source-map'
+        : 'cheap-module-eval-source-map',
     module: {
         rules: [{
             test: /\.vue$/,

@@ -4,13 +4,21 @@ services:
     web:
         build: .
         volumes:
-            - .:/app
+            - ./source:/app/source
         depends_on:
-            - database
+            - postgres
         env_file:
             - .env
 
-    database:
+    nginx:
+        image: nginx:1.13
+        volumes:
+            - ./build:/usr/share/nginx/html
+            - ./etc/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - web
+
+    postgres:
         image: postgres:10.3
         environment:
             POSTGRES_USER: snippetsuser

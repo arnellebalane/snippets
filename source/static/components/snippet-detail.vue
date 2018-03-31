@@ -58,7 +58,8 @@
 
         beforeRouteEnter(to, from, next) {
             store.dispatch('fetchSnippet', to.params.hash)
-                .then(() => next());
+                .then(() => next())
+                .catch(() => next('/'));
         }
     };
 </script>
