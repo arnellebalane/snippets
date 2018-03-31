@@ -1,6 +1,6 @@
 const server = require('server');
 const {get, post, error} = require('server/router');
-const {json, status} = require('server/reply');
+const {json, render, status} = require('server/reply');
 const {Snippet} = require('./database/models');
 
 server(
@@ -10,7 +10,7 @@ server(
 
         return snippet
             ? json(snippet.get())
-            : status(404).json({message: 'Snippet not found.'});
+            : status(404).json({code: 404, message: 'Snippet not found.'});
     }),
 
     get('/raw/:hash', async ctx => {
@@ -18,8 +18,8 @@ server(
         const snippet = await Snippet.findOne({where: {hash}});
 
         return snippet
-            ? json(snippet.get())
-            : status(404).json({message: 'Snippet not found.'});
+            ? render('raw.html', {snippet: snippet.get()})
+            : status(404).json({code: 404, message: 'Snippet not found.'});
     }),
 
     post('/snippets', async ctx => {
