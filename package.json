@@ -39,7 +39,6 @@
     "sequelize-cli": "4.0.0",
     "sinon": "4.4.9",
     "style-loader": "0.20.3",
-    "uglifyjs-webpack-plugin": "1.2.4",
     "vue-loader": "14.2.2",
     "vue-template-compiler": "2.5.16",
     "webpack": "4.4.1",
