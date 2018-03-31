@@ -3,8 +3,6 @@ version: '3'
 services:
     web:
         command: etc/entrypoint.sh dev
-        ports:
-            - '3001:3000'
 
     nginx:
         ports:
