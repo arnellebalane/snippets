@@ -5,6 +5,7 @@ services:
         build: .
         volumes:
             - ./source:/app/source
+            - ./etc:/app/etc
         depends_on:
             - postgres
         env_file:
