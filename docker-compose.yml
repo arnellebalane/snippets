@@ -1,6 +1,12 @@
 version: '3'
 
 services:
+    postgres:
+        image: postgres:10.3
+        environment:
+            POSTGRES_USER: snippetsuser
+            POSTGRES_DB: snippetsdb
+
     web:
         build: .
         depends_on:
@@ -14,9 +20,3 @@ services:
             dockerfile: nginx/Dockerfile
         depends_on:
             - web
-
-    postgres:
-        image: postgres:10.3
-        environment:
-            POSTGRES_USER: snippetsuser
-            POSTGRES_DB: snippetsdb
