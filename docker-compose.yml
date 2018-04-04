@@ -9,6 +9,10 @@ services:
 
     web:
         build: .
+        command: etc/entrypoint.sh dev
+        volumes:
+            - ./source:/app/source
+            - ./etc:/app/etc
         depends_on:
             - postgres
         env_file:
@@ -18,5 +22,9 @@ services:
         build:
             context: .
             dockerfile: nginx/Dockerfile
+        ports:
+            - '3000:80'
+        volumes:
+            - ./build:/usr/share/nginx/html
         depends_on:
             - web
