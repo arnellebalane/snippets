@@ -9,7 +9,9 @@ services:
             - .env
 
     nginx:
-        image: nginx:1.13
+        build:
+            context: .
+            dockerfile: nginx/Dockerfile
         depends_on:
             - web
 
