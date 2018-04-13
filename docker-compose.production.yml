@@ -17,7 +17,14 @@ services:
 
     nginx:
         image: arnellebalane/snippets-nginx
-        ports:
-            - '80:80'
         depends_on:
             - web
+        environment:
+            VIRTUAL_HOST: snippets.arnelle.me
+
+    nginx-proxy:
+        image: jwilder/nginx-proxy
+        ports:
+            - '80:80'
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro

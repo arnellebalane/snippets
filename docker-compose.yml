@@ -22,9 +22,16 @@ services:
         build:
             context: .
             dockerfile: nginx/Dockerfile
-        ports:
-            - '3000:80'
         volumes:
             - ./build:/usr/share/nginx/html
         depends_on:
             - web
+        environment:
+            VIRTUAL_HOST: snippets.local
+
+    nginx-proxy:
+        image: jwilder/nginx-proxy
+        ports:
+            - '3000:80'
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
