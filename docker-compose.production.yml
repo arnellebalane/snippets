@@ -10,9 +10,6 @@ services:
     web:
         image: arnellebalane/snippets-web
         command: etc/entrypoint.sh start
-        volumes:
-            - ./source:/app/source
-            - ./etc:/app/etc
         depends_on:
             - postgres
         env_file:
@@ -22,7 +19,5 @@ services:
         image: arnellebalane/snippets-nginx
         ports:
             - '80:80'
-        volumes:
-            - ./build:/usr/share/nginx/html
         depends_on:
             - web
