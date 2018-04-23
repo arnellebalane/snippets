@@ -36,13 +36,13 @@ services:
         volumes:
             - nginx-proxy-conf:/etc/nginx/conf.d
 
-    dockergen:
-        image: jwilder/docker-gen
-        command: -notify-sighup nginx -watch /etc/docker-gen/templates/nginx-proxy.tmpl /etc/nginx/conf.d/default.conf
+    docker-gen:
+        build: docker-gen
+        command: -notify-sighup nginx -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
         volumes:
             - nginx-proxy-conf:/etc/nginx/conf.d
             - /var/run/docker.sock:/tmp/docker.sock:ro
-            - ./nginx/nginx-proxy.tmpl:/etc/docker-gen/templates/nginx-proxy.tmpl
+            - ./docker-gen/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
 
 volumes:
     nginx-proxy-conf:
