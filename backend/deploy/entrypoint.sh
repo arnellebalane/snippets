@@ -1,6 +1,14 @@
 #!/bin/bash
 
-cmd=$1
+migrated=false
 
-npm run db:migrate
+while [ $migrated = false ]; do
+    npm run db:migrate
+    if [ $? = 0 ]; then
+        migrated=true
+    else
+        sleep 1
+    fi
+done
+
 npm start
