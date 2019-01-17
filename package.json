@@ -4,7 +4,6 @@
   "description": "Host code snippets online",
   "main": "index.js",
   "scripts": {
-    "commit": "git-cz",
     "prebuild": "rm -rf build",
     "build": "webpack --config webpack/webpack.client.config.js",
     "build:watch": "npm run build -- --watch",
@@ -37,10 +36,8 @@
     "@vue/test-utils": "1.0.0-beta.11",
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.5",
-    "commitizen": "3.0.5",
     "copy-webpack-plugin": "4.6.0",
     "css-loader": "2.1.0",
-    "cz-conventional-changelog": "2.1.0",
     "ghooks": "2.0.4",
     "html-webpack-plugin": "3.2.0",
     "jsdom": "13.1.0",
@@ -67,9 +64,6 @@
     ]
   },
   "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    },
     "ghooks": {
       "pre-push": "npm run lint"
     }
