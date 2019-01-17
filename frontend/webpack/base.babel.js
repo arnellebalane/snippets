@@ -2,6 +2,7 @@ require('dotenv').config();
 import path from 'path';
 import {DefinePlugin} from 'webpack';
 import VueLoaderPlugin from 'vue-loader/lib/plugin';
+import config from '../config';
 
 export function resolvePath(relativePath) {
     return path.join(__dirname, '..', relativePath);
@@ -15,11 +16,11 @@ export default {
         publicPath: '/'
     },
 
-    mode: process.env.NODE_ENV === 'production'
+    mode: config.NODE_ENV === 'production'
         ? 'production'
         : 'development',
 
-    devtool: process.env.NODE_ENV === 'production'
+    devtool: config.NODE_ENV === 'production'
         ? 'source-map'
         : 'cheap-module-eval-source-map',
 
@@ -36,8 +37,8 @@ export default {
     plugins: [
         new DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-                API_URL: JSON.stringify(process.env.API_URL || 'http://localhost:3000/')
+                NODE_ENV: JSON.stringify(config.NODE_ENV),
+                API_URL: JSON.stringify(config.API_URL)
             }
         }),
 

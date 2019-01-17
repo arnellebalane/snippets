@@ -3,10 +3,11 @@ const cors = require('cors');
 const {get, post, error} = require('server/router');
 const {json, render, status, header} = require('server/reply');
 const {Snippet} = require('./database/models');
+const config = require('./config');
 
 server(
     server.utils.modern(cors({
-        origin: [process.env.CLIENT_URL || 'http://localhost:5000']
+        origin: [config.CLIENT_URL]
     })),
 
     get('/:hash', async ctx => {
