@@ -4,7 +4,7 @@ import {get} from './api';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export default () => new Vuex.Store({
     state: {
         snippet: null
     },
