@@ -20,6 +20,7 @@
   "dependencies": {
     "auto-load": "3.0.4",
     "axios": "0.18.0",
+    "cors": "2.8.5",
     "dotenv": "6.2.0",
     "highlightjs": "9.12.0",
     "pg": "7.8.0",
