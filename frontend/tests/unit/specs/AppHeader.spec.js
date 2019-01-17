@@ -1,8 +1,8 @@
 import assert from 'assert';
 import {mount} from '@vue/test-utils';
-import AppHeader from 'source/components/app-header.vue';
+import AppHeader from 'source/components/AppHeader.vue';
 
-describe('app-header.vue', () => {
+describe('AppHeader.vue', () => {
     it('renders the correct title', () => {
         const {element} = mount(AppHeader);
 

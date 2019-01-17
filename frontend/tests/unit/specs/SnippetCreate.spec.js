@@ -1,14 +1,14 @@
 import assert from 'assert';
 import {mount, createLocalVue} from '@vue/test-utils';
 import Vuex from 'vuex';
-import SnippetCreate from 'source/components/snippet-create.vue';
-import CodeSnippet from 'source/components/code-snippet.vue';
+import SnippetCreate from 'source/components/SnippetCreate.vue';
+import CodeSnippet from 'source/components/CodeSnippet.vue';
 import {createStore} from 'source/store';
 
 const Vue = createLocalVue();
 Vue.use(Vuex);
 
-describe('snippet-create.vue', () => {
+describe('SnippetCreate.vue', () => {
     let store;
 
     function mountComponent() {

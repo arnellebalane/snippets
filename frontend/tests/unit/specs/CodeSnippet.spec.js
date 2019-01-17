@@ -1,8 +1,8 @@
 import assert from 'assert';
 import {mount} from '@vue/test-utils';
-import CodeSnippet from 'source/components/code-snippet.vue';
+import CodeSnippet from 'source/components/CodeSnippet.vue';
 
-describe('code-snippet.vue', () => {
+describe('CodeSnippet.vue', () => {
     function mountComponent(propsData = {}) {
         return mount(CodeSnippet, {propsData});
     }

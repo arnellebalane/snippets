@@ -1,8 +1,8 @@
 import assert from 'assert';
 import {mount} from '@vue/test-utils';
-import AppFooter from 'source/components/app-footer.vue';
+import AppFooter from 'source/components/AppFooter.vue';
 
-describe('app-footer.vue', () => {
+describe('AppFooter.vue', () => {
     function mountComponent(propsData = {}) {
         return mount(AppFooter, {propsData});
     }

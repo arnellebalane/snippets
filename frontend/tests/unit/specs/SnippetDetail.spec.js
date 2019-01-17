@@ -2,15 +2,15 @@ import assert from 'assert';
 import {mount, createLocalVue} from '@vue/test-utils';
 import sinon from 'sinon';
 import Vuex from 'vuex';
-import SnippetDetail from 'source/components/snippet-detail.vue';
-import CodeSnippet from 'source/components/code-snippet.vue';
-import AppFooter from 'source/components/app-footer.vue';
+import SnippetDetail from 'source/components/SnippetDetail.vue';
+import CodeSnippet from 'source/components/CodeSnippet.vue';
+import AppFooter from 'source/components/AppFooter.vue';
 import {createStore} from 'source/store';
 
 const Vue = createLocalVue();
 Vue.use(Vuex);
 
-describe('snippet-detail.vue', () => {
+describe('SnippetDetail.vue', () => {
     let store;
 
     function mountComponent() {
@@ -28,14 +28,14 @@ describe('snippet-detail.vue', () => {
         store = createStore();
     });
 
-    it('renders readonly code-snippet component', () => {
+    it('renders readonly CodeSnippet component', () => {
         const wrapper = mountComponent();
         const codeSnippet = wrapper.find(CodeSnippet);
 
         assert(codeSnippet.vm.readonly);
     });
 
-    it('renders snippet value in code-snippet component', done => {
+    it('renders snippet value in CodeSnippet component', done => {
         const testValue = 'hello world';
         store.commit('setSnippet', testValue);
 
@@ -48,7 +48,7 @@ describe('snippet-detail.vue', () => {
         });
     });
 
-    it('renders app-footer component with hash prop', () => {
+    it('renders AppFooter component with hash prop', () => {
         const hash = 'hello-world';
         const wrapper = mountComponent();
         wrapper.setProps({hash});
