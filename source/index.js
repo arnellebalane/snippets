@@ -33,3 +33,18 @@ server(
 ).then(ctx => {
     ctx.log.info(`Server is now running at localhost:${ctx.options.port}`);
 });
+
+// Graceful shutdown
+const signals = {
+    SIGHUP: 1,
+    SIGINT: 2,
+    SIGTERM: 15
+};
+
+const shutdown = (signal, value) => {
+    throw new Error(`Server stopped by ${signal} with value ${value}`);
+};
+
+Object.keys(signals).forEach(signal => {
+    process.on(signal, () => shutdown(signal, signals[signal]));
+});
