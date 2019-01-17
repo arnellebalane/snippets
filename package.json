@@ -4,20 +4,23 @@
   "description": "Host code snippets online",
   "main": "index.js",
   "scripts": {
-    "prebuild": "rm -rf build",
-    "build": "NODE_ENV=production webpack --config webpack/client.babel.js",
-    "build:watch": "npm run build -- --watch",
+    "prebuild:frontend": "rm -rf frontend/build",
+    "build:frontend": "NODE_ENV=production webpack --config frontend/webpack/client.babel.js",
+    "build:frontend:watch": "npm run build:frontend -- --watch",
+    "build": "npm run build:frontend",
     "db:migrate": "sequelize db:migrate",
-    "start": "node source/index.js",
-    "dev": "nodemon source/index.js",
-    "test": "NODE_ENV=testing mocha-webpack --webpack-config webpack/test.babel.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
-    "test:watch": "npm run test -- --watch"
+    "start": "node backend/index.js",
+    "dev": "nodemon backend/index.js",
+    "test:frontend": "NODE_ENV=testing mocha-webpack --webpack-config frontend/webpack/test.babel.js --require frontend/tests/unit/setup.js frontend/tests/unit/specs/**/*.spec.js",
+    "test:frontend:watch": "npm run test:frontend -- --watch",
+    "test": "npm run test:frontend"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
   "dependencies": {
     "auto-load": "3.0.4",
     "axios": "0.18.0",
+    "cors": "2.8.5",
     "dotenv": "6.2.0",
     "highlightjs": "9.12.0",
     "pg": "7.8.0",
@@ -52,10 +55,5 @@
     "webpack-cli": "3.2.1",
     "webpack-merge": "4.2.1",
     "webpack-node-externals": "1.7.2"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
   }
 }

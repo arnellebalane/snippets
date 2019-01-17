@@ -3,7 +3,7 @@ import {mount, createLocalVue} from '@vue/test-utils';
 import Vuex from 'vuex';
 import SnippetCreate from 'source/components/snippet-create.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
-import createStore from 'source/store';
+import {createStore} from 'source/store';
 
 const Vue = createLocalVue();
 Vue.use(Vuex);

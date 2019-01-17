@@ -1,24 +1,21 @@
 const server = require('server');
+const cors = require('cors');
 const {get, post, error} = require('server/router');
-const {json, render, status} = require('server/reply');
+const {json, status, header} = require('server/reply');
 const {Snippet} = require('./database/models');
+const config = require('./config');
 
 server(
+    server.utils.modern(cors({
+        origin: [config.CLIENT_URL]
+    })),
+
     get('/:hash', async ctx => {
         const hash = ctx.params.hash;
         const snippet = await Snippet.findOne({where: {hash}});
 
         return snippet
             ? json(snippet.get())
-            : status(404).json({code: 404, message: 'Snippet not found.'});
-    }),
-
-    get('/raw/:hash', async ctx => {
-        const hash = ctx.params.hash;
-        const snippet = await Snippet.findOne({where: {hash}});
-
-        return snippet
-            ? render('raw.html', {snippet: snippet.get()})
             : status(404).json({code: 404, message: 'Snippet not found.'});
     }),
 

@@ -21,7 +21,7 @@ module.exports = merge(baseConfig, {
 
     resolve: {
         alias: {
-            source: resolvePath('source/static')
+            source: resolvePath('source')
         }
     }
 });

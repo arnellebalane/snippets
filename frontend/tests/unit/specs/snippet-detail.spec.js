@@ -5,7 +5,7 @@ import Vuex from 'vuex';
 import SnippetDetail from 'source/components/snippet-detail.vue';
 import CodeSnippet from 'source/components/code-snippet.vue';
 import AppFooter from 'source/components/app-footer.vue';
-import createStore from 'source/store';
+import {createStore} from 'source/store';
 
 const Vue = createLocalVue();
 Vue.use(Vuex);

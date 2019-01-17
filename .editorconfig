@@ -8,3 +8,6 @@ insert_final_newline = true
 
 [*.{json,yml,yaml}]
 indent_size = 2
+
+[.*rc]
+indent_size = 2

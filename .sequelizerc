@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 const path = require('path');
 
+function resolvePath(relativePath) {
+  return path.resolve(__dirname, relativePath);
+}
+
 module.exports = {
-    'config': path.resolve(__dirname, 'source/database/config.js'),
-    'migrations-path': path.resolve(__dirname, 'source/database/migrations')
+  'config': resolvePath('backend/database/config.js'),
+  'migrations-path': resolvePath('backend/database/migrations')
 };

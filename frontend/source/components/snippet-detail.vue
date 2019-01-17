@@ -1,5 +1,6 @@
 <template>
     <div class="snippet-detail">
+        <app-header></app-header>
         <code-snippet ref="snippet" :value="snippet" :language="extension" readonly></code-snippet>
         <app-footer :hash="hash"></app-footer>
     </div>
@@ -47,16 +48,26 @@
             },
 
             raw() {
-                window.location.pathname = '/raw/' + this.hash;
+                this.$router.push({
+                    name: 'snippet-raw',
+                    params: {
+                        hash: this.hash
+                    }
+                });
             }
         },
 
         components: {
+            'app-header': require('./app-header.vue').default,
             'app-footer': require('./app-footer.vue').default,
             'code-snippet': require('./code-snippet.vue').default
         },
 
         beforeRouteEnter(to, from, next) {
+            if (store.state.snippet) {
+                return next();
+            }
+
             store.dispatch('fetchSnippet', to.params.hash)
                 .then(() => next())
                 .catch(() => next('/'));
