@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:10.3
+    environment:
+      POSTGRES_USER: snippetsuser
+      POSTGRES_DB: snippets
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/deploy/Dockerfile
+    command: backend/deploy/entrypoint.sh
+    environment:
+      DATABASE_URL: postgres://snippetsuser@db/snippets
+      CLIENT_URL: http://localhost:5000
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/deploy/Dockerfile
+    ports:
+      - '5000:80'
+    environment:
+      API_URL: http://localhost:3000
+
+volumes:
+  pgdata:

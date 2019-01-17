@@ -11,8 +11,8 @@ export function resolvePath(relativePath) {
 export default {
     output: {
         path: resolvePath('build'),
-        filename: '[name].js',
-        chunkFilename: '[name].js',
+        filename: 'static/[name].js',
+        chunkFilename: 'static/[name].js',
         publicPath: '/'
     },
 
