@@ -4,6 +4,10 @@ const merge = require('webpack-merge');
 const nodeExternals = require('webpack-node-externals');
 const baseConfig = require('./webpack.base.config');
 
+function resolvePath(relativePath) {
+    return path.join(__dirname, '..', relativePath);
+}
+
 module.exports = merge(baseConfig, {
     module: {
         rules: [{
@@ -27,7 +31,7 @@ module.exports = merge(baseConfig, {
     externals: [nodeExternals()],
     resolve: {
         alias: {
-            source: path.resolve(__dirname, '../source/static')
+            source: resolvePath('source/static')
         }
     }
 });
