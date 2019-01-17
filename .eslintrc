@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "arnellebalane",
+    "arnellebalane/rules/plugins/vue"
+  ],
+
+  "plugins": [
+    "vue"
+  ],
+
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  }
+}

@@ -5,16 +5,16 @@ Vue.use(VueRouter);
 
 const routes = [{
     path: '/',
-    component: () => import(/* webpackChunkName: "snippet-create" */ './components/snippet-create.vue'),
+    component: () => import(/* WebpackChunkName: "snippet-create" */ './components/SnippetCreate.vue'),
     name: 'snippet-create'
 }, {
     path: '/:hash(\\w+).:extension(\\w+)?',
-    component: () => import(/* webpackChunkName: "snippet-detail" */ './components/snippet-detail.vue'),
+    component: () => import(/* WebpackChunkName: "snippet-detail" */ './components/SnippetDetail.vue'),
     name: 'snippet-detail',
     props: true
 }, {
     path: '/raw/:hash(\\w+)',
-    component: () => import(/* webpackChunkName: "snippet-raw" */ './components/snippet-raw.vue'),
+    component: () => import(/* WebpackChunkName: "snippet-raw" */ './components/SnippetRaw.vue'),
     name: 'snippet-raw',
     props: true
 }];

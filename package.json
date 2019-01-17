@@ -13,7 +13,8 @@
     "dev": "nodemon backend/index.js",
     "test:frontend": "NODE_ENV=testing mocha-webpack --webpack-config frontend/webpack/test.babel.js --require frontend/tests/unit/setup.js frontend/tests/unit/specs/**/*.spec.js",
     "test:frontend:watch": "npm run test:frontend -- --watch",
-    "test": "npm run test:frontend"
+    "test": "npm run test:frontend",
+    "lint": "eslint 'frontend/**/*.{vue,js}'"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
@@ -33,12 +34,16 @@
   },
   "devDependencies": {
     "@babel/core": "7.2.2",
+    "@babel/plugin-syntax-dynamic-import": "7.2.0",
     "@babel/preset-env": "7.2.3",
     "@babel/register": "7.0.0",
     "@vue/test-utils": "1.0.0-beta.11",
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.5",
     "css-loader": "2.1.0",
+    "eslint": "5.12.0",
+    "eslint-config-arnellebalane": "5.0.0",
+    "eslint-plugin-vue": "5.1.0",
     "html-webpack-plugin": "3.2.0",
     "jsdom": "13.1.0",
     "jsdom-global": "3.0.2",

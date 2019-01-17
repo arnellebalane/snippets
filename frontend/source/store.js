@@ -21,9 +21,9 @@ export function createStore() {
         },
 
         actions: {
-            fetchSnippet(context, hash) {
-                return get('/' + hash).then(response => {
-                    context.commit('setSnippet', response.body);
+            fetchSnippet({commit}, hash) {
+                return get(`/${hash}`).then(response => {
+                    commit('setSnippet', response.body);
                 });
             }
         }

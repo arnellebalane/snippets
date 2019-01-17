@@ -15,39 +15,41 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            hash: {
-                type: String,
-                default: null
-            }
+export default {
+    name: 'AppFooter',
+
+    props: {
+        hash: {
+            type: String,
+            default: null
         }
-    };
+    }
+};
 </script>
 
 <style scoped>
-    .app-footer {
-        padding: 1px 0;
-        color: #c5c8c6;
-    }
+.app-footer {
+    padding: 1px 0;
+    color: #c5c8c6;
+}
 
-    ul {
-        display: flex;
-        padding: 0;
-        margin: 0;
-        list-style: none;
-    }
+ul {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
 
-    li {
-        width: 120px;
-    }
+li {
+    width: 120px;
+}
 
-    span {
-        color: #1d1f21;
-        background-color: #c5c8c6;
-    }
+span {
+    color: #1d1f21;
+    background-color: #c5c8c6;
+}
 
-    li:first-child span {
-        padding-left: 5px;
-    }
+li:first-child span {
+    padding-left: 5px;
+}
 </style>

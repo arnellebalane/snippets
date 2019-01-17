@@ -67,24 +67,26 @@ describe('snippet-detail.vue', () => {
         assert.deepEqual(expected, actual);
     });
 
-    // TODO: Update this test to support latest version of code-snippet
-    // describe('#selectAll()', () => {
-    //     it('highlights the contents of code-snippet textarea', done => {
-    //         const testValue = 'hello world';
-    //         store.commit('setSnippet', testValue);
-
-    //         const wrapper = mountComponent();
-    //         const textarea = wrapper.find('textarea');
-
-    //         Vue.nextTick(() => {
-    //             wrapper.vm.selectAll();
-
-    //             assert.equal(0, textarea.element.selectionStart);
-    //             assert.equal(testValue.length, textarea.element.selectionEnd);
-    //             done();
-    //         });
-    //     });
-    // });
+    /*
+     * TODO: Update this test to support latest version of code-snippet
+     * describe('#selectAll()', () => {
+     *     it('highlights the contents of code-snippet textarea', done => {
+     *         const testValue = 'hello world';
+     *         store.commit('setSnippet', testValue);
+     *
+     *         const wrapper = mountComponent();
+     *         const textarea = wrapper.find('textarea');
+     *
+     *         Vue.nextTick(() => {
+     *             wrapper.vm.selectAll();
+     *
+     *             assert.equal(0, textarea.element.selectionStart);
+     *             assert.equal(testValue.length, textarea.element.selectionEnd);
+     *             done();
+     *         });
+     *     });
+     * });
+     */
 
     describe('#editNew()', () => {
         it('redirects to snippet-create route', () => {
