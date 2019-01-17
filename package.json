@@ -11,9 +11,7 @@
     "start": "node source/index.js",
     "dev": "nodemon source/index.js",
     "test": "NODE_ENV=testing mocha-webpack --webpack-config webpack/test.babel.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
-    "test:watch": "npm run test -- --watch",
-    "lint": "xo --reporter table",
-    "lint:fix": "xo --reporter table --fix"
+    "test:watch": "npm run test -- --watch"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
@@ -39,7 +37,6 @@
     "babel-loader": "8.0.5",
     "copy-webpack-plugin": "4.6.0",
     "css-loader": "2.1.0",
-    "ghooks": "2.0.4",
     "html-webpack-plugin": "3.2.0",
     "jsdom": "13.1.0",
     "jsdom-global": "3.0.2",
@@ -55,65 +52,11 @@
     "webpack": "4.28.4",
     "webpack-cli": "3.2.1",
     "webpack-merge": "4.2.1",
-    "webpack-node-externals": "1.7.2",
-    "xo": "0.24.0"
+    "webpack-node-externals": "1.7.2"
   },
   "babel": {
     "presets": [
       "@babel/preset-env"
-    ]
-  },
-  "config": {
-    "ghooks": {
-      "pre-push": "npm run lint"
-    }
-  },
-  "xo": {
-    "parser": "babel-eslint",
-    "space": 4,
-    "envs": [
-      "browser",
-      "mocha",
-      "serviceworker"
-    ],
-    "rules": {
-      "operator-linebreak": [
-        "error",
-        "before"
-      ],
-      "no-await-in-loop": [
-        "off"
-      ],
-      "import/extensions": [
-        "off"
-      ],
-      "import/no-unresolved": [
-        "off"
-      ],
-      "import/no-unassigned-import": [
-        "error",
-        {
-          "allow": [
-            "**/*.css"
-          ]
-        }
-      ]
-    },
-    "globals": [
-      "workbox"
-    ],
-    "overrides": [
-      {
-        "files": "source/database/models/!(index).js",
-        "rules": {
-          "unicorn/filename-case": [
-            "error",
-            {
-              "case": "pascalCase"
-            }
-          ]
-        }
-      }
     ]
   }
 }
