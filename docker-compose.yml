@@ -16,7 +16,7 @@ services:
     command: backend/deploy/entrypoint.sh
     environment:
       DATABASE_URL: postgres://snippetsuser@db/snippets
-      CLIENT_URL: http://localhost:5000
+      SNIPPETS_CLIENT_URL: $SNIPPETS_CLIENT_URL
     ports:
       - '3000:3000'
     depends_on:
@@ -29,7 +29,7 @@ services:
     ports:
       - '5000:80'
     environment:
-      API_URL: http://localhost:3000
+      SNIPPETS_API_URL: $SNIPPETS_API_URL
 
 volumes:
   pgdata:
