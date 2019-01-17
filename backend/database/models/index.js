@@ -7,10 +7,10 @@ const baseName = path.basename(__filename);
 
 const models = fs.readdirSync(modelsPath)
     .filter(fileName => fileName !== baseName)
-    .reduce((models, modelFile) => {
+    .reduce((modelsMap, modelFile) => {
         const modelName = path.basename(modelFile, '.js');
-        models[modelName] = db.import(path.join(modelsPath, modelFile));
-        return models;
+        modelsMap[modelName] = db.import(path.join(modelsPath, modelFile));
+        return modelsMap;
     }, {});
 
 module.exports = models;

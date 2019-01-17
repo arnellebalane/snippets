@@ -14,7 +14,7 @@
     "test:frontend": "NODE_ENV=testing mocha-webpack --webpack-config frontend/webpack/test.babel.js --require frontend/tests/unit/setup.js frontend/tests/unit/specs/**/*.spec.js",
     "test:frontend:watch": "npm run test:frontend -- --watch",
     "test": "npm run test:frontend",
-    "lint": "eslint 'frontend/**/*.{vue,js}'"
+    "lint": "eslint '{backend,frontend}/**/*.{vue,js}'"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",

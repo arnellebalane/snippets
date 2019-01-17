@@ -18,5 +18,13 @@
     "parser": "babel-eslint",
     "ecmaVersion": 2017,
     "sourceType": "module"
-  }
+  },
+
+  "overrides": [{
+    "files": ["backend/**/*.js"],
+
+    "env": {
+      "browser": false
+    }
+  }]
 }

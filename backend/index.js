@@ -1,7 +1,7 @@
 const server = require('server');
 const cors = require('cors');
 const {get, post, error} = require('server/router');
-const {json, status, header} = require('server/reply');
+const {json, status} = require('server/reply');
 const {Snippet} = require('./database/models');
 const config = require('./config');
 
