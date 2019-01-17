@@ -1,9 +1,14 @@
 const server = require('server');
+const cors = require('cors');
 const {get, post, error} = require('server/router');
-const {json, render, status} = require('server/reply');
+const {json, render, status, header} = require('server/reply');
 const {Snippet} = require('./database/models');
 
 server(
+    server.utils.modern(cors({
+        origin: [process.env.CLIENT_URL || 'http://localhost:5000']
+    })),
+
     get('/:hash', async ctx => {
         const hash = ctx.params.hash;
         const snippet = await Snippet.findOne({where: {hash}});
