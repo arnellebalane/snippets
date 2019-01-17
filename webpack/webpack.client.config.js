@@ -2,7 +2,6 @@ const path = require('path');
 const merge = require('webpack-merge');
 const HtmlPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
 const baseConfig = require('./webpack.base.config');
 
 function resolvePath(relativePath) {
@@ -19,11 +18,6 @@ module.exports = merge(baseConfig, {
 
         new CopyPlugin([{
             from: resolvePath('source/static/images/favicon.png')
-        }]),
-
-        new WorkboxPlugin.InjectManifest({
-            swSrc: resolvePath('source/static/sw.js'),
-            swDest: 'sw.js'
-        })
+        }])
     ]
 });
