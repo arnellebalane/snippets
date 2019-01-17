@@ -18,6 +18,19 @@
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
+  "dependencies": {
+    "auto-load": "3.0.4",
+    "axios": "0.18.0",
+    "dotenv": "6.2.0",
+    "highlightjs": "9.12.0",
+    "pg": "7.8.0",
+    "sequelize": "4.42.0",
+    "server": "1.0.18",
+    "vue": "2.5.22",
+    "vue-router": "3.0.2",
+    "vuex": "3.0.1",
+    "workbox-sw": "3.6.3"
+  },
   "devDependencies": {
     "@vue/test-utils": "1.0.0-beta.11",
     "babel-core": "6.26.3",
@@ -108,18 +121,5 @@
         }
       }
     ]
-  },
-  "dependencies": {
-    "auto-load": "3.0.4",
-    "axios": "0.18.0",
-    "dotenv": "6.2.0",
-    "highlightjs": "9.12.0",
-    "pg": "7.8.0",
-    "sequelize": "4.42.0",
-    "server": "1.0.18",
-    "vue": "2.5.22",
-    "vue-router": "3.0.2",
-    "vuex": "3.0.1",
-    "workbox-sw": "3.6.3"
   }
 }
