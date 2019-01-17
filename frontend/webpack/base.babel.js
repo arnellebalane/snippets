@@ -37,7 +37,7 @@ export default {
         new DefinePlugin({
             'process.env': {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-                BASE_URL: JSON.stringify(process.env.BASE_URL || 'http://localhost:3000/')
+                API_URL: JSON.stringify(process.env.API_URL || 'http://localhost:3000/')
             }
         }),
 

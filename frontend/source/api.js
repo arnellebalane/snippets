@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: window.location.origin + '/api/'
+    baseURL: process.env.API_URL
 });
 
 export function get(url) {
