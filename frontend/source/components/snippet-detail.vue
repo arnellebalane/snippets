@@ -48,7 +48,12 @@
             },
 
             raw() {
-                window.location.pathname = '/raw/' + this.hash;
+                this.$router.push({
+                    name: 'snippet-raw',
+                    params: {
+                        hash: this.hash
+                    }
+                });
             }
         },
 
@@ -59,6 +64,10 @@
         },
 
         beforeRouteEnter(to, from, next) {
+            if (store.state.snippet) {
+                return next();
+            }
+
             store.dispatch('fetchSnippet', to.params.hash)
                 .then(() => next())
                 .catch(() => next('/'));
