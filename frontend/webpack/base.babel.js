@@ -46,7 +46,7 @@ export default {
 
     resolve: {
         alias: {
-            nodeModules: path.resolve(__dirname, '../node_modules')
+            nodeModules: path.resolve(__dirname, '../../node_modules')
         }
     }
 };

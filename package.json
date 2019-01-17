@@ -4,14 +4,16 @@
   "description": "Host code snippets online",
   "main": "index.js",
   "scripts": {
-    "prebuild": "rm -rf build",
-    "build": "NODE_ENV=production webpack --config webpack/client.babel.js",
-    "build:watch": "npm run build -- --watch",
+    "prebuild:frontend": "rm -rf frontend/build",
+    "build:frontend": "NODE_ENV=production webpack --config frontend/webpack/client.babel.js",
+    "build:frontend:watch": "npm run build -- --watch",
+    "build": "npm run build:frontend",
     "db:migrate": "sequelize db:migrate",
     "start": "node source/index.js",
     "dev": "nodemon source/index.js",
-    "test": "NODE_ENV=testing mocha-webpack --webpack-config webpack/test.babel.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
-    "test:watch": "npm run test -- --watch"
+    "test:frontend": "NODE_ENV=testing mocha-webpack --webpack-config frontend/webpack/test.babel.js --require frontend/tests/unit/setup.js frontend/tests/unit/specs/**/*.spec.js",
+    "test:frontend:watch": "npm run test -- --watch",
+    "test": "npm run test:frontend"
   },
   "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com/)",
   "license": "MIT",
