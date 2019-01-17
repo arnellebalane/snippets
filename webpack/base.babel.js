@@ -1,13 +1,13 @@
 require('dotenv').config();
-const path = require('path');
-const webpack = require('webpack');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+import path from 'path';
+import {DefinePlugin} from 'webpack';
+import VueLoaderPlugin from 'vue-loader/lib/plugin';
 
-function resolvePath(relativePath) {
+export function resolvePath(relativePath) {
     return path.join(__dirname, '..', relativePath);
 }
 
-module.exports = {
+export default {
     output: {
         path: resolvePath('build'),
         filename: '[name].js',
@@ -15,7 +15,9 @@ module.exports = {
         publicPath: '/'
     },
 
-    mode: process.env.NODE_ENV || 'development',
+    mode: process.env.NODE_ENV === 'production'
+        ? 'production'
+        : 'development',
 
     devtool: process.env.NODE_ENV === 'production'
         ? 'source-map'
@@ -32,7 +34,7 @@ module.exports = {
     },
 
     plugins: [
-        new webpack.DefinePlugin({
+        new DefinePlugin({
             'process.env': {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
                 BASE_URL: JSON.stringify(process.env.BASE_URL || 'http://localhost:3000/')

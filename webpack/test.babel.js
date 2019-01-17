@@ -1,12 +1,6 @@
-const path = require('path');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const nodeExternals = require('webpack-node-externals');
-const baseConfig = require('./webpack.base.config');
-
-function resolvePath(relativePath) {
-    return path.join(__dirname, '..', relativePath);
-}
+import merge from 'webpack-merge';
+import nodeExternals from 'webpack-node-externals';
+import baseConfig, {resolvePath} from './base.babel';
 
 module.exports = merge(baseConfig, {
     module: {
@@ -22,14 +16,6 @@ module.exports = merge(baseConfig, {
     },
 
     devtool: 'inline-cheap-module-source-map',
-
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"testing"'
-            }
-        })
-    ],
 
     externals: [nodeExternals()],
 

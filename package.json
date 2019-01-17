@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "rm -rf build",
-    "build": "webpack --config webpack/webpack.client.config.js",
+    "build": "NODE_ENV=production webpack --config webpack/client.babel.js",
     "build:watch": "npm run build -- --watch",
     "db:migrate": "sequelize db:migrate",
     "start": "node source/index.js",
     "dev": "nodemon source/index.js",
-    "test": "mocha-webpack --webpack-config webpack/webpack.test.config.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
+    "test": "NODE_ENV=testing mocha-webpack --webpack-config webpack/test.babel.js --require tests/unit/setup.js tests/unit/specs/**/*.spec.js",
     "test:watch": "npm run test -- --watch",
     "lint": "xo --reporter table",
     "lint:fix": "xo --reporter table --fix"
