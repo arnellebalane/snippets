@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/deploy/Dockerfile
+    ports:
+      - '5000:80'
