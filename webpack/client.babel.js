@@ -1,6 +1,5 @@
 import merge from 'webpack-merge';
 import HtmlPlugin from 'html-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
 import baseConfig, {resolvePath} from './base.babel';
 
 module.exports = merge(baseConfig, {
@@ -8,11 +7,8 @@ module.exports = merge(baseConfig, {
 
     plugins: [
         new HtmlPlugin({
-            template: resolvePath('source/static/index.html')
-        }),
-
-        new CopyPlugin([{
-            from: resolvePath('source/static/images/favicon.png')
-        }])
+            template: resolvePath('source/static/index.html'),
+            favicon: resolvePath('source/static/images/favicon.png')
+        })
     ]
 });
