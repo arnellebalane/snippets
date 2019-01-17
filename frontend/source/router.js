@@ -19,7 +19,11 @@ const routes = [{
     props: true
 }];
 
-export default () => new VueRouter({
-    routes,
-    mode: 'history'
-});
+export function createRouter() {
+    return new VueRouter({
+        routes,
+        mode: 'history'
+    });
+}
+
+export default createRouter();
