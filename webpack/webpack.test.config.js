@@ -15,7 +15,7 @@ module.exports = merge(baseConfig, {
             loader: 'babel-loader',
             options: {
                 presets: [
-                    ['env', {modules: false}]
+                    ['@babel/preset-env', {modules: false}]
                 ]
             }
         }]
