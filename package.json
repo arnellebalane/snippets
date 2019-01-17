@@ -55,10 +55,5 @@
     "webpack-cli": "3.2.1",
     "webpack-merge": "4.2.1",
     "webpack-node-externals": "1.7.2"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
   }
 }
