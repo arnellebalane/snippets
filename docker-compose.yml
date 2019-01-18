@@ -13,7 +13,6 @@ services:
     build:
       context: .
       dockerfile: backend/deploy/Dockerfile
-    command: backend/deploy/entrypoint.sh
     environment:
       DATABASE_URL: postgres://snippetsuser@db/snippets
       SNIPPETS_CLIENT_URL: $SNIPPETS_CLIENT_URL
