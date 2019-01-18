@@ -1,9 +1,9 @@
-FROM node:8.10
+FROM node:10.15
 
 WORKDIR /app
 
-COPY package.json .
-RUN npm install
+COPY package*.json ./
+RUN npm ci
 
 COPY . .
 
