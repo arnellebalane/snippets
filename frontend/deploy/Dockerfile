@@ -1,4 +1,18 @@
+# 1st stage: Build the frontend code with npm
+FROM node:10.15 as builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN rm -rf backend
+RUN npm run build:frontend
+
+
+# 2nd stage: Copy build output to nginx root
 FROM nginx:1.13
 
 COPY frontend/deploy/nginx.conf /etc/nginx/nginx.conf
-COPY frontend/build /usr/share/nginx/html
+COPY --from=builder /app/frontend/build /usr/share/nginx/html
