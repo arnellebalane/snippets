@@ -3,6 +3,9 @@ FROM node:10.15 as builder
 
 WORKDIR /app
 
+ARG SNIPPETS_API_URL
+ENV SNIPPETS_API_URL=$SNIPPETS_API_URL
+
 COPY package*.json ./
 RUN npm ci
 

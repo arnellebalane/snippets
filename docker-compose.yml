@@ -25,10 +25,10 @@ services:
     build:
       context: .
       dockerfile: frontend/deploy/Dockerfile
+      args:
+        SNIPPETS_API_URL: $SNIPPETS_API_URL
     ports:
       - '5000:80'
-    environment:
-      SNIPPETS_API_URL: $SNIPPETS_API_URL
 
 volumes:
   pgdata:
