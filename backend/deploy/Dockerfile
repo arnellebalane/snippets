@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN rm -rf frontend
-RUN npm ci
+RUN npm ci --only=production
 
 COPY . .
 
