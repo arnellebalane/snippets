@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('snippets', {
+    await queryInterface.createTable('Snippets', {
       hash: {
         type: Sequelize.STRING,
         primaryKey: true,
@@ -24,6 +24,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('snippets');
+    await queryInterface.dropTable('Snippets');
   }
 };

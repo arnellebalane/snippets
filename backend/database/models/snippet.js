@@ -28,13 +28,18 @@ module.exports = (sequelize, DataTypes) => {
     {
       hash: {
         type: DataTypes.STRING,
-        primaryKey: true
+        primaryKey: true,
+        allowNull: false
       },
-      body: DataTypes.TEXT
+      body: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      }
     },
     {
       sequelize,
       modelName: 'Snippet',
+
       hooks: {
         async beforeValidate(instance) {
           let body = instance.body + Date.now();
