@@ -1,12 +1,12 @@
 const config = require('../config');
 
 module.exports = {
-    development: {
-        dialect: 'postgres',
-        url: config.DATABASE_URL
-    },
-    production: {
-        dialect: 'postgres',
-        url: config.DATABASE_URL
-    }
+  development: {
+    dialect: 'postgres',
+    url: config.DATABASE_URL
+  },
+  production: {
+    dialect: 'postgres',
+    url: config.DATABASE_URL
+  }
 };

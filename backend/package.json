@@ -1,0 +1,25 @@
+{
+  "name": "snippets-backend",
+  "version": "1.0.0",
+  "description": "Backend service for snippets app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon backend/index.js",
+    "db:migrate": "sequelize db:migrate"
+  },
+  "keywords": [],
+  "author": "Arnelle Balane <arnellebalane@gmail.com> (https://arnellebalane.com)",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "2.8.5",
+    "dotenv": "6.2.0",
+    "pg": "7.8.0",
+    "sequelize": "4.42.0",
+    "server": "1.0.18"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.7",
+    "sequelize-cli": "5.4.0"
+  }
+}
