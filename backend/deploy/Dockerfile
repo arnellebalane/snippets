@@ -1,13 +1,12 @@
-FROM node:10.15
+FROM node:14.17.0
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN rm -rf frontend
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
 
 EXPOSE 3000
 
-CMD ["backend/deploy/entrypoint.sh"]
+CMD ["deploy/entrypoint.sh"]
