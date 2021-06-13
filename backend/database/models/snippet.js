@@ -1,4 +1,7 @@
+'use strict';
+
 const crypto = require('crypto');
+const { Model } = require('sequelize');
 
 function generateHash(data) {
   return crypto
@@ -9,9 +12,19 @@ function generateHash(data) {
     .substring(0, 5);
 }
 
-module.exports = (database, DataTypes) => {
-  const Snippet = database.define(
-    'snippet',
+module.exports = (sequelize, DataTypes) => {
+  class Snippet extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+
+  Snippet.init(
     {
       hash: {
         type: DataTypes.STRING,
@@ -20,6 +33,8 @@ module.exports = (database, DataTypes) => {
       body: DataTypes.TEXT
     },
     {
+      sequelize,
+      modelName: 'Snippet',
       hooks: {
         async beforeValidate(instance) {
           let body = instance.body + Date.now();

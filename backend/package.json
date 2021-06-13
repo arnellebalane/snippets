@@ -13,13 +13,13 @@
   "license": "MIT",
   "dependencies": {
     "cors": "2.8.5",
-    "dotenv": "6.2.0",
-    "pg": "7.8.0",
-    "sequelize": "4.42.0",
-    "server": "1.0.18"
+    "dotenv": "^10.0.0",
+    "pg": "^8.6.0",
+    "sequelize": "^6.6.2",
+    "server": "^1.0.33"
   },
   "devDependencies": {
     "nodemon": "2.0.7",
-    "sequelize-cli": "5.4.0"
+    "sequelize-cli": "^6.2.0"
   }
 }
