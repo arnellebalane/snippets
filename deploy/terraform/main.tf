@@ -48,7 +48,7 @@ resource "random_string" "db_username" {
 
 resource "random_password" "db_password" {
   length  = 24
-  special = true
+  special = false
 }
 
 module "db" {
@@ -78,4 +78,9 @@ module "db" {
   backup_retention_period = 0
   skip_final_snapshot     = true
   deletion_protection     = false
+}
+
+output "db_url" {
+  value     = "${module.db.db_instance_username}:${module.db.db_master_password}@${module.db.db_instance_endpoint}/${module.db.db_instance_name}"
+  sensitive = true
 }
