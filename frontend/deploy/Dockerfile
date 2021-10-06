@@ -1,5 +1,5 @@
 # 1st stage: Build the frontend code with npm
-FROM node:14.17.0 as builder
+FROM node:14.18.0-slim as builder
 
 WORKDIR /app
 
