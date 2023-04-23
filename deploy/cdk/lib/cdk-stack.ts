@@ -1,16 +1,37 @@
 import * as cdk from 'aws-cdk-lib';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as rds from 'aws-cdk-lib/aws-rds';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class CdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const appName = 'snippets';
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'CdkQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const vpc = new ec2.Vpc(this, 'VPC', {});
+
+    const secret = new secretsmanager.Secret(this, 'PostgresCredentials', {
+      generateSecretString: {
+        secretStringTemplate: JSON.stringify({ username: 'postgres' }),
+        generateStringKey: 'password',
+        excludePunctuation: true,
+        passwordLength: 32,
+      },
+    });
+
+    const database = new rds.DatabaseInstance(this, 'PostgresInstance', {
+      engine: rds.DatabaseInstanceEngine.POSTGRES,
+      databaseName: appName,
+      instanceIdentifier: appName,
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MICRO),
+      credentials: {
+        username: secret.secretValueFromJson('username').unsafeUnwrap(),
+        password: secret.secretValueFromJson('password'),
+      },
+      multiAz: false,
+      vpc,
+    });
   }
 }

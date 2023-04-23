@@ -1,0 +1,71 @@
+{
+  "vpc-provider:account=632108462029:filter.isDefault=true:region=ap-southeast-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-f0eae997",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "ownerAccountId": "632108462029",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-f36c88bb",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "ap-southeast-1a",
+            "routeTableId": "rtb-0b1a8d6d"
+          },
+          {
+            "subnetId": "subnet-078f7861",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "ap-southeast-1b",
+            "routeTableId": "rtb-0b1a8d6d"
+          },
+          {
+            "subnetId": "subnet-e7e042be",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "ap-southeast-1c",
+            "routeTableId": "rtb-0b1a8d6d"
+          }
+        ]
+      }
+    ]
+  },
+  "vpc-provider:account=632108462029:filter.vpc-id=vpc-f0eae997:region=ap-southeast-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-f0eae997",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "ownerAccountId": "632108462029",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-f36c88bb",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "ap-southeast-1a",
+            "routeTableId": "rtb-0b1a8d6d"
+          },
+          {
+            "subnetId": "subnet-078f7861",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "ap-southeast-1b",
+            "routeTableId": "rtb-0b1a8d6d"
+          },
+          {
+            "subnetId": "subnet-e7e042be",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "ap-southeast-1c",
+            "routeTableId": "rtb-0b1a8d6d"
+          }
+        ]
+      }
+    ]
+  },
+  "availability-zones:account=632108462029:region=ap-southeast-1": [
+    "ap-southeast-1a",
+    "ap-southeast-1b",
+    "ap-southeast-1c"
+  ]
+}
