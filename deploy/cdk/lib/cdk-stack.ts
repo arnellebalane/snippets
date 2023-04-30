@@ -111,8 +111,8 @@ export class CdkStack extends cdk.Stack {
     this.taskDefinition = new ecs.TaskDefinition(this, 'ECS-TaskDefinition', {
       family: 'SnippetsBackendTaskDefinition',
       compatibility: ecs.Compatibility.FARGATE,
-      cpu: '1024',
-      memoryMiB: '2048',
+      cpu: '512',
+      memoryMiB: '1024',
       executionRole,
     });
   }
