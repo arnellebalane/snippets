@@ -10,6 +10,7 @@ import * as ecr_deployment from 'cdk-ecr-deployment';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import { Construct } from 'constructs';
 
 export class SnippetsBackendStack extends cdk.Stack {
@@ -27,9 +28,9 @@ export class SnippetsBackendStack extends cdk.Stack {
   cluster: ecs.Cluster;
   service: ecs.FargateService;
 
+  certificate: acm.Certificate;
   targetGroup: elb.ApplicationTargetGroup;
   loadBalancer: elb.ApplicationLoadBalancer;
-  listener: elb.ApplicationListener;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -40,6 +41,7 @@ export class SnippetsBackendStack extends cdk.Stack {
     this.setupTaskDefinition();
     this.setupContainer();
     this.setupTargetGroup();
+    this.setupCertificate();
     this.setupLoadBalancer();
     this.setupService();
   }
@@ -146,8 +148,15 @@ export class SnippetsBackendStack extends cdk.Stack {
       targetType: elb.TargetType.IP,
       targetGroupName: 'SnippetsBackendTargetGroup',
       protocol: elb.ApplicationProtocol.HTTP,
-      port: 80,
       vpc: this.vpc,
+    });
+  }
+
+  setupCertificate() {
+    this.certificate = new acm.Certificate(this, 'ACM-Certificate', {
+      certificateName: 'SnippetsBackendCertificate',
+      domainName: 'snippets-api-next.arnelle.dev',
+      validation: acm.CertificateValidation.fromDns(),
     });
   }
 
@@ -163,9 +172,13 @@ export class SnippetsBackendStack extends cdk.Stack {
       securityGroup: this.vpcSecurityGroup,
     });
 
-    this.listener = this.loadBalancer.addListener('ELB-Listener', {
+    this.loadBalancer.addListener('ELB-HttpsListener', {
+      protocol: elb.ApplicationProtocol.HTTPS,
+      certificates: [this.certificate],
+      defaultTargetGroups: [this.targetGroup],
+    });
+    this.loadBalancer.addListener('ELB-HttpListener', {
       protocol: elb.ApplicationProtocol.HTTP,
-      port: 80,
       defaultTargetGroups: [this.targetGroup],
     });
 
