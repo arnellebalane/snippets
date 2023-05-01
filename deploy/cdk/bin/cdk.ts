@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { CdkStack } from '../lib/cdk-stack';
+import { SnippetsBackendStack } from '../lib/SnippetsBackendStack';
 
 const app = new cdk.App();
 
-new CdkStack(app, 'SnippetsBackendStack', {
+new SnippetsBackendStack(app, 'SnippetsBackendStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,

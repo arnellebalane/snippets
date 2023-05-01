@@ -12,7 +12,7 @@ import * as logs from 'aws-cdk-lib/aws-logs';
 import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Construct } from 'constructs';
 
-export class CdkStack extends cdk.Stack {
+export class SnippetsBackendStack extends cdk.Stack {
   vpc: ec2.Vpc;
   vpcSecurityGroup: ec2.ISecurityGroup;
 
@@ -167,6 +167,11 @@ export class CdkStack extends cdk.Stack {
       protocol: elb.ApplicationProtocol.HTTP,
       port: 80,
       defaultTargetGroups: [this.targetGroup],
+    });
+
+    new cdk.CfnOutput(this, 'SnippetsBackendEndpoint', {
+      value: this.loadBalancer.loadBalancerDnsName,
+      exportName: 'SnippetsBackendEndpoint',
     });
   }
 
