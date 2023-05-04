@@ -2,8 +2,6 @@ import * as path from 'path';
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
-import * as rds from 'aws-cdk-lib/aws-rds';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ecr_assets from 'aws-cdk-lib/aws-ecr-assets';
 import * as ecr_deployment from 'cdk-ecr-deployment';
@@ -13,12 +11,13 @@ import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import { Construct } from 'constructs';
 
-export class SnippetsBackendStack extends cdk.Stack {
+interface SnippetsFrontendStackProps extends cdk.StackProps {
+  vpc?: ec2.Vpc;
+}
+
+export class SnippetsFrontendStack extends cdk.Stack {
   vpc: ec2.Vpc;
   vpcSecurityGroup: ec2.ISecurityGroup;
-
-  database: rds.DatabaseInstance;
-  databaseCredentials: secretsmanager.Secret;
 
   repository: ecr.Repository;
   image: ecr_assets.DockerImageAsset;
@@ -32,11 +31,10 @@ export class SnippetsBackendStack extends cdk.Stack {
   targetGroup: elb.ApplicationTargetGroup;
   loadBalancer: elb.ApplicationLoadBalancer;
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: SnippetsFrontendStackProps) {
     super(scope, id, props);
 
-    this.setupVpc();
-    this.setupDatabase();
+    this.setupVpc(props);
     this.setupRepository();
     this.setupTaskDefinition();
     this.setupContainer();
@@ -46,8 +44,12 @@ export class SnippetsBackendStack extends cdk.Stack {
     this.setupLoadBalancer();
   }
 
-  setupVpc() {
-    this.vpc = new ec2.Vpc(this, 'VPC', {});
+  setupVpc(props?: SnippetsFrontendStackProps) {
+    if (props?.vpc) {
+      this.vpc = props.vpc;
+    } else {
+      this.vpc = new ec2.Vpc(this, 'VPC', {});
+    }
 
     this.vpcSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(
       this,
@@ -56,42 +58,19 @@ export class SnippetsBackendStack extends cdk.Stack {
     );
   }
 
-  setupDatabase() {
-    this.databaseCredentials = new secretsmanager.Secret(this, 'Secret-PostgresCredentials', {
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({ username: 'postgres' }),
-        generateStringKey: 'password',
-        excludePunctuation: true,
-        passwordLength: 32,
-      },
-    });
-
-    this.database = new rds.DatabaseInstance(this, 'RDS-PostgresInstance', {
-      engine: rds.DatabaseInstanceEngine.POSTGRES,
-      databaseName: 'snippets',
-      instanceIdentifier: 'snippets',
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MICRO),
-      credentials: {
-        username: this.databaseCredentials.secretValueFromJson('username').unsafeUnwrap(),
-        password: this.databaseCredentials.secretValueFromJson('password'),
-      },
-      multiAz: false,
-      vpc: this.vpc,
-    });
-
-    this.database.connections.allowDefaultPortInternally();
-  }
-
   setupRepository() {
     this.repository = new ecr.Repository(this, 'ECR-Repository', {
-      repositoryName: 'snippets-backend',
+      repositoryName: 'snippets-frontend',
       autoDeleteImages: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     this.image = new ecr_assets.DockerImageAsset(this, 'ECR-DockerImage', {
-      directory: path.resolve(__dirname, '../../../backend'),
+      directory: path.resolve(__dirname, '../../../frontend'),
       file: 'deploy/Dockerfile',
+      buildArgs: {
+        SNIPPETS_API_URL: process.env.SNIPPETS_SERVER_URL || '',
+      },
     });
 
     new ecr_deployment.ECRDeployment(this, 'ECR-Deployment', {
@@ -109,7 +88,7 @@ export class SnippetsBackendStack extends cdk.Stack {
     });
 
     this.taskDefinition = new ecs.TaskDefinition(this, 'ECS-TaskDefinition', {
-      family: 'SnippetsBackendTaskDefinition',
+      family: 'SnippetsFrontendTaskDefinition',
       compatibility: ecs.Compatibility.FARGATE,
       cpu: '512',
       memoryMiB: '1024',
@@ -119,24 +98,15 @@ export class SnippetsBackendStack extends cdk.Stack {
 
   setupContainer() {
     this.container = this.taskDefinition.addContainer('ECS-Container', {
-      containerName: 'snippets-backend',
+      containerName: 'snippets-frontend',
       image: ecs.ContainerImage.fromRegistry(`${this.repository.repositoryUri}:latest`),
-      environment: {
-        DATABASE_HOST: this.database.dbInstanceEndpointAddress,
-        DATABASE_PORT: this.database.dbInstanceEndpointPort,
-        DATABASE_NAME: 'postgres',
-      },
-      secrets: {
-        DATABASE_USERNAME: ecs.Secret.fromSecretsManager(this.databaseCredentials, 'username'),
-        DATABASE_PASSWORD: ecs.Secret.fromSecretsManager(this.databaseCredentials, 'password'),
-      },
       logging: ecs.LogDriver.awsLogs({
-        streamPrefix: 'ecs-snippets-backend',
+        streamPrefix: 'ecs-snippets-frontend',
         logRetention: logs.RetentionDays.ONE_WEEK,
       }),
     });
     this.container.addPortMappings({
-      containerPort: 3000,
+      containerPort: 80,
       protocol: ecs.Protocol.TCP,
     });
   }
@@ -144,7 +114,7 @@ export class SnippetsBackendStack extends cdk.Stack {
   setupTargetGroup() {
     this.targetGroup = new elb.ApplicationTargetGroup(this, 'ELB-TargetGroup', {
       targetType: elb.TargetType.IP,
-      targetGroupName: 'SnippetsBackendTargetGroup',
+      targetGroupName: 'SnippetsFrontendTargetGroup',
       protocol: elb.ApplicationProtocol.HTTP,
       vpc: this.vpc,
     });
@@ -152,16 +122,16 @@ export class SnippetsBackendStack extends cdk.Stack {
 
   setupService() {
     this.cluster = new ecs.Cluster(this, 'ECS-Cluster', {
-      clusterName: 'SnippetsBackendCluster',
+      clusterName: 'SnippetsFrontendCluster',
       vpc: this.vpc,
     });
 
     this.service = new ecs.FargateService(this, 'ECS-Service', {
-      serviceName: 'SnippetsBackendService',
+      serviceName: 'SnippetsFrontendService',
       cluster: this.cluster,
       taskDefinition: this.taskDefinition,
       desiredCount: 3,
-      securityGroups: [this.vpcSecurityGroup, ...this.database.connections.securityGroups],
+      securityGroups: [this.vpcSecurityGroup],
       vpcSubnets: {
         subnets: [...this.vpc.publicSubnets, ...this.vpc.privateSubnets],
       },
@@ -172,15 +142,15 @@ export class SnippetsBackendStack extends cdk.Stack {
 
   setupCertificate() {
     let domainName;
-    if (process.env.SNIPPETS_SERVER_URL) {
-      const url = new URL(process.env.SNIPPETS_SERVER_URL);
+    if (process.env.SNIPPETS_CLIENT_URL) {
+      const url = new URL(process.env.SNIPPETS_CLIENT_URL);
       domainName = url.hostname;
     }
 
     if (domainName) {
       this.certificate = new acm.Certificate(this, 'ACM-Certificate', {
         domainName,
-        certificateName: 'SnippetsBackendCertificate',
+        certificateName: 'SnippetsFrontendCertificate',
         validation: acm.CertificateValidation.fromDns(),
       });
     }
@@ -188,7 +158,7 @@ export class SnippetsBackendStack extends cdk.Stack {
 
   setupLoadBalancer() {
     this.loadBalancer = new elb.ApplicationLoadBalancer(this, 'ELB-LoadBalancer', {
-      loadBalancerName: 'SnippetsBackendLoadBalancer',
+      loadBalancerName: 'SnippetsFrontendLoadBalancer',
       internetFacing: true,
       ipAddressType: elb.IpAddressType.IPV4,
       vpc: this.vpc,
@@ -210,10 +180,10 @@ export class SnippetsBackendStack extends cdk.Stack {
       defaultTargetGroups: [this.targetGroup],
     });
 
-    const endpoint = process.env.SNIPPETS_SERVER_URL || this.loadBalancer.loadBalancerDnsName;
-    new cdk.CfnOutput(this, 'SnippetsBackendEndpoint', {
+    const endpoint = process.env.SNIPPETS_CLIENT_URL || this.loadBalancer.loadBalancerDnsName;
+    new cdk.CfnOutput(this, 'SnippetsFrontendEndpoint', {
       value: endpoint,
-      exportName: 'SnippetsBackendEndpoint',
+      exportName: 'SnippetsFrontendEndpoint',
     });
   }
 }
