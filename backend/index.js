@@ -7,8 +7,8 @@ const config = require('./config');
 
 const options = {
   security: {
-    csrf: false
-  }
+    csrf: false,
+  },
 };
 
 server(
@@ -16,13 +16,13 @@ server(
 
   server.utils.modern(
     cors({
-      origin: [config.CLIENT_URL]
+      origin: true,
     })
   ),
 
   get('/', () => json({ version: '1.0.0', name: 'snippets-backend' })),
 
-  get('/:hash', async ctx => {
+  get('/:hash', async (ctx) => {
     try {
       const hash = ctx.params.hash;
       const snippet = await Snippet.findOne({ where: { hash } });
@@ -34,7 +34,7 @@ server(
     }
   }),
 
-  post('/snippets', async ctx => {
+  post('/snippets', async (ctx) => {
     try {
       const snippet = await Snippet.create({ body: ctx.data.snippet });
       return json(snippet.get());
@@ -44,10 +44,10 @@ server(
     }
   }),
 
-  error(ctx => {
+  error((ctx) => {
     throw ctx.error;
   })
-).then(ctx => {
+).then((ctx) => {
   ctx.log.info(`Server is now running at localhost:${ctx.options.port}`);
 });
 
@@ -55,13 +55,13 @@ server(
 const signals = {
   SIGHUP: 1,
   SIGINT: 2,
-  SIGTERM: 15
+  SIGTERM: 15,
 };
 
 const shutdown = (signal, value) => {
   throw new Error(`Server stopped by ${signal} with value ${value}`);
 };
 
-Object.keys(signals).forEach(signal => {
+Object.keys(signals).forEach((signal) => {
   process.on(signal, () => shutdown(signal, signals[signal]));
 });

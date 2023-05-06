@@ -1,8 +1,20 @@
 <template>
   <header class="app-header">
-    <h1>snippets.arnellebalane.com</h1>
+    <h1>{{ hostname }}</h1>
   </header>
 </template>
+
+<script>
+export default {
+  name: 'AppHeader',
+
+  data() {
+    const { hostname } = window.location;
+
+    return { hostname };
+  },
+};
+</script>
 
 <style scoped>
 .app-header {
