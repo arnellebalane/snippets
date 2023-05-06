@@ -10,10 +10,7 @@ import * as logs from 'aws-cdk-lib/aws-logs';
 import * as elb from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import { Construct } from 'constructs';
-
-interface SnippetsFrontendStackProps extends cdk.StackProps {
-  vpc?: ec2.Vpc;
-}
+import { SnippetsStackProps } from '../types/types';
 
 export class SnippetsFrontendStack extends cdk.Stack {
   vpc: ec2.Vpc;
@@ -31,10 +28,12 @@ export class SnippetsFrontendStack extends cdk.Stack {
   targetGroup: elb.ApplicationTargetGroup;
   loadBalancer: elb.ApplicationLoadBalancer;
 
-  constructor(scope: Construct, id: string, props?: SnippetsFrontendStackProps) {
+  constructor(scope: Construct, id: string, props: SnippetsStackProps) {
     super(scope, id, props);
 
-    this.setupVpc(props);
+    this.vpc = props.vpc;
+
+    this.setupVpc();
     this.setupRepository();
     this.setupTaskDefinition();
     this.setupContainer();
@@ -44,13 +43,7 @@ export class SnippetsFrontendStack extends cdk.Stack {
     this.setupLoadBalancer();
   }
 
-  setupVpc(props?: SnippetsFrontendStackProps) {
-    if (props?.vpc) {
-      this.vpc = props.vpc;
-    } else {
-      this.vpc = new ec2.Vpc(this, 'VPC', {});
-    }
-
+  setupVpc() {
     this.vpcSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(
       this,
       'VPC-SecurityGroup',
