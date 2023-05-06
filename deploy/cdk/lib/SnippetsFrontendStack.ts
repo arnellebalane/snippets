@@ -123,7 +123,9 @@ export class SnippetsFrontendStack extends cdk.Stack {
       serviceName: 'SnippetsFrontendService',
       cluster: this.cluster,
       taskDefinition: this.taskDefinition,
-      desiredCount: 3,
+      desiredCount: 1,
+      minHealthyPercent: 0,
+      maxHealthyPercent: 100,
       securityGroups: [this.vpcSecurityGroup],
       vpcSubnets: {
         subnets: [...this.vpc.publicSubnets, ...this.vpc.privateSubnets],

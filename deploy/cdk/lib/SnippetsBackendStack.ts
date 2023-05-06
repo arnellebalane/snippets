@@ -161,7 +161,9 @@ export class SnippetsBackendStack extends cdk.Stack {
       serviceName: 'SnippetsBackendService',
       cluster: this.cluster,
       taskDefinition: this.taskDefinition,
-      desiredCount: 3,
+      desiredCount: 1,
+      minHealthyPercent: 0,
+      maxHealthyPercent: 100,
       securityGroups: [this.vpcSecurityGroup, ...this.database.connections.securityGroups],
       vpcSubnets: {
         subnets: [...this.vpc.publicSubnets, ...this.vpc.privateSubnets],
