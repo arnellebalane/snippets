@@ -14,9 +14,12 @@ html {
 }
 
 body {
-    min-height: 100vh;
     font-family: monospace;
     font-size: 1.4rem;
     line-height: 1.8rem;
     background-color: var(--bg-primary);
+}
+
+#root {
+    min-height: 100vh;
 }
