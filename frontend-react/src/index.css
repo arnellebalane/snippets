@@ -6,6 +6,7 @@
 }
 
 html {
+    --text-primary: #c5c8c6;
     --text-inverted: #1d1f21;
     --bg-primary: #1d1f21;
     --bg-inverted: #c5c8c6;
@@ -17,6 +18,7 @@ body {
     font-family: monospace;
     font-size: 1.4rem;
     line-height: 1.8rem;
+    color: var(--text-primary);
     background-color: var(--bg-primary);
 }
 

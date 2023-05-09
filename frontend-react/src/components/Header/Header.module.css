@@ -2,6 +2,7 @@
     padding: 0.2rem 0.4rem;
     color: var(--text-inverted);
     background-color: var(--bg-inverted);
+    user-select: none;
 }
 
 .title {

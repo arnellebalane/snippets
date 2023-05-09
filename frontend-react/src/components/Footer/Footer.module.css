@@ -1,0 +1,25 @@
+.footer {
+    padding-top: 0.4rem;
+    user-select: none;
+}
+
+.shortcuts {
+    display: flex;
+    padding: 0;
+    list-style: none;
+}
+
+.shortcut {
+    width: 14rem;
+}
+
+.shortcut span {
+    margin-right: 1ch;
+
+    color: var(--text-inverted);
+    background-color: var(--bg-inverted);
+}
+
+.shortcut:first-child span {
+    padding-left: 0.4rem;
+}
