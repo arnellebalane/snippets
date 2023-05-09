@@ -1,0 +1,11 @@
+.header {
+    padding: 0.2rem 0.4rem;
+    color: var(--text-inverted);
+    background-color: var(--bg-inverted);
+}
+
+.title {
+    font-size: inherit;
+    font-weight: 400;
+    color: var(--text-inverted);
+}
