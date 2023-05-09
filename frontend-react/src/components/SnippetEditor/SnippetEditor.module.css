@@ -1,0 +1,10 @@
+.editor {
+    padding: 0.4rem 0.8rem;
+    border: none;
+
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    outline: none;
+    resize: none;
+}
