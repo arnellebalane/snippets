@@ -6,12 +6,7 @@ type Shortcut = {
 };
 
 export const Footer = () => {
-    const shortcuts: Shortcut[] = [
-        { key: '^A', label: 'Select All' },
-        { key: '^E', label: 'Edit New' },
-        { key: '^D', label: 'Duplicate' },
-        { key: '^R', label: 'Raw' },
-    ];
+    const shortcuts: Shortcut[] = [{ key: '^S', label: 'Save' }];
 
     return (
         <footer className={s.footer}>
