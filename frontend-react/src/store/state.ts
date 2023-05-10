@@ -1,7 +1,7 @@
-export type SnippetState = {
+export type SnippetsState = {
     snippet: string;
 };
 
-export const initialSnippetState: SnippetState = {
+export const initialSnippetState: SnippetsState = {
     snippet: '',
 };
