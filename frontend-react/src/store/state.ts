@@ -1,4 +1,5 @@
 export type SnippetsState = {
+    snippetHash?: string;
     snippet: string;
 };
 

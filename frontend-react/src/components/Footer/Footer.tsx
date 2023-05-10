@@ -1,12 +1,27 @@
+import { useEffect } from 'react';
+import { SnippetActions } from '../../interfaces';
+import { useShortcuts } from './Footer.hooks';
 import s from './Footer.module.css';
 
-type Shortcut = {
-    key: string;
-    label: string;
+export type FooterProps = {
+    onAction?: (action: SnippetActions) => void;
 };
 
-export const Footer = () => {
-    const shortcuts: Shortcut[] = [{ key: '^S', label: 'Save' }];
+export const Footer = ({ onAction }: FooterProps) => {
+    const shortcuts = useShortcuts();
+
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            for (const { action, checkKey } of shortcuts) {
+                if (checkKey(event)) {
+                    onAction?.(action);
+                }
+            }
+        };
+        document.addEventListener('keydown', onKeyDown, { capture: true });
+
+        return () => document.removeEventListener('keydown', onKeyDown, { capture: true });
+    }, []);
 
     return (
         <footer className={s.footer}>
