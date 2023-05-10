@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { SnippetActions } from '../../interfaces';
+import { SnippetActions } from '~/interfaces';
 import { useShortcuts } from './Footer.hooks';
 import s from './Footer.module.css';
 

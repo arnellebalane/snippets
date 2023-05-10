@@ -1,4 +1,4 @@
-import { useSetSnippet, useSnippet } from 'store/hooks';
+import { useSetSnippet, useSnippet } from '~/store/hooks';
 import s from './SnippetEditor.module.css';
 
 export const SnippetEditor = () => {

@@ -1,5 +1,5 @@
-import { ShortcutDefinition, SnippetActions } from '../../interfaces';
-import { useSnippetHash } from 'store/hooks';
+import { ShortcutDefinition, SnippetActions } from '~/interfaces';
+import { useSnippetHash } from '~/store/hooks';
 
 export const useShortcuts = (): ShortcutDefinition[] => {
     const snippetHash = useSnippetHash();
