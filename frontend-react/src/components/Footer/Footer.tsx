@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { SnippetActions } from '~/interfaces';
-import { useShortcuts } from './Footer.hooks';
+import { useShortcuts } from '~/utils/hooks';
 import s from './Footer.module.css';
 
 export type FooterProps = {

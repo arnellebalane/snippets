@@ -1,5 +1,5 @@
 import { ShortcutDefinition, SnippetActions } from '~/interfaces';
-import { useSnippetHash } from '~/store/hooks';
+import { useSaveSnippet, useSnippetHash } from '~/store/hooks';
 
 export const useShortcuts = (): ShortcutDefinition[] => {
     const snippetHash = useSnippetHash();
@@ -35,4 +35,21 @@ export const useShortcuts = (): ShortcutDefinition[] => {
             checkKey: (event) => event.ctrlKey && event.key === 's',
         },
     ];
+};
+
+export const useHandleAction = () => {
+    const saveSnippet = useSaveSnippet();
+
+    return (action: SnippetActions) => {
+        type HandlersType = Record<SnippetActions, () => void>;
+
+        const handlers: HandlersType = {
+            [SnippetActions.SAVE]: () => saveSnippet(),
+            [SnippetActions.SELECT_ALL]: () => {},
+            [SnippetActions.EDIT_NEW]: () => {},
+            [SnippetActions.DUPLICATE]: () => {},
+        };
+
+        handlers[action]();
+    };
 };
