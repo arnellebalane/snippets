@@ -11,3 +11,10 @@ export type ShortcutDefinition = {
     action: SnippetActions;
     checkKey: (event: KeyboardEvent) => boolean;
 };
+
+export type Snippet = {
+    hash: string;
+    body: string;
+    createdAt: string;
+    updatedAt: string;
+};
