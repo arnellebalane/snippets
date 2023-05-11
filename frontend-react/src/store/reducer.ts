@@ -1,6 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { initialSnippetState } from './state';
-import { CLEAR_SNIPPET, CLEAR_SNIPPET_HASH, SET_SNIPPET, SET_SNIPPET_HASH } from './actions';
+import {
+    CLEAR_SNIPPET,
+    CLEAR_SNIPPET_HASH,
+    SAVE_SNIPPET_FAILURE,
+    SAVE_SNIPPET_START,
+    SAVE_SNIPPET_SUCCESS,
+    SET_SNIPPET,
+    SET_SNIPPET_HASH,
+} from './actions';
 
 export const snippetsReducer = createReducer(initialSnippetState, (builder) => {
     builder
@@ -15,5 +23,18 @@ export const snippetsReducer = createReducer(initialSnippetState, (builder) => {
         })
         .addCase(CLEAR_SNIPPET_HASH, (state) => {
             state.snippetHash = initialSnippetState.snippetHash;
+        })
+        .addCase(SAVE_SNIPPET_START, (state) => {
+            state.loading = true;
+            state.error = undefined;
+        })
+        .addCase(SAVE_SNIPPET_SUCCESS, (state, { payload }) => {
+            state.loading = false;
+            state.snippetHash = payload.hash;
+            state.snippet = payload.body;
+        })
+        .addCase(SAVE_SNIPPET_FAILURE, (state, { payload }) => {
+            state.loading = false;
+            state.error = payload;
         });
 });
