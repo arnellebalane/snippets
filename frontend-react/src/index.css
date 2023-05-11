@@ -1,0 +1,29 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+html {
+    --text-primary: #c5c8c6;
+    --text-inverted: #1d1f21;
+    --bg-primary: #1d1f21;
+    --bg-inverted: #c5c8c6;
+
+    font-size: 62.5%;
+}
+
+body {
+    font-family: monospace;
+    font-size: 1.4rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6rem;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+}
+
+#root {
+    min-height: 100vh;
+}
