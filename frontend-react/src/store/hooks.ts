@@ -14,9 +14,11 @@ export const useSnippetHash = () => useAppSelector((state) => state.snippetHash)
 
 export const useLoadingStatus = () => {
     const loading = useAppSelector((state) => state.loading);
+    const error = useAppSelector((state) => state.error);
     const hasSnippetHash = useAppSelector((state) => Boolean(state.snippetHash));
 
     return {
+        hasError: Boolean(error),
         hasCalled: loading !== undefined,
         isLoading: loading,
         isComplete: loading === false && hasSnippetHash,
