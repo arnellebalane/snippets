@@ -1,6 +1,7 @@
 import { createReducer, isAnyOf } from '@reduxjs/toolkit';
 import { initialSnippetState } from './state';
 import {
+    CLEAR_LOADING,
     CLEAR_SNIPPET,
     CLEAR_SNIPPET_HASH,
     GET_SNIPPET_SUCCESS,
@@ -22,6 +23,9 @@ export const snippetsReducer = createReducer(initialSnippetState, (builder) => {
         })
         .addCase(CLEAR_SNIPPET_HASH, (state) => {
             state.snippetHash = initialSnippetState.snippetHash;
+        })
+        .addCase(CLEAR_LOADING, (state) => {
+            state.loading = undefined;
         })
         .addMatcher(isAnyOf(SAVE_SNIPPET_SUCCESS, GET_SNIPPET_SUCCESS), (state, { payload }) => {
             state.snippetHash = payload.hash;

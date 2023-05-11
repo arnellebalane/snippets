@@ -4,5 +4,6 @@
 
 /* Workaround to override CSS specificity from .hljs */
 .highlight.highlight {
+    padding: 0;
     background-color: transparent;
 }

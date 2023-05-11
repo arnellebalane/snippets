@@ -21,7 +21,7 @@ export const Footer = ({ onAction }: FooterProps) => {
         document.addEventListener('keydown', onKeyDown, { capture: true });
 
         return () => document.removeEventListener('keydown', onKeyDown, { capture: true });
-    }, []);
+    }, [shortcuts, onAction]);
 
     return (
         <footer className={s.footer}>
