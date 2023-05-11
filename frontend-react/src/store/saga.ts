@@ -1,7 +1,16 @@
 import { all, put, select, takeEvery } from 'redux-saga/effects';
 import { Snippet } from '~/interfaces';
 import { SNIPPETS_API_URL } from '~/utils/constants';
-import { SAVE_SNIPPET, SAVE_SNIPPET_FAILURE, SAVE_SNIPPET_START, SAVE_SNIPPET_SUCCESS } from './actions';
+import {
+    GET_SNIPPET,
+    GET_SNIPPET_FAILURE,
+    GET_SNIPPET_START,
+    GET_SNIPPET_SUCCESS,
+    SAVE_SNIPPET,
+    SAVE_SNIPPET_FAILURE,
+    SAVE_SNIPPET_START,
+    SAVE_SNIPPET_SUCCESS,
+} from './actions';
 
 export class SnippetsSaga {
     constructor() {
@@ -9,11 +18,15 @@ export class SnippetsSaga {
     }
 
     *sagas() {
-        yield all([this.saveSnippetWatcher()]);
+        yield all([this.saveSnippetWatcher(), this.getSnippetWatcher()]);
     }
 
     *saveSnippetWatcher() {
         yield takeEvery(SAVE_SNIPPET.type, this.saveSnippet.bind(this));
+    }
+
+    *getSnippetWatcher() {
+        yield takeEvery(GET_SNIPPET.type, this.getSnippet.bind(this));
     }
 
     *saveSnippet() {
@@ -21,7 +34,7 @@ export class SnippetsSaga {
         const snippet: string = yield select((state) => state.snippet);
 
         try {
-            const response: Response = yield fetch(SNIPPETS_API_URL + '/snippets', {
+            const response: Response = yield fetch(`${SNIPPETS_API_URL}/snippets`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,6 +45,18 @@ export class SnippetsSaga {
             yield put(SAVE_SNIPPET_SUCCESS(data));
         } catch (error: unknown) {
             yield put(SAVE_SNIPPET_FAILURE(error as Error));
+        }
+    }
+
+    *getSnippet({ payload: hash }: ReturnType<typeof GET_SNIPPET>) {
+        yield put(GET_SNIPPET_START());
+
+        try {
+            const response: Response = yield fetch(`${SNIPPETS_API_URL}/${hash}`);
+            const data: Snippet = yield response.json();
+            yield put(GET_SNIPPET_SUCCESS(data));
+        } catch (error: unknown) {
+            yield put(GET_SNIPPET_FAILURE(error as Error));
         }
     }
 }

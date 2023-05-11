@@ -1,10 +1,9 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { createReducer, isAnyOf } from '@reduxjs/toolkit';
 import { initialSnippetState } from './state';
 import {
     CLEAR_SNIPPET,
     CLEAR_SNIPPET_HASH,
-    SAVE_SNIPPET_FAILURE,
-    SAVE_SNIPPET_START,
+    GET_SNIPPET_SUCCESS,
     SAVE_SNIPPET_SUCCESS,
     SET_SNIPPET,
     SET_SNIPPET_HASH,
@@ -24,17 +23,28 @@ export const snippetsReducer = createReducer(initialSnippetState, (builder) => {
         .addCase(CLEAR_SNIPPET_HASH, (state) => {
             state.snippetHash = initialSnippetState.snippetHash;
         })
-        .addCase(SAVE_SNIPPET_START, (state) => {
-            state.loading = true;
-            state.error = undefined;
-        })
-        .addCase(SAVE_SNIPPET_SUCCESS, (state, { payload }) => {
-            state.loading = false;
+        .addMatcher(isAnyOf(SAVE_SNIPPET_SUCCESS, GET_SNIPPET_SUCCESS), (state, { payload }) => {
             state.snippetHash = payload.hash;
             state.snippet = payload.body;
         })
-        .addCase(SAVE_SNIPPET_FAILURE, (state, { payload }) => {
-            state.loading = false;
-            state.error = payload;
-        });
+        .addMatcher(
+            ({ type }) => type.endsWith('_START'),
+            (state) => {
+                state.loading = true;
+                state.error = undefined;
+            }
+        )
+        .addMatcher(
+            ({ type }) => type.endsWith('_SUCCESS'),
+            (state) => {
+                state.loading = false;
+            }
+        )
+        .addMatcher(
+            ({ type }) => type.endsWith('_FAILURE'),
+            (state, { payload }) => {
+                state.loading = false;
+                state.error = payload;
+            }
+        );
 });

@@ -1,4 +1,6 @@
+import Highlight from 'react-highlight';
 import s from './SnippetPreview.module.css';
+import 'highlight.js/styles/monokai-sublime.css';
 
 export type SnippetPreviewProps = {
     value: string;
@@ -7,9 +9,7 @@ export type SnippetPreviewProps = {
 export const SnippetPreview = ({ value }: SnippetPreviewProps) => {
     return (
         <div className={s.preview}>
-            <pre>
-                <code>{value}</code>
-            </pre>
+            <Highlight className={s.highlight}>{value}</Highlight>
         </div>
     );
 };

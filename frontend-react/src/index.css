@@ -17,6 +17,8 @@ html {
 body {
     font-family: monospace;
     font-size: 1.4rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     line-height: 1.6rem;
     color: var(--text-primary);
     background-color: var(--bg-primary);

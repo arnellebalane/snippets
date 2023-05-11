@@ -1,3 +1,8 @@
 .preview {
     padding: 0.4rem 0.8rem;
 }
+
+/* Workaround to override CSS specificity from .hljs */
+.highlight.highlight {
+    background-color: transparent;
+}
