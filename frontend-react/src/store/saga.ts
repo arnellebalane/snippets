@@ -1,4 +1,4 @@
-import { all, put, select, takeEvery } from 'redux-saga/effects';
+import { all, put, select, takeEvery, takeLeading } from 'redux-saga/effects';
 import { Snippet } from '~/interfaces';
 import { SNIPPETS_API_URL } from '~/utils/constants';
 import {
@@ -22,7 +22,7 @@ export class SnippetsSaga {
     }
 
     *saveSnippetWatcher() {
-        yield takeEvery(SAVE_SNIPPET.type, this.saveSnippet.bind(this));
+        yield takeLeading(SAVE_SNIPPET.type, this.saveSnippet.bind(this));
     }
 
     *getSnippetWatcher() {

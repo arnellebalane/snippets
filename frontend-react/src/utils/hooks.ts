@@ -1,6 +1,7 @@
 import { RefObject, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShortcutDefinition, SnippetActions } from '~/interfaces';
+import { ctrlKey, selectElementContent } from '~/utils/helpers';
 import { useClearSnippet, useClearSnippetHash, useSaveSnippet, useSnippet, useSnippetHash } from '~/store/hooks';
 
 export const useShortcuts = (): ShortcutDefinition[] => {
@@ -13,19 +14,19 @@ export const useShortcuts = (): ShortcutDefinition[] => {
                     key: '^A',
                     label: 'Select All',
                     action: SnippetActions.SELECT_ALL,
-                    checkKey: (event) => event.ctrlKey && event.key === 'a',
+                    checkKey: ctrlKey('a'),
                 },
                 {
                     key: '^E',
                     label: 'Edit New',
                     action: SnippetActions.EDIT_NEW,
-                    checkKey: (event) => event.ctrlKey && event.key === 'e',
+                    checkKey: ctrlKey('e'),
                 },
                 {
                     key: '^D',
                     label: 'Duplicate',
                     action: SnippetActions.DUPLICATE,
-                    checkKey: (event) => event.ctrlKey && event.key === 'd',
+                    checkKey: ctrlKey('d'),
                 },
             ];
         }
@@ -35,7 +36,7 @@ export const useShortcuts = (): ShortcutDefinition[] => {
                 key: '^S',
                 label: 'Save',
                 action: SnippetActions.SAVE,
-                checkKey: (event) => event.ctrlKey && event.key === 's',
+                checkKey: ctrlKey('s'),
             },
         ];
     }, [snippetHash]);
@@ -57,19 +58,15 @@ export const useHandleAction = ({ preview }: UseHandleActionProps = {}) => {
 
         const handlers: HandlersType = {
             [SnippetActions.SAVE]: () => {
-                if (!snippet) return;
-                saveSnippet();
+                if (snippet) {
+                    saveSnippet();
+                }
             },
 
             [SnippetActions.SELECT_ALL]: () => {
-                if (!preview?.current) return;
-
-                const range = document.createRange();
-                range.selectNode(preview.current);
-
-                const selection = window.getSelection();
-                selection?.removeAllRanges();
-                selection?.addRange(range);
+                if (preview?.current) {
+                    selectElementContent(preview.current);
+                }
             },
 
             [SnippetActions.EDIT_NEW]: () => {
