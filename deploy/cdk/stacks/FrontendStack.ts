@@ -7,25 +7,28 @@ import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import { Construct } from 'constructs';
 
-export class SnippetsFrontendReactStack extends cdk.Stack {
+interface FrontendStackProps extends cdk.StackProps {
+    certificate: acm.Certificate;
+}
+
+export class FrontendStack extends cdk.Stack {
     asset: s3assets.Asset;
     bucket: s3.Bucket;
     deployment: s3deployment.BucketDeployment;
 
-    domainName: string;
     certificate: acm.Certificate;
     distribution: cloudfront.CloudFrontWebDistribution;
 
-    constructor(scope: Construct, id: string, props: cdk.StackProps) {
+    constructor(scope: Construct, id: string, props: FrontendStackProps) {
         super(scope, id, props);
 
+        this.certificate = props.certificate;
         this.setupBucketDeployment();
-        this.setupCertificate();
         this.setupDistribution();
     }
 
     setupBucketDeployment() {
-        this.asset = new s3assets.Asset(this, 'SnippetsFrontendAssets', {
+        this.asset = new s3assets.Asset(this, 'S3-Assets', {
             path: path.resolve(__dirname, '../../../frontend-react'),
             bundling: {
                 image: cdk.DockerImage.fromRegistry('node:18.15.0-slim'),
@@ -38,7 +41,7 @@ export class SnippetsFrontendReactStack extends cdk.Stack {
             },
         });
 
-        this.bucket = new s3.Bucket(this, 'SnippetsFrontendBucket', {
+        this.bucket = new s3.Bucket(this, 'S3-Bucket', {
             bucketName: 'snippets-frontend',
             autoDeleteObjects: true,
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -46,29 +49,20 @@ export class SnippetsFrontendReactStack extends cdk.Stack {
             versioned: true,
         });
 
-        this.deployment = new s3deployment.BucketDeployment(this, 'SnippetsFrontendDeployment', {
+        this.deployment = new s3deployment.BucketDeployment(this, 'S3-Deployment', {
             sources: [s3deployment.Source.bucket(this.asset.bucket, this.asset.s3ObjectKey)],
             destinationBucket: this.bucket,
         });
     }
 
-    setupCertificate() {
+    setupDistribution() {
+        let domainName;
         if (process.env.SNIPPETS_CLIENT_URL) {
             const url = new URL(process.env.SNIPPETS_CLIENT_URL);
-            this.domainName = url.hostname;
+            domainName = url.hostname;
         }
 
-        if (this.domainName) {
-            this.certificate = new acm.Certificate(this, 'ACM-Certificate', {
-                domainName: this.domainName,
-                certificateName: 'SnippetsFrontendCertificate',
-                validation: acm.CertificateValidation.fromDns(),
-            });
-        }
-    }
-
-    setupDistribution() {
-        this.distribution = new cloudfront.CloudFrontWebDistribution(this, 'SnippetsFrontendDistribution', {
+        this.distribution = new cloudfront.CloudFrontWebDistribution(this, 'CF-Distribution', {
             originConfigs: [
                 {
                     behaviors: [
@@ -84,11 +78,17 @@ export class SnippetsFrontendReactStack extends cdk.Stack {
             ],
             defaultRootObject: 'index.html',
             viewerCertificate: this.certificate
-                ? cloudfront.ViewerCertificate.fromAcmCertificate(this.certificate)
+                ? cloudfront.ViewerCertificate.fromAcmCertificate(this.certificate, {
+                      aliases: domainName ? [domainName] : [],
+                  })
                 : undefined,
             viewerProtocolPolicy: this.certificate
                 ? cloudfront.ViewerProtocolPolicy.HTTPS_ONLY
                 : cloudfront.ViewerProtocolPolicy.ALLOW_ALL,
+        });
+
+        new cdk.CfnOutput(this, 'FrontendEndpoint', {
+            value: this.distribution.distributionDomainName,
         });
     }
 }

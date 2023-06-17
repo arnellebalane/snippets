@@ -28,6 +28,10 @@ export class CertificateStack extends cdk.Stack {
                 certificateName: 'SnippetsFrontendCertificate',
                 validation: acm.CertificateValidation.fromDns(),
             });
+
+            new cdk.CfnOutput(this, 'FrontendCertificateArn', {
+                value: this.frontendCertificate.certificateArn,
+            });
         }
     }
 
@@ -39,6 +43,10 @@ export class CertificateStack extends cdk.Stack {
                 domainName: url.hostname,
                 certificateName: 'SnippetsBackendCertificate',
                 validation: acm.CertificateValidation.fromDns(),
+            });
+
+            new cdk.CfnOutput(this, 'BackendCertificateArn', {
+                value: this.backendCertificate.certificateArn,
             });
         }
     }

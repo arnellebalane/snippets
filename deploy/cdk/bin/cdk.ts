@@ -5,20 +5,26 @@ import * as cdk from 'aws-cdk-lib';
 import { CertificateStack } from '../stacks/CertificateStack';
 import { SnippetsSharedStack } from '../stacks/SnippetsSharedStack';
 import { SnippetsBackendStack } from '../stacks/SnippetsBackendStack';
-import { SnippetsFrontendStack } from '../stacks/SnippetsFrontendStack';
-import { SnippetsFrontendReactStack } from '../stacks/SnippetsFrontendReactStack';
+import { FrontendStack } from '../stacks/FrontendStack';
 
 dotenv.config();
 const app = new cdk.App();
 
-const env: cdk.Environment = {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
+const props: cdk.StackProps = {
+    env: {
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: process.env.CDK_DEFAULT_REGION,
+    },
+    crossRegionReferences: true,
 };
 
-new CertificateStack(app, 'SnippetsCertificateStack', { env });
+const certificateStack = new CertificateStack(app, 'SnippetsCertificateStack', props);
+const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
+    ...props,
+    certificate: certificateStack.frontendCertificate,
+});
 
-// new SnippetsFrontendReactStack(app, 'SnippetsFrontendStack', { env });
+frontendStack.addDependency(certificateStack);
 
 // const shared = new SnippetsSharedStack(app, 'SnippetsSharedStack', { env });
 
