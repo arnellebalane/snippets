@@ -2,11 +2,11 @@
 import * as dotenv from 'dotenv';
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { CertificateStack } from '../lib/CertificateStack';
-import { SnippetsSharedStack } from '../lib/SnippetsSharedStack';
-import { SnippetsBackendStack } from '../lib/SnippetsBackendStack';
-import { SnippetsFrontendStack } from '../lib/SnippetsFrontendStack';
-import { SnippetsFrontendReactStack } from '../lib/SnippetsFrontendReactStack';
+import { CertificateStack } from '../stacks/CertificateStack';
+import { SnippetsSharedStack } from '../stacks/SnippetsSharedStack';
+import { SnippetsBackendStack } from '../stacks/SnippetsBackendStack';
+import { SnippetsFrontendStack } from '../stacks/SnippetsFrontendStack';
+import { SnippetsFrontendReactStack } from '../stacks/SnippetsFrontendReactStack';
 
 dotenv.config();
 const app = new cdk.App();
