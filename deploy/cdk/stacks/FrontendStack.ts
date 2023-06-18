@@ -102,6 +102,12 @@ export class FrontendStack extends cdk.Stack {
                 prefix: 'snippets-frontend',
             },
             defaultRootObject: 'index.html',
+            errorConfigurations: [403, 404].map((errorCode) => ({
+                errorCode,
+                responseCode: 200,
+                responsePagePath: '/index.html',
+                errorCachingMinTtl: 0,
+            })),
             viewerCertificate: this.certificate
                 ? cloudfront.ViewerCertificate.fromAcmCertificate(this.certificate, {
                       aliases: domainName ? [domainName] : [],
