@@ -19,6 +19,7 @@ export class FrontendStack extends cdk.Stack {
 
     certificate: acm.Certificate;
     distribution: cloudfront.CloudFrontWebDistribution;
+    distributionLoggingBucket: s3.Bucket;
     originAccessControl: cloudfront.CfnOriginAccessControl;
 
     constructor(scope: Construct, id: string, props: FrontendStackProps) {
@@ -26,6 +27,7 @@ export class FrontendStack extends cdk.Stack {
 
         this.certificate = props.certificate;
         this.setupBucketDeployment();
+        this.setupLoggingBucket();
         this.setupDistribution();
         this.setupOriginAccessControl();
     }
@@ -58,6 +60,22 @@ export class FrontendStack extends cdk.Stack {
         });
     }
 
+    setupLoggingBucket() {
+        this.distributionLoggingBucket = new s3.Bucket(this, 'S3-LoggingBucket', {
+            bucketName: 'snippets-frontend-logs',
+            autoDeleteObjects: false,
+            blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+            objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_PREFERRED,
+            lifecycleRules: [
+                {
+                    id: 'DeleteObjectsAfterThirtyDays',
+                    enabled: true,
+                    expiration: cdk.Duration.days(30),
+                },
+            ],
+        });
+    }
+
     setupDistribution() {
         let domainName;
         if (process.env.SNIPPETS_CLIENT_URL) {
@@ -79,6 +97,10 @@ export class FrontendStack extends cdk.Stack {
                     },
                 },
             ],
+            loggingConfig: {
+                bucket: this.distributionLoggingBucket,
+                prefix: 'snippets-frontend',
+            },
             defaultRootObject: 'index.html',
             viewerCertificate: this.certificate
                 ? cloudfront.ViewerCertificate.fromAcmCertificate(this.certificate, {
