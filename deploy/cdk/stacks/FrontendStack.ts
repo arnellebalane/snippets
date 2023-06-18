@@ -83,11 +83,12 @@ export class FrontendStack extends cdk.Stack {
             viewerCertificate: this.certificate
                 ? cloudfront.ViewerCertificate.fromAcmCertificate(this.certificate, {
                       aliases: domainName ? [domainName] : [],
+                      securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
                   })
                 : undefined,
-            viewerProtocolPolicy: this.certificate
-                ? cloudfront.ViewerProtocolPolicy.HTTPS_ONLY
-                : cloudfront.ViewerProtocolPolicy.ALLOW_ALL,
+            // TODO: Using HTTPS_ONLY currently returns an 403 response from CloudFront, and REDIRECT_TO_HTTPS causes
+            // a redirect loop to the same URL.
+            viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.ALLOW_ALL,
         });
 
         new cdk.CfnOutput(this, 'DistributionDomainName', {
