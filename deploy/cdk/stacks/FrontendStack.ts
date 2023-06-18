@@ -5,6 +5,7 @@ import * as s3assets from 'aws-cdk-lib/aws-s3-assets';
 import * as s3deployment from 'aws-cdk-lib/aws-s3-deployment';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 interface FrontendStackProps extends cdk.StackProps {
@@ -18,6 +19,7 @@ export class FrontendStack extends cdk.Stack {
 
     certificate: acm.Certificate;
     distribution: cloudfront.CloudFrontWebDistribution;
+    originAccessControl: cloudfront.CfnOriginAccessControl;
 
     constructor(scope: Construct, id: string, props: FrontendStackProps) {
         super(scope, id, props);
@@ -25,6 +27,7 @@ export class FrontendStack extends cdk.Stack {
         this.certificate = props.certificate;
         this.setupBucketDeployment();
         this.setupDistribution();
+        this.setupOriginAccessControl();
     }
 
     setupBucketDeployment() {
@@ -87,8 +90,50 @@ export class FrontendStack extends cdk.Stack {
                 : cloudfront.ViewerProtocolPolicy.ALLOW_ALL,
         });
 
-        new cdk.CfnOutput(this, 'FrontendEndpoint', {
+        new cdk.CfnOutput(this, 'DistributionDomainName', {
             value: this.distribution.distributionDomainName,
         });
+        if (domainName) {
+            new cdk.CfnOutput(this, 'FrontendEndpoint', {
+                value: domainName,
+            });
+        }
+    }
+
+    setupOriginAccessControl() {
+        // https://github.com/aws/aws-cdk/issues/21771#issuecomment-1281190832
+        this.originAccessControl = new cloudfront.CfnOriginAccessControl(this, 'CF-OriginAccessControl', {
+            originAccessControlConfig: {
+                name: 'SnippetsOriginAccessControl',
+                originAccessControlOriginType: 's3',
+                signingBehavior: 'always',
+                signingProtocol: 'sigv4',
+            },
+        });
+        this.originAccessControl.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
+
+        const distribution = this.distribution.node.defaultChild as cloudfront.CfnDistribution;
+        distribution.addPropertyOverride(
+            'DistributionConfig.Origins.0.OriginAccessControlId',
+            this.originAccessControl.attrId
+        );
+
+        const oacPolicy = new iam.PolicyStatement({
+            actions: ['s3:GetObject'],
+            resources: [this.bucket.arnForObjects('*')],
+            principals: [new iam.ServicePrincipal('cloudfront.amazonaws.com')],
+        });
+        oacPolicy.addCondition('StringEquals', {
+            'AWS:SourceArn': cdk.Arn.format(
+                {
+                    region: '',
+                    service: 'cloudfront',
+                    resource: 'distribution',
+                    resourceName: this.distribution.distributionId,
+                },
+                this
+            ),
+        });
+        this.bucket.addToResourcePolicy(oacPolicy);
     }
 }
