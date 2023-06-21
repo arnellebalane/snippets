@@ -20,12 +20,8 @@ const createLogStream = async (logStreamName: string) => {
         logStreamName,
     });
 
-    try {
-        await logs.send(request);
-        console.info(`Log stream "${logStreamName}" in log group "${logGroupName}" was successfully created.`);
-    } catch (error: unknown) {
-        console.error(error);
-    }
+    await logs.send(request);
+    console.info(`Log stream "${logStreamName}" in log group "${logGroupName}" was successfully created.`);
 };
 
 const parseCloudFrontLogs = (content: string): CloudFrontAccessLog[] => {
@@ -62,14 +58,10 @@ const sendLogsToCloudWatch = async (logEvents: CloudFrontAccessLog[], logStreamN
                 .sort((a, b) => a.timestamp - b.timestamp),
         });
 
-        try {
-            await logs.send(request);
-            console.info(
-                `Log events for log stream "${logStreamName}" in log group "${logGroupName}" were successfullly sent to CloudWatch.`
-            );
-        } catch (error: unknown) {
-            console.error(error);
-        }
+        await logs.send(request);
+        console.info(
+            `Log events for log stream "${logStreamName}" in log group "${logGroupName}" were successfullly sent to CloudWatch.`
+        );
     }
 };
 
@@ -78,29 +70,23 @@ export const handler: Handler = async (event: S3Event, context) => {
         const Bucket = record.s3.bucket.name;
         const Key = record.s3.object.key;
 
-        try {
-            const request = new GetObjectCommand({ Bucket, Key });
-            const response = await s3.send(request);
-            if (!response.Body) {
-                console.error(`Object "${Key}" from bucket "${Bucket}" is empty.`);
-                return;
-            }
-
-            let content;
-            if (response.ContentType === 'application/x-gzip' || Key.endsWith('.gz')) {
-                const buffer = await response.Body.transformToByteArray();
-                content = (await unzip(buffer)).toString('utf8');
-            } else {
-                content = await response.Body.transformToString();
-            }
-
-            const logs = parseCloudFrontLogs(content);
-            await createLogStream(Key);
-            await sendLogsToCloudWatch(logs, Key);
-        } catch (error) {
-            console.error(
-                `Error getting object "${Key}" from bucket "${Bucket}". Make sure they exist and the bucket is in the same region as this function.`
-            );
+        const request = new GetObjectCommand({ Bucket, Key });
+        const response = await s3.send(request);
+        if (!response.Body) {
+            console.error(`Object "${Key}" from bucket "${Bucket}" is empty.`);
+            return;
         }
+
+        let content;
+        if (response.ContentType === 'application/x-gzip' || Key.endsWith('.gz')) {
+            const buffer = await response.Body.transformToByteArray();
+            content = (await unzip(buffer)).toString('utf8');
+        } else {
+            content = await response.Body.transformToString();
+        }
+
+        const logs = parseCloudFrontLogs(content);
+        await createLogStream(Key);
+        await sendLogsToCloudWatch(logs, Key);
     }
 };
