@@ -3,6 +3,7 @@ import { unzip as _unzip } from 'node:zlib';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { CloudWatchLogsClient, CreateLogStreamCommand, PutLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
 import { Handler, S3Event } from 'aws-lambda';
+import { omit } from 'lodash';
 
 type CloudFrontAccessLog = Record<string, string> & { _timestamp: number };
 
@@ -56,7 +57,7 @@ const sendLogsToCloudWatch = async (logEvents: CloudFrontAccessLog[], logStreamN
                 .slice(start, end)
                 .map((logEvents) => ({
                     timestamp: logEvents._timestamp,
-                    message: JSON.stringify(logEvents),
+                    message: JSON.stringify(omit(logEvents, ['_timestamp'])),
                 }))
                 .sort((a, b) => a.timestamp - b.timestamp),
         });

@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^29.4.0",
+    "@types/lodash": "^4.14.195",
     "@types/node": "18.14.6",
     "aws-cdk": "2.76.0",
     "jest": "^29.5.0",
@@ -28,6 +29,7 @@
     "cdk-ecr-deployment": "^2.5.6",
     "constructs": "^10.0.0",
     "dotenv": "^16.0.3",
+    "lodash": "^4.17.21",
     "source-map-support": "^0.5.21"
   }
 }
