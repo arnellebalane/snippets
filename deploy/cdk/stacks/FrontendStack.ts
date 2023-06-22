@@ -1,11 +1,15 @@
 import * as path from 'path';
 import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as s3assets from 'aws-cdk-lib/aws-s3-assets';
-import * as s3deployment from 'aws-cdk-lib/aws-s3-deployment';
+import * as s3Assets from 'aws-cdk-lib/aws-s3-assets';
+import * as s3Deployment from 'aws-cdk-lib/aws-s3-deployment';
+import * as s3Notifications from 'aws-cdk-lib/aws-s3-notifications';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as logs from 'aws-cdk-lib/aws-logs';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 
 interface FrontendStackProps extends cdk.StackProps {
@@ -13,14 +17,18 @@ interface FrontendStackProps extends cdk.StackProps {
 }
 
 export class FrontendStack extends cdk.Stack {
-    asset: s3assets.Asset;
+    asset: s3Assets.Asset;
     bucket: s3.Bucket;
-    deployment: s3deployment.BucketDeployment;
+    deployment: s3Deployment.BucketDeployment;
 
     certificate: acm.Certificate;
     distribution: cloudfront.CloudFrontWebDistribution;
     distributionLoggingBucket: s3.Bucket;
     originAccessControl: cloudfront.CfnOriginAccessControl;
+
+    logGroup: logs.LogGroup;
+    executionRole: iam.Role;
+    lambda: lambdaNode.NodejsFunction;
 
     constructor(scope: Construct, id: string, props: FrontendStackProps) {
         super(scope, id, props);
@@ -30,10 +38,16 @@ export class FrontendStack extends cdk.Stack {
         this.setupLoggingBucket();
         this.setupDistribution();
         this.setupOriginAccessControl();
+
+        // Forward access logs from S3 log bucket to CloudWatch
+        this.setupLogGroup();
+        this.setupLambdaExecutionRole();
+        this.setupLambda();
+        this.setupLoggingBucketEventNotifications();
     }
 
     setupBucketDeployment() {
-        this.asset = new s3assets.Asset(this, 'S3-Assets', {
+        this.asset = new s3Assets.Asset(this, 'S3-Assets', {
             path: path.resolve(__dirname, '../../../frontend-react'),
             bundling: {
                 image: cdk.DockerImage.fromRegistry('node:18.15.0-slim'),
@@ -54,8 +68,8 @@ export class FrontendStack extends cdk.Stack {
             versioned: true,
         });
 
-        this.deployment = new s3deployment.BucketDeployment(this, 'S3-Deployment', {
-            sources: [s3deployment.Source.bucket(this.asset.bucket, this.asset.s3ObjectKey)],
+        this.deployment = new s3Deployment.BucketDeployment(this, 'S3-Deployment', {
+            sources: [s3Deployment.Source.bucket(this.asset.bucket, this.asset.s3ObjectKey)],
             destinationBucket: this.bucket,
         });
     }
@@ -164,5 +178,56 @@ export class FrontendStack extends cdk.Stack {
             ),
         });
         this.bucket.addToResourcePolicy(oacPolicy);
+    }
+
+    setupLogGroup() {
+        this.logGroup = new logs.LogGroup(this, 'CW-LogGroup', {
+            logGroupName: 'SnippetsFrontendAccessLogs',
+        });
+    }
+
+    setupLambdaExecutionRole() {
+        this.executionRole = new iam.Role(this, 'IAM-LambdaExecutionRole', {
+            roleName: 'SnippetsFrontendAccessLogsForwarderLambdaExecutionRole',
+            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+            inlinePolicies: {
+                AllowGetAccessLogObjectsPolicy: new iam.PolicyDocument({
+                    statements: [
+                        new iam.PolicyStatement({
+                            actions: ['s3:GetObject'],
+                            resources: [this.distributionLoggingBucket.arnForObjects('*')],
+                        }),
+                    ],
+                }),
+            },
+        });
+        this.executionRole.addManagedPolicy(
+            iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')
+        );
+    }
+
+    setupLambda() {
+        this.lambda = new lambdaNode.NodejsFunction(this, 'Lambda-AccessLogsForwarder', {
+            functionName: 'SnippetsFrontendAccessLogsForwarder',
+            entry: path.join(__dirname, '../functions/cloudfront-logs-forwarder/index.ts'),
+            runtime: lambda.Runtime.NODEJS_18_X,
+            timeout: cdk.Duration.minutes(5),
+            handler: 'handler',
+            memorySize: 1024,
+            role: this.executionRole,
+            environment: {
+                CLOUDWATCH_LOG_GROUP_NAME: this.logGroup.logGroupName,
+            },
+        });
+    }
+
+    setupLoggingBucketEventNotifications() {
+        this.distributionLoggingBucket.addEventNotification(
+            s3.EventType.OBJECT_CREATED_PUT,
+            new s3Notifications.LambdaDestination(this.lambda),
+            {
+                prefix: 'snippets-frontend/',
+            }
+        );
     }
 }

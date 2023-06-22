@@ -11,7 +11,7 @@ const s3 = new S3Client({});
 const logs = new CloudWatchLogsClient({});
 const unzip = promisify(_unzip);
 
-const logGroupName = 'TestCloudFrontLogsForwarderLogs';
+const logGroupName = process.env.CLOUDWATCH_LOG_GROUP_NAME || '';
 const logEventsPerBatch = 10_000;
 
 const createLogStream = async (logStreamName: string) => {
