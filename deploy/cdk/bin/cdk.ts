@@ -6,6 +6,7 @@ import { CertificateStack } from '../stacks/CertificateStack';
 import { SnippetsSharedStack } from '../stacks/SnippetsSharedStack';
 import { SnippetsBackendStack } from '../stacks/SnippetsBackendStack';
 import { FrontendStack } from '../stacks/FrontendStack';
+import { BackendStack } from '../stacks/BackendStack';
 
 dotenv.config();
 const app = new cdk.App();
@@ -19,13 +20,14 @@ const props: cdk.StackProps = {
 };
 
 const certificateStack = new CertificateStack(app, 'SnippetsCertificateStack', props);
+
 const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
     ...props,
     certificate: certificateStack.frontendCertificate,
 });
-
 frontendStack.addDependency(certificateStack);
 
+new BackendStack(app, 'SnippetsBackendStack', props);
 // const shared = new SnippetsSharedStack(app, 'SnippetsSharedStack', { env });
 
 // new SnippetsBackendStack(app, 'SnippetsBackendStack', {
