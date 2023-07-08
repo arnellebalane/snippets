@@ -2,6 +2,7 @@
 import * as dotenv from 'dotenv';
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
+import { SecretsStack } from '../stacks/SecretsStack';
 import { CertificateStack } from '../stacks/CertificateStack';
 import { SnippetsSharedStack } from '../stacks/SnippetsSharedStack';
 import { SnippetsBackendStack } from '../stacks/SnippetsBackendStack';
@@ -19,6 +20,7 @@ const props: cdk.StackProps = {
     crossRegionReferences: true,
 };
 
+const secretsStack = new SecretsStack(app, 'SnippetsSecretsStack', props);
 const certificateStack = new CertificateStack(app, 'SnippetsCertificateStack', props);
 
 const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
