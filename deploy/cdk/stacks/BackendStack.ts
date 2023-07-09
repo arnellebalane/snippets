@@ -4,6 +4,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as triggers from 'aws-cdk-lib/triggers';
 import { Construct } from 'constructs';
 
 interface BackendStackProps extends cdk.StackProps {
@@ -104,6 +105,11 @@ export class BackendStack extends cdk.Stack {
             environment: {
                 DATABASE_URL_SECRET_ARN: this.databaseUrl.secretArn,
             },
+        });
+
+        new triggers.Trigger(this, 'Triggers-DatabaseMigrator', {
+            handler: this.migrationLambda,
+            invocationType: triggers.InvocationType.EVENT,
         });
     }
 }
