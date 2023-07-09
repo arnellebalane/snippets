@@ -29,7 +29,12 @@ const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
 });
 frontendStack.addDependency(certificateStack);
 
-new BackendStack(app, 'SnippetsBackendStack', props);
+const backendStack = new BackendStack(app, 'SnippetsBackendStack', {
+    ...props,
+    databaseUrl: secretsStack.databaseUrl,
+});
+backendStack.addDependency(secretsStack);
+
 // const shared = new SnippetsSharedStack(app, 'SnippetsSharedStack', { env });
 
 // new SnippetsBackendStack(app, 'SnippetsBackendStack', {

@@ -1,19 +1,35 @@
 import * as path from 'node:path';
 import * as cdk from 'aws-cdk-lib';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 
-export class BackendStack extends cdk.Stack {
-    layer: lambda.LayerVersion;
+interface BackendStackProps extends cdk.StackProps {
+    databaseUrl: secretsmanager.Secret;
+}
 
-    constructor(scope: Construct, id: string, props: cdk.StackProps) {
+export class BackendStack extends cdk.Stack {
+    prismaLayer: lambda.LayerVersion;
+    migrationsLayer: lambda.LayerVersion;
+    databaseUrl: secretsmanager.Secret;
+
+    executionRole: iam.Role;
+    migrationLambda: lambdaNode.NodejsFunction;
+
+    constructor(scope: Construct, id: string, props: BackendStackProps) {
         super(scope, id, props);
 
-        this.setupLayer();
+        this.databaseUrl = props.databaseUrl;
+        this.setupPrismaLayer();
+        this.setupMigrationsLayer();
+        this.setupExecutionRole();
+        this.setupMigrationLambda();
     }
 
-    setupLayer() {
-        this.layer = new lambda.LayerVersion(this, 'Lambda-PrismaLayer', {
+    setupPrismaLayer() {
+        this.prismaLayer = new lambda.LayerVersion(this, 'Lambda-PrismaLayer', {
             layerVersionName: 'SnippetsBackendPrismaLayer',
             compatibleArchitectures: [lambda.Architecture.X86_64],
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
@@ -29,7 +45,7 @@ export class BackendStack extends cdk.Stack {
                             [
                                 'PRISMA_CLI_BINARY_TARGETS=rhel-openssl-1.0.x npm ci',
                                 'mkdir -p /asset-output/nodejs',
-                                'mv node_modules /asset-output/nodejs',
+                                'cp -r node_modules /asset-output/nodejs',
                             ].join(' && '),
                         ],
                         environment: {
@@ -38,6 +54,56 @@ export class BackendStack extends cdk.Stack {
                     },
                 }
             ),
+        });
+    }
+
+    setupMigrationsLayer() {
+        this.migrationsLayer = new lambda.LayerVersion(this, 'Lambda-MigrationsLayer', {
+            layerVersionName: 'SnippetsBackendMigrationsLayer',
+            compatibleArchitectures: [lambda.Architecture.X86_64],
+            compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+            code: lambda.Code.fromAsset(path.resolve(__dirname, '../../../backend-lambda'), {
+                bundling: {
+                    image: lambda.Runtime.NODEJS_18_X.bundlingImage,
+                    command: ['bash', '-c', 'cp -r prisma /asset-output'],
+                },
+            }),
+        });
+    }
+
+    setupExecutionRole() {
+        this.executionRole = new iam.Role(this, 'IAM-LambdaExecutionRole', {
+            roleName: 'SnippetsBackendLambdaExecutionRole',
+            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+            managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
+            inlinePolicies: {
+                AllowSecretsManagerGetSecretValuePolicy: new iam.PolicyDocument({
+                    statements: [
+                        new iam.PolicyStatement({
+                            actions: ['secretsmanager:GetSecretValue'],
+                            resources: [this.databaseUrl.secretArn],
+                        }),
+                    ],
+                }),
+            },
+        });
+    }
+
+    setupMigrationLambda() {
+        this.migrationLambda = new lambdaNode.NodejsFunction(this, 'Lambda-DatabaseMigrator', {
+            functionName: 'SnippetsBackendDatabaseMigrator',
+            depsLockFilePath: path.resolve(__dirname, '../../../backend-lambda/package-lock.json'),
+            entry: path.resolve(__dirname, '../../../backend-lambda/functions/migrate-database/index.ts'),
+            runtime: lambda.Runtime.NODEJS_18_X,
+            timeout: cdk.Duration.minutes(5),
+            handler: 'handler',
+            memorySize: 1024,
+            role: this.executionRole,
+            layers: [this.prismaLayer, this.migrationsLayer],
+            environment: {
+                DATABASE_URL_SECRET_ARN: this.databaseUrl.secretArn,
+            },
         });
     }
 }
