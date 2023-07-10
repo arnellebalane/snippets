@@ -13,7 +13,6 @@ interface BackendStackProps extends cdk.StackProps {
 
 export class BackendStack extends cdk.Stack {
     prismaLayer: lambda.LayerVersion;
-    migrationsLayer: lambda.LayerVersion;
     databaseUrl: secretsmanager.Secret;
 
     executionRole: iam.Role;
@@ -25,7 +24,6 @@ export class BackendStack extends cdk.Stack {
 
         this.databaseUrl = props.databaseUrl;
         this.setupPrismaLayer();
-        this.setupMigrationsLayer();
         this.setupExecutionRole();
         this.setupMigrationLambda();
         this.setupApiLambda();
@@ -37,39 +35,13 @@ export class BackendStack extends cdk.Stack {
             compatibleArchitectures: [lambda.Architecture.X86_64],
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
             removalPolicy: cdk.RemovalPolicy.DESTROY,
-            code: lambda.Code.fromAsset(
-                path.resolve(__dirname, '../../../backend-lambda/functions/migrate-database/layer'),
-                {
-                    bundling: {
-                        image: lambda.Runtime.NODEJS_18_X.bundlingImage,
-                        command: [
-                            'bash',
-                            '-c',
-                            [
-                                'PRISMA_CLI_BINARY_TARGETS=rhel-openssl-1.0.x npm ci',
-                                'mkdir -p /asset-output/nodejs',
-                                'cp -r node_modules /asset-output/nodejs',
-                            ].join(' && '),
-                        ],
-                        environment: {
-                            NPM_CONFIG_CACHE: '/tmp/npm-cache',
-                        },
-                    },
-                }
-            ),
-        });
-    }
-
-    setupMigrationsLayer() {
-        this.migrationsLayer = new lambda.LayerVersion(this, 'Lambda-MigrationsLayer', {
-            layerVersionName: 'SnippetsBackendMigrationsLayer',
-            compatibleArchitectures: [lambda.Architecture.X86_64],
-            compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
-            removalPolicy: cdk.RemovalPolicy.DESTROY,
             code: lambda.Code.fromAsset(path.resolve(__dirname, '../../../backend-lambda'), {
                 bundling: {
                     image: lambda.Runtime.NODEJS_18_X.bundlingImage,
-                    command: ['bash', '-c', 'cp -r prisma /asset-output'],
+                    command: ['bash', 'functions/migrate-database/layer/layer.sh'],
+                    environment: {
+                        NPM_CONFIG_CACHE: '/tmp/npm-cache',
+                    },
                 },
             }),
         });
@@ -103,7 +75,7 @@ export class BackendStack extends cdk.Stack {
             handler: 'handler',
             memorySize: 1024,
             role: this.executionRole,
-            layers: [this.prismaLayer, this.migrationsLayer],
+            layers: [this.prismaLayer],
             environment: {
                 DATABASE_URL_SECRET_ARN: this.databaseUrl.secretArn,
             },
