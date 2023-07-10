@@ -18,6 +18,7 @@ export class BackendStack extends cdk.Stack {
 
     executionRole: iam.Role;
     migrationLambda: lambdaNode.NodejsFunction;
+    apiLambda: lambdaNode.NodejsFunction;
 
     constructor(scope: Construct, id: string, props: BackendStackProps) {
         super(scope, id, props);
@@ -27,6 +28,7 @@ export class BackendStack extends cdk.Stack {
         this.setupMigrationsLayer();
         this.setupExecutionRole();
         this.setupMigrationLambda();
+        this.setupApiLambda();
     }
 
     setupPrismaLayer() {
@@ -110,6 +112,29 @@ export class BackendStack extends cdk.Stack {
         new triggers.Trigger(this, 'Triggers-DatabaseMigrator', {
             handler: this.migrationLambda,
             invocationType: triggers.InvocationType.EVENT,
+        });
+    }
+
+    setupApiLambda() {
+        this.apiLambda = new lambdaNode.NodejsFunction(this, 'Lambda-SnippetsApi', {
+            functionName: 'SnippetsBackendApi',
+            depsLockFilePath: path.resolve(__dirname, '../../../backend-lambda/package-lock.json'),
+            entry: path.resolve(__dirname, '../../../backend-lambda/functions/snippets-api/index.ts'),
+            runtime: lambda.Runtime.NODEJS_18_X,
+            timeout: cdk.Duration.minutes(5),
+            handler: 'handler',
+            memorySize: 1024,
+            role: this.executionRole,
+            environment: {
+                DATABASE_URL_SECRET_ARN: this.databaseUrl.secretArn,
+            },
+        });
+
+        this.apiLambda.addFunctionUrl({
+            authType: lambda.FunctionUrlAuthType.NONE,
+            cors: {
+                allowedOrigins: ['*'],
+            },
         });
     }
 }
