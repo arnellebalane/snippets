@@ -14,9 +14,8 @@ export const handler: Handler = middy(async (event, context: CustomContext) => {
     process.env.DATABASE_URL = context.DATABASE_URL;
     process.env.DEBUG = 'prisma:*';
 
-    // Prisma CLI binaries and migration files are provided via Lambda layers.
-    // https://medium.com/ama-tech-blog/deploying-prisma-with-aws-lambda-layers-in-cdk-10608f5598c5
-    await exec('node /opt/nodejs/node_modules/prisma/build/index.js migrate deploy --schema /opt/prisma/schema.prisma');
+    // https://github.com/prisma/prisma/issues/15881#issuecomment-1289420222
+    await exec('node node_modules/prisma/build/index.js migrate deploy');
 }).use(
     secretsManager({
         fetchData: {

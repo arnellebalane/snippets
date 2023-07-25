@@ -23,28 +23,9 @@ export class BackendStack extends cdk.Stack {
         super(scope, id, props);
 
         this.databaseUrl = props.databaseUrl;
-        this.setupPrismaLayer();
         this.setupExecutionRole();
         this.setupMigrationLambda();
-        this.setupApiLambda();
-    }
-
-    setupPrismaLayer() {
-        this.prismaLayer = new lambda.LayerVersion(this, 'Lambda-PrismaLayer', {
-            layerVersionName: 'SnippetsBackendPrismaLayer',
-            compatibleArchitectures: [lambda.Architecture.X86_64],
-            compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
-            removalPolicy: cdk.RemovalPolicy.DESTROY,
-            code: lambda.Code.fromAsset(path.resolve(__dirname, '../../../backend-lambda'), {
-                bundling: {
-                    image: lambda.Runtime.NODEJS_18_X.bundlingImage,
-                    command: ['bash', 'functions/migrate-database/layer/layer.sh'],
-                    environment: {
-                        NPM_CONFIG_CACHE: '/tmp/npm-cache',
-                    },
-                },
-            }),
-        });
+        // this.setupApiLambda();
     }
 
     setupExecutionRole() {
@@ -70,12 +51,19 @@ export class BackendStack extends cdk.Stack {
             functionName: 'SnippetsBackendDatabaseMigrator',
             depsLockFilePath: path.resolve(__dirname, '../../../backend-lambda/package-lock.json'),
             entry: path.resolve(__dirname, '../../../backend-lambda/functions/migrate-database/index.ts'),
+            bundling: {
+                nodeModules: ['prisma'],
+                commandHooks: {
+                    beforeInstall: () => [],
+                    beforeBundling: () => [],
+                    afterBundling: (inputDir, outputDir) => [`cp -r ${inputDir}/prisma ${outputDir}`],
+                },
+            },
             runtime: lambda.Runtime.NODEJS_18_X,
             timeout: cdk.Duration.minutes(5),
             handler: 'handler',
             memorySize: 1024,
             role: this.executionRole,
-            layers: [this.prismaLayer],
             environment: {
                 DATABASE_URL_SECRET_ARN: this.databaseUrl.secretArn,
             },
@@ -92,6 +80,16 @@ export class BackendStack extends cdk.Stack {
             functionName: 'SnippetsBackendApi',
             depsLockFilePath: path.resolve(__dirname, '../../../backend-lambda/package-lock.json'),
             entry: path.resolve(__dirname, '../../../backend-lambda/functions/snippets-api/index.ts'),
+            bundling: {
+                commandHooks: {
+                    beforeInstall: () => [],
+                    beforeBundling: () => [],
+                    afterBundling: (inputDir, outputDir) => [
+                        `mkdir ${outputDir}/prisma`,
+                        `cp ${inputDir}/prisma/schema.prisma ${outputDir}/prisma`,
+                    ],
+                },
+            },
             runtime: lambda.Runtime.NODEJS_18_X,
             timeout: cdk.Duration.minutes(5),
             handler: 'handler',
