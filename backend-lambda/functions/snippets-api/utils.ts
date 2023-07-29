@@ -1,6 +1,8 @@
 import crypto from 'node:crypto';
 import { PrismaClient, Snippet } from '@prisma/client';
+import { loadSecretsToEnvironment } from '../../utils/env';
 
+await loadSecretsToEnvironment();
 const prisma = new PrismaClient();
 
 export const generateHash = (data: string): string => {

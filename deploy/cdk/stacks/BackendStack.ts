@@ -25,7 +25,7 @@ export class BackendStack extends cdk.Stack {
         this.databaseUrl = props.databaseUrl;
         this.setupExecutionRole();
         this.setupMigrationLambda();
-        // this.setupApiLambda();
+        this.setupApiLambda();
     }
 
     setupExecutionRole() {
@@ -54,10 +54,11 @@ export class BackendStack extends cdk.Stack {
             bundling: {
                 nodeModules: ['prisma'],
                 commandHooks: {
-                    beforeInstall: () => [],
+                    beforeInstall: (inputDir, outputDir) => [`cp -r ${inputDir}/prisma ${outputDir}`],
                     beforeBundling: () => [],
-                    afterBundling: (inputDir, outputDir) => [`cp -r ${inputDir}/prisma ${outputDir}`],
+                    afterBundling: () => [],
                 },
+                format: lambdaNode.OutputFormat.ESM,
             },
             runtime: lambda.Runtime.NODEJS_18_X,
             timeout: cdk.Duration.minutes(5),
@@ -81,14 +82,16 @@ export class BackendStack extends cdk.Stack {
             depsLockFilePath: path.resolve(__dirname, '../../../backend-lambda/package-lock.json'),
             entry: path.resolve(__dirname, '../../../backend-lambda/functions/snippets-api/index.ts'),
             bundling: {
+                nodeModules: ['prisma', '@prisma/client'],
                 commandHooks: {
-                    beforeInstall: () => [],
-                    beforeBundling: () => [],
-                    afterBundling: (inputDir, outputDir) => [
+                    beforeInstall: (inputDir, outputDir) => [
                         `mkdir ${outputDir}/prisma`,
                         `cp ${inputDir}/prisma/schema.prisma ${outputDir}/prisma`,
                     ],
+                    beforeBundling: () => [],
+                    afterBundling: () => [],
                 },
+                format: lambdaNode.OutputFormat.ESM,
             },
             runtime: lambda.Runtime.NODEJS_18_X,
             timeout: cdk.Duration.minutes(5),
