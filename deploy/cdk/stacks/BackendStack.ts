@@ -13,7 +13,6 @@ interface BackendStackProps extends cdk.StackProps {
 }
 
 export class BackendStack extends cdk.Stack {
-    prismaLayer: lambda.LayerVersion;
     databaseUrl: secretsmanager.Secret;
 
     executionRole: iam.Role;

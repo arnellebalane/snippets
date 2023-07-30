@@ -16,7 +16,6 @@ export class CertificateStack extends cdk.Stack {
         });
 
         this.setupFrontendCertificate();
-        this.setupBackendCertificate();
     }
 
     setupFrontendCertificate() {
@@ -31,22 +30,6 @@ export class CertificateStack extends cdk.Stack {
 
             new cdk.CfnOutput(this, 'FrontendCertificateArn', {
                 value: this.frontendCertificate.certificateArn,
-            });
-        }
-    }
-
-    setupBackendCertificate() {
-        if (process.env.SNIPPETS_SERVER_URL) {
-            const url = new URL(process.env.SNIPPETS_SERVER_URL);
-
-            this.backendCertificate = new acm.Certificate(this, 'BackendCertificate', {
-                domainName: url.hostname,
-                certificateName: 'SnippetsBackendCertificate',
-                validation: acm.CertificateValidation.fromDns(),
-            });
-
-            new cdk.CfnOutput(this, 'BackendCertificateArn', {
-                value: this.backendCertificate.certificateArn,
             });
         }
     }

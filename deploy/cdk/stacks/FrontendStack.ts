@@ -139,8 +139,6 @@ export class FrontendStack extends cdk.Stack {
             domainName = url.hostname;
         }
 
-        const backendApiGatewayUrl = new URL('https://ejfeynrhd1.execute-api.ap-southeast-1.amazonaws.com/prod');
-
         this.distribution = new cloudfront.CloudFrontWebDistribution(this, 'CF-Distribution', {
             originConfigs: [this.getDistributionDefaultOrigin(), this.getDistributionApiOrigin()],
             loggingConfig: {
