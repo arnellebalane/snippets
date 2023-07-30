@@ -10,12 +10,13 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as apiGateway from 'aws-cdk-lib/aws-apigateway';
+import * as customResources from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 
 interface FrontendStackProps extends cdk.StackProps {
     certificate: acm.Certificate;
-    backendApiGateway: apigateway.LambdaRestApi;
+    backendApiGateway: apiGateway.LambdaRestApi;
 }
 
 export class FrontendStack extends cdk.Stack {
@@ -24,8 +25,9 @@ export class FrontendStack extends cdk.Stack {
     deployment: s3Deployment.BucketDeployment;
 
     certificate: acm.Certificate;
-    backendApiGateway: apigateway.LambdaRestApi;
+    backendApiGateway: apiGateway.LambdaRestApi;
     distribution: cloudfront.CloudFrontWebDistribution;
+    distributionInvalidation: customResources.AwsCustomResource;
     distributionLoggingBucket: s3.Bucket;
     originAccessControl: cloudfront.CfnOriginAccessControl;
 
@@ -42,6 +44,7 @@ export class FrontendStack extends cdk.Stack {
         this.setupBucketDeployment();
         this.setupLoggingBucket();
         this.setupDistribution();
+        this.setupDistributionInvalidation();
         this.setupOriginAccessControl();
 
         // Forward access logs from S3 log bucket to CloudWatch
@@ -168,6 +171,33 @@ export class FrontendStack extends cdk.Stack {
                 value: domainName,
             });
         }
+    }
+
+    setupDistributionInvalidation() {
+        const timestamp = Date.now().toString();
+        const distributionId = this.distribution.distributionId;
+
+        this.distributionInvalidation = new customResources.AwsCustomResource(this, `CF-Invalidation-${timestamp}`, {
+            functionName: 'SnippetsFrontendDistributionInvalidator',
+            onCreate: {
+                service: 'CloudFront',
+                action: 'createInvalidation',
+                parameters: {
+                    DistributionId: distributionId,
+                    InvalidationBatch: {
+                        CallerReference: timestamp,
+                        Paths: {
+                            Quantity: 1,
+                            Items: ['/*'],
+                        },
+                    },
+                },
+                physicalResourceId: customResources.PhysicalResourceId.of(`${distributionId}-${timestamp}`),
+            },
+            policy: customResources.AwsCustomResourcePolicy.fromSdkCalls({
+                resources: customResources.AwsCustomResourcePolicy.ANY_RESOURCE,
+            }),
+        });
     }
 
     setupOriginAccessControl() {
