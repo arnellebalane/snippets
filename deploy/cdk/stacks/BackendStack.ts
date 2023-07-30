@@ -5,6 +5,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as triggers from 'aws-cdk-lib/triggers';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 
 interface BackendStackProps extends cdk.StackProps {
@@ -18,6 +19,7 @@ export class BackendStack extends cdk.Stack {
     executionRole: iam.Role;
     migrationLambda: lambdaNode.NodejsFunction;
     apiLambda: lambdaNode.NodejsFunction;
+    apiGateway: apigateway.LambdaRestApi;
 
     constructor(scope: Construct, id: string, props: BackendStackProps) {
         super(scope, id, props);
@@ -26,6 +28,7 @@ export class BackendStack extends cdk.Stack {
         this.setupExecutionRole();
         this.setupMigrationLambda();
         this.setupApiLambda();
+        this.setupApiGateway();
     }
 
     setupExecutionRole() {
@@ -102,12 +105,19 @@ export class BackendStack extends cdk.Stack {
                 DATABASE_URL_SECRET_ARN: this.databaseUrl.secretArn,
             },
         });
+    }
 
-        this.apiLambda.addFunctionUrl({
-            authType: lambda.FunctionUrlAuthType.NONE,
-            cors: {
-                allowedOrigins: ['*'],
-            },
+    setupApiGateway() {
+        this.apiGateway = new apigateway.LambdaRestApi(this, 'ApiGateway-SnippetsApi', {
+            handler: this.apiLambda,
+            proxy: false,
+            restApiName: 'SnippetsBackendApi',
         });
+
+        const snippets = this.apiGateway.root.addResource('snippets');
+        snippets.addMethod('POST');
+
+        const snippet = snippets.addResource('{hash}');
+        snippet.addMethod('GET');
     }
 }
