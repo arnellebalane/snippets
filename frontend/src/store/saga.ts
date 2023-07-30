@@ -52,7 +52,7 @@ export class SnippetsSaga {
         yield put(GET_SNIPPET_START());
 
         try {
-            const response: Response = yield fetch(`${SNIPPETS_API_URL}/${hash}`);
+            const response: Response = yield fetch(`${SNIPPETS_API_URL}/snippets/${hash}`);
             const data: Snippet = yield response.json();
             yield put(GET_SNIPPET_SUCCESS(data));
         } catch (error: unknown) {
