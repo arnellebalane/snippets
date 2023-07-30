@@ -4,8 +4,6 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { SecretsStack } from '../stacks/SecretsStack';
 import { CertificateStack } from '../stacks/CertificateStack';
-import { SnippetsSharedStack } from '../stacks/SnippetsSharedStack';
-import { SnippetsBackendStack } from '../stacks/SnippetsBackendStack';
 import { FrontendStack } from '../stacks/FrontendStack';
 import { BackendStack } from '../stacks/BackendStack';
 
@@ -34,15 +32,3 @@ const backendStack = new BackendStack(app, 'SnippetsBackendStack', {
     databaseUrl: secretsStack.databaseUrl,
 });
 backendStack.addDependency(secretsStack);
-
-// const shared = new SnippetsSharedStack(app, 'SnippetsSharedStack', { env });
-
-// new SnippetsBackendStack(app, 'SnippetsBackendStack', {
-//   env,
-//   vpc: shared.vpc,
-// });
-
-// new SnippetsFrontendStack(app, 'SnippetsFrontendStack', {
-//   env,
-//   vpc: shared.vpc,
-// });

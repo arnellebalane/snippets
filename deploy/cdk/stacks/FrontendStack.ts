@@ -48,7 +48,7 @@ export class FrontendStack extends cdk.Stack {
 
     setupBucketDeployment() {
         this.asset = new s3Assets.Asset(this, 'S3-Assets', {
-            path: path.resolve(__dirname, '../../../frontend-react'),
+            path: path.resolve(__dirname, '../../../frontend'),
             bundling: {
                 image: cdk.DockerImage.fromRegistry('node:18.15.0-slim'),
                 user: 'node',
