@@ -2,14 +2,14 @@ import { APIGatewayProxyEvent, Context, Handler } from 'aws-lambda';
 import createApi, { Request } from 'lambda-api';
 import { createSnippet, readSnippet } from './snippets';
 
-const api = createApi();
+const api = createApi({ base: '/api/snippets' });
 
-api.post('/snippets', async (request: Request) => {
+api.post('/', async (request: Request) => {
     const snippet = await createSnippet(request.body.snippet);
     return snippet;
 });
 
-api.get('/snippets/:hash', async (request: Request) => {
+api.get('/:hash', async (request: Request) => {
     const snippet = await readSnippet(request.params.hash);
     return snippet;
 });

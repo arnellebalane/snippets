@@ -21,14 +21,15 @@ const props: cdk.StackProps = {
 const secretsStack = new SecretsStack(app, 'SnippetsSecretsStack', props);
 const certificateStack = new CertificateStack(app, 'SnippetsCertificateStack', props);
 
-const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
-    ...props,
-    certificate: certificateStack.frontendCertificate,
-});
-frontendStack.addDependency(certificateStack);
-
 const backendStack = new BackendStack(app, 'SnippetsBackendStack', {
     ...props,
     databaseUrl: secretsStack.databaseUrl,
 });
 backendStack.addDependency(secretsStack);
+
+const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
+    ...props,
+    certificate: certificateStack.frontendCertificate,
+    backendApiGateway: backendStack.apiGateway,
+});
+frontendStack.addDependency(certificateStack);

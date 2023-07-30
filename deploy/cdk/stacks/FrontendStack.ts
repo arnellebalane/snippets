@@ -10,10 +10,12 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 
 interface FrontendStackProps extends cdk.StackProps {
     certificate: acm.Certificate;
+    backendApiGateway: apigateway.LambdaRestApi;
 }
 
 export class FrontendStack extends cdk.Stack {
@@ -22,6 +24,7 @@ export class FrontendStack extends cdk.Stack {
     deployment: s3Deployment.BucketDeployment;
 
     certificate: acm.Certificate;
+    backendApiGateway: apigateway.LambdaRestApi;
     distribution: cloudfront.CloudFrontWebDistribution;
     distributionLoggingBucket: s3.Bucket;
     originAccessControl: cloudfront.CfnOriginAccessControl;
@@ -34,6 +37,8 @@ export class FrontendStack extends cdk.Stack {
         super(scope, id, props);
 
         this.certificate = props.certificate;
+        this.backendApiGateway = props.backendApiGateway;
+
         this.setupBucketDeployment();
         this.setupLoggingBucket();
         this.setupDistribution();
@@ -44,6 +49,43 @@ export class FrontendStack extends cdk.Stack {
         this.setupLambdaExecutionRole();
         this.setupLambda();
         this.setupLoggingBucketEventNotifications();
+    }
+
+    private getDistributionDefaultOrigin() {
+        return {
+            behaviors: [
+                {
+                    allowedMethods: cloudfront.CloudFrontAllowedMethods.ALL,
+                    isDefaultBehavior: true,
+                    // TODO: Using HTTPS_ONLY currently returns an 403 response from CloudFront, and
+                    // REDIRECT_TO_HTTPS causes a redirect loop to the same URL.
+                    viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.ALLOW_ALL,
+                },
+            ],
+            s3OriginSource: {
+                s3BucketSource: this.deployment.deployedBucket,
+            },
+        };
+    }
+
+    private getDistributionApiOrigin() {
+        // https://github.com/awslabs/aws-solutions-constructs/blob/09465d65fc5969da5691cf5057c278ded8753b43/source/patterns/%40aws-solutions-constructs/core/lib/cloudfront-distribution-defaults.ts#L38-L39
+        const apiEndpointUrlWithoutProtocol = cdk.Fn.select(1, cdk.Fn.split('://', this.backendApiGateway.url));
+        const apiEndpointDomainName = cdk.Fn.select(0, cdk.Fn.split('/', apiEndpointUrlWithoutProtocol));
+
+        return {
+            behaviors: [
+                {
+                    pathPattern: '/api/*',
+                    allowedMethods: cloudfront.CloudFrontAllowedMethods.ALL,
+                    viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.ALLOW_ALL,
+                },
+            ],
+            customOriginSource: {
+                domainName: apiEndpointDomainName,
+                originPath: `/${this.backendApiGateway.deploymentStage.stageName}`,
+            },
+        };
     }
 
     setupBucketDeployment() {
@@ -97,20 +139,10 @@ export class FrontendStack extends cdk.Stack {
             domainName = url.hostname;
         }
 
+        const backendApiGatewayUrl = new URL('https://ejfeynrhd1.execute-api.ap-southeast-1.amazonaws.com/prod');
+
         this.distribution = new cloudfront.CloudFrontWebDistribution(this, 'CF-Distribution', {
-            originConfigs: [
-                {
-                    behaviors: [
-                        {
-                            allowedMethods: cloudfront.CloudFrontAllowedMethods.ALL,
-                            isDefaultBehavior: true,
-                        },
-                    ],
-                    s3OriginSource: {
-                        s3BucketSource: this.deployment.deployedBucket,
-                    },
-                },
-            ],
+            originConfigs: [this.getDistributionDefaultOrigin(), this.getDistributionApiOrigin()],
             loggingConfig: {
                 bucket: this.distributionLoggingBucket,
                 prefix: 'snippets-frontend',
@@ -128,9 +160,6 @@ export class FrontendStack extends cdk.Stack {
                       securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
                   })
                 : undefined,
-            // TODO: Using HTTPS_ONLY currently returns an 403 response from CloudFront, and REDIRECT_TO_HTTPS causes
-            // a redirect loop to the same URL.
-            viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.ALLOW_ALL,
         });
 
         new cdk.CfnOutput(this, 'DistributionDomainName', {

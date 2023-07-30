@@ -114,7 +114,8 @@ export class BackendStack extends cdk.Stack {
             restApiName: 'SnippetsBackendApi',
         });
 
-        const snippets = this.apiGateway.root.addResource('snippets');
+        const api = this.apiGateway.root.addResource('api');
+        const snippets = api.addResource('snippets');
         snippets.addMethod('POST');
 
         const snippet = snippets.addResource('{hash}');
