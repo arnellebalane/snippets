@@ -82,7 +82,7 @@ export class BackendStack extends cdk.Stack {
             depsLockFilePath: path.resolve(__dirname, '../../../backend-lambda/package-lock.json'),
             entry: path.resolve(__dirname, '../../../backend-lambda/functions/snippets-api/index.ts'),
             bundling: {
-                nodeModules: ['prisma', '@prisma/client'],
+                nodeModules: ['prisma', '@prisma/client', 'lambda-api'],
                 commandHooks: {
                     beforeInstall: (inputDir, outputDir) => [
                         `mkdir ${outputDir}/prisma`,

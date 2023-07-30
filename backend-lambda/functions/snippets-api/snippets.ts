@@ -5,7 +5,7 @@ import { loadSecretsToEnvironment } from '../../utils/env';
 await loadSecretsToEnvironment();
 const prisma = new PrismaClient();
 
-export const generateHash = (data: string): string => {
+const generateHash = (data: string): string => {
     return crypto
         .createHash('sha256')
         .update(data)

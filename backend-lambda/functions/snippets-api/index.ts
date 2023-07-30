@@ -1,9 +1,19 @@
-import { APIGatewayProxyEventV2, Handler } from 'aws-lambda';
-import { createSnippet } from './utils';
+import { APIGatewayProxyEvent, Context, Handler } from 'aws-lambda';
+import createApi, { Request } from 'lambda-api';
+import { createSnippet, readSnippet } from './snippets';
 
-export const handler: Handler = async (event: APIGatewayProxyEventV2, context) => {
-    if (event.requestContext.http.method === 'POST') {
-        const payload = JSON.parse(event.body);
-        await createSnippet(payload.snippet);
-    }
+const api = createApi();
+
+api.post('/snippets', async (request: Request) => {
+    const snippet = await createSnippet(request.body.snippet);
+    return snippet;
+});
+
+api.get('/snippets/:hash', async (request: Request) => {
+    const snippet = await readSnippet(request.params.hash);
+    return snippet;
+});
+
+export const handler: Handler = async (event: APIGatewayProxyEvent, context: Context) => {
+    return await api.run(event, context);
 };
