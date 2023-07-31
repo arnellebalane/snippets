@@ -8,6 +8,7 @@ import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apiGateway from 'aws-cdk-lib/aws-apigateway';
@@ -240,6 +241,35 @@ export class FrontendStack extends cdk.Stack {
     setupLogGroup() {
         this.logGroup = new logs.LogGroup(this, 'CW-LogGroup', {
             logGroupName: 'SnippetsFrontendAccessLogs',
+        });
+
+        const metricNamespace = 'CloudFrontHttpRequests';
+        this.logGroup.addMetricFilter('AllRequestsFilter', {
+            filterPattern: {
+                logPatternString: '{$.cs-uri-stem != ""}',
+            },
+            metricNamespace,
+            metricName: 'AllRequestsCount',
+            metricValue: '1',
+            unit: cloudwatch.Unit.COUNT,
+        });
+        this.logGroup.addMetricFilter('FrontendRequestsFilter', {
+            filterPattern: {
+                logPatternString: '{$.cs-uri-stem != "/api/*"}',
+            },
+            metricNamespace,
+            metricName: 'FrontendRequestsCount',
+            metricValue: '1',
+            unit: cloudwatch.Unit.COUNT,
+        });
+        this.logGroup.addMetricFilter('ApiRequestsFilter', {
+            filterPattern: {
+                logPatternString: '{$.cs-uri-stem = "/api/*"}',
+            },
+            metricNamespace,
+            metricName: 'ApiRequestsCount',
+            metricValue: '1',
+            unit: cloudwatch.Unit.COUNT,
         });
     }
 
