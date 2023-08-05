@@ -54,7 +54,7 @@ export class BackendStack extends cdk.Stack {
             depsLockFilePath: path.resolve(__dirname, '../../../backend/package-lock.json'),
             entry: path.resolve(__dirname, '../../../backend/functions/migrate-database/index.ts'),
             bundling: {
-                nodeModules: ['prisma'],
+                nodeModules: ['prisma', '@prisma/client'],
                 commandHooks: {
                     beforeInstall: (inputDir, outputDir) => [`cp -r ${inputDir}/prisma ${outputDir}`],
                     beforeBundling: () => [],
@@ -69,6 +69,8 @@ export class BackendStack extends cdk.Stack {
             role: this.executionRole,
             environment: {
                 DATABASE_URL_SECRET_ARN: this.databaseUrl.secretArn,
+                SNIPPETS_SEED_HASH: process.env.SNIPPETS_SEED_HASH || '',
+                SNIPPETS_SEED_BODY: process.env.SNIPPETS_SEED_BODY || '',
             },
         });
 
