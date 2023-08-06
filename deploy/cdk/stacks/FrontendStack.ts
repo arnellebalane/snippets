@@ -38,6 +38,7 @@ export class FrontendStack extends cdk.Stack {
     lambda: lambdaNode.NodejsFunction;
 
     canary: synthetics.Canary;
+    dashboard: cloudwatch.Dashboard;
 
     constructor(scope: Construct, id: string, props: FrontendStackProps) {
         super(scope, id, props);
@@ -59,6 +60,7 @@ export class FrontendStack extends cdk.Stack {
 
         // Monitor app availability
         this.setupCanary();
+        this.setupDashboard();
     }
 
     private getDistributionDefaultOrigin() {
@@ -343,5 +345,53 @@ export class FrontendStack extends cdk.Stack {
                 SNIPPETS_SEED_BODY: process.env.SNIPPETS_SEED_BODY || '',
             },
         });
+    }
+
+    setupDashboard() {
+        this.dashboard = new cloudwatch.Dashboard(this, 'CW-Dashboard', {
+            dashboardName: 'SnippetsFrontend',
+            defaultInterval: cdk.Duration.hours(3),
+        });
+
+        this.dashboard.addWidgets(
+            new cloudwatch.GraphWidget({
+                width: 12,
+                height: 8,
+                title: 'HeartBeatCanarySuccessPercentage',
+                left: [
+                    new cloudwatch.Metric({
+                        metricName: 'SuccessPercent',
+                        namespace: 'CloudWatchSynthetics',
+                        dimensionsMap: {
+                            CanaryName: this.canary.canaryName,
+                        },
+                        statistic: cloudwatch.Stats.AVERAGE,
+                        label: 'SuccessPercent',
+                        period: cdk.Duration.minutes(15),
+                    }),
+                ],
+            }),
+            new cloudwatch.GraphWidget({
+                width: 12,
+                height: 8,
+                title: 'CloudFrontRequestsCount',
+                left: [
+                    new cloudwatch.Metric({
+                        metricName: 'FrontendRequestsCount',
+                        namespace: 'CloudFrontHttpRequests',
+                        statistic: cloudwatch.Stats.SAMPLE_COUNT,
+                        label: 'FrontendRequestsCount',
+                        period: cdk.Duration.minutes(15),
+                    }),
+                    new cloudwatch.Metric({
+                        metricName: 'ApiRequestsCount',
+                        namespace: 'CloudFrontHttpRequests',
+                        statistic: cloudwatch.Stats.SAMPLE_COUNT,
+                        label: 'ApiRequestsCount',
+                        period: cdk.Duration.minutes(15),
+                    }),
+                ],
+            })
+        );
     }
 }
