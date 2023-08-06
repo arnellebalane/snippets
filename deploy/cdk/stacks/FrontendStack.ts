@@ -38,6 +38,10 @@ export class FrontendStack extends cdk.Stack {
     lambda: lambdaNode.NodejsFunction;
 
     canary: synthetics.Canary;
+    canarySuccessMetric: cloudwatch.Metric;
+    frontendRequestsMetric: cloudwatch.Metric;
+    apiRequestsMetric: cloudwatch.Metric;
+    availabilityAlarm: cloudwatch.Alarm;
     dashboard: cloudwatch.Dashboard;
 
     constructor(scope: Construct, id: string, props: FrontendStackProps) {
@@ -60,6 +64,8 @@ export class FrontendStack extends cdk.Stack {
 
         // Monitor app availability
         this.setupCanary();
+        this.setupMetrics();
+        this.setupAvailabilityAlarm();
         this.setupDashboard();
     }
 
@@ -347,6 +353,45 @@ export class FrontendStack extends cdk.Stack {
         });
     }
 
+    setupMetrics() {
+        this.canarySuccessMetric = new cloudwatch.Metric({
+            metricName: 'SuccessPercent',
+            namespace: 'CloudWatchSynthetics',
+            dimensionsMap: {
+                CanaryName: this.canary.canaryName,
+            },
+            statistic: cloudwatch.Stats.AVERAGE,
+            label: 'SuccessPercent',
+            period: cdk.Duration.minutes(15),
+        });
+        this.frontendRequestsMetric = new cloudwatch.Metric({
+            metricName: 'FrontendRequestsCount',
+            namespace: 'CloudFrontHttpRequests',
+            statistic: cloudwatch.Stats.SAMPLE_COUNT,
+            label: 'FrontendRequestsCount',
+            period: cdk.Duration.minutes(15),
+        });
+        this.apiRequestsMetric = new cloudwatch.Metric({
+            metricName: 'ApiRequestsCount',
+            namespace: 'CloudFrontHttpRequests',
+            statistic: cloudwatch.Stats.SAMPLE_COUNT,
+            label: 'ApiRequestsCount',
+            period: cdk.Duration.minutes(15),
+        });
+    }
+
+    setupAvailabilityAlarm() {
+        this.availabilityAlarm = new cloudwatch.Alarm(this, 'CW-AvailabilityAlarm', {
+            alarmName: 'SnippetsFrontendAvailability',
+            metric: this.canarySuccessMetric,
+            threshold: 99,
+            evaluationPeriods: 5,
+            datapointsToAlarm: 3,
+            comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
+            treatMissingData: cloudwatch.TreatMissingData.BREACHING,
+        });
+    }
+
     setupDashboard() {
         this.dashboard = new cloudwatch.Dashboard(this, 'CW-Dashboard', {
             dashboardName: 'SnippetsFrontend',
@@ -358,39 +403,14 @@ export class FrontendStack extends cdk.Stack {
                 width: 12,
                 height: 8,
                 title: 'HeartBeatCanarySuccessPercentage',
-                left: [
-                    new cloudwatch.Metric({
-                        metricName: 'SuccessPercent',
-                        namespace: 'CloudWatchSynthetics',
-                        dimensionsMap: {
-                            CanaryName: this.canary.canaryName,
-                        },
-                        statistic: cloudwatch.Stats.AVERAGE,
-                        label: 'SuccessPercent',
-                        period: cdk.Duration.minutes(15),
-                    }),
-                ],
+                left: [this.canarySuccessMetric],
+                leftAnnotations: [this.availabilityAlarm.toAnnotation()],
             }),
             new cloudwatch.GraphWidget({
                 width: 12,
                 height: 8,
                 title: 'CloudFrontRequestsCount',
-                left: [
-                    new cloudwatch.Metric({
-                        metricName: 'FrontendRequestsCount',
-                        namespace: 'CloudFrontHttpRequests',
-                        statistic: cloudwatch.Stats.SAMPLE_COUNT,
-                        label: 'FrontendRequestsCount',
-                        period: cdk.Duration.minutes(15),
-                    }),
-                    new cloudwatch.Metric({
-                        metricName: 'ApiRequestsCount',
-                        namespace: 'CloudFrontHttpRequests',
-                        statistic: cloudwatch.Stats.SAMPLE_COUNT,
-                        label: 'ApiRequestsCount',
-                        period: cdk.Duration.minutes(15),
-                    }),
-                ],
+                left: [this.frontendRequestsMetric, this.apiRequestsMetric],
             })
         );
     }
