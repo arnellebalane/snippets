@@ -27,6 +27,7 @@ export const SnippetEditor = ({ value, onChange, disabled }: SnippetEditorProps)
             placeholder={placeholder}
             disabled={disabled}
             spellCheck={false}
+            data-testid="editor"
             autoFocus
         />
     );

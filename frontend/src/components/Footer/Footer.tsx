@@ -24,7 +24,7 @@ export const Footer = ({ onAction }: FooterProps) => {
     }, [shortcuts, onAction]);
 
     return (
-        <footer className={s.footer}>
+        <footer className={s.footer} data-testid="footer">
             <ul className={s.shortcuts}>
                 {shortcuts.map(({ key, label }) => (
                     <li key={key} className={s.shortcut}>

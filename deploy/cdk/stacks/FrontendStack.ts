@@ -13,6 +13,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apiGateway from 'aws-cdk-lib/aws-apigateway';
 import * as customResources from 'aws-cdk-lib/custom-resources';
+import * as synthetics from '@aws-cdk/aws-synthetics-alpha';
 import { Construct } from 'constructs';
 
 interface FrontendStackProps extends cdk.StackProps {
@@ -36,6 +37,8 @@ export class FrontendStack extends cdk.Stack {
     executionRole: iam.Role;
     lambda: lambdaNode.NodejsFunction;
 
+    canary: synthetics.Canary;
+
     constructor(scope: Construct, id: string, props: FrontendStackProps) {
         super(scope, id, props);
 
@@ -53,6 +56,9 @@ export class FrontendStack extends cdk.Stack {
         this.setupLambdaExecutionRole();
         this.setupLambda();
         this.setupLoggingBucketEventNotifications();
+
+        // Monitor app availability
+        this.setupCanary();
     }
 
     private getDistributionDefaultOrigin() {
@@ -316,5 +322,26 @@ export class FrontendStack extends cdk.Stack {
                 prefix: 'snippets-frontend/',
             }
         );
+    }
+
+    setupCanary() {
+        this.canary = new synthetics.Canary(this, 'Synthetics-HeartbeatCanary', {
+            canaryName: 'snippets-heartbeat',
+            runtime: synthetics.Runtime.SYNTHETICS_NODEJS_PUPPETEER_4_0,
+            schedule: synthetics.Schedule.rate(cdk.Duration.minutes(15)),
+            test: synthetics.Test.custom({
+                code: synthetics.Code.fromAsset(path.join(__dirname, '../functions/heartbeat-canary')),
+                handler: 'index.handler',
+            }),
+            artifactsBucketLocation: {
+                bucket: this.distributionLoggingBucket,
+                prefix: 'heartbeat-canary',
+            },
+            environmentVariables: {
+                SNIPPETS_CLIENT_URL: process.env.SNIPPETS_CLIENT_URL || '',
+                SNIPPETS_SEED_HASH: process.env.SNIPPETS_SEED_HASH || '',
+                SNIPPETS_SEED_BODY: process.env.SNIPPETS_SEED_BODY || '',
+            },
+        });
     }
 }

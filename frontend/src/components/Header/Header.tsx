@@ -4,7 +4,7 @@ export const Header = () => {
     const { hostname } = window.location;
 
     return (
-        <header className={s.header}>
+        <header className={s.header} data-testid="header">
             <h1 className={s.title}>{hostname}</h1>
         </header>
     );

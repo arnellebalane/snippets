@@ -9,7 +9,7 @@ export type SnippetPreviewProps = {
 
 export const SnippetPreview = forwardRef(({ value }: SnippetPreviewProps, ref: ForwardedRef<HTMLDivElement>) => {
     return (
-        <div ref={ref} className={s.preview}>
+        <div ref={ref} className={s.preview} data-testid="preview">
             <Highlight className={s.highlight}>{value}</Highlight>
         </div>
     );
