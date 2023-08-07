@@ -336,7 +336,7 @@ export class FrontendStack extends cdk.Stack {
         this.canary = new synthetics.Canary(this, 'Synthetics-HeartbeatCanary', {
             canaryName: 'snippets-heartbeat',
             runtime: synthetics.Runtime.SYNTHETICS_NODEJS_PUPPETEER_4_0,
-            schedule: synthetics.Schedule.rate(cdk.Duration.minutes(15)),
+            schedule: synthetics.Schedule.rate(cdk.Duration.hours(1)),
             test: synthetics.Test.custom({
                 code: synthetics.Code.fromAsset(path.join(__dirname, '../functions/heartbeat-canary')),
                 handler: 'index.handler',
@@ -362,21 +362,21 @@ export class FrontendStack extends cdk.Stack {
             },
             statistic: cloudwatch.Stats.AVERAGE,
             label: 'SuccessPercent',
-            period: cdk.Duration.minutes(15),
+            period: cdk.Duration.hours(1),
         });
         this.frontendRequestsMetric = new cloudwatch.Metric({
             metricName: 'FrontendRequestsCount',
             namespace: 'CloudFrontHttpRequests',
             statistic: cloudwatch.Stats.SAMPLE_COUNT,
             label: 'FrontendRequestsCount',
-            period: cdk.Duration.minutes(15),
+            period: cdk.Duration.hours(1),
         });
         this.apiRequestsMetric = new cloudwatch.Metric({
             metricName: 'ApiRequestsCount',
             namespace: 'CloudFrontHttpRequests',
             statistic: cloudwatch.Stats.SAMPLE_COUNT,
             label: 'ApiRequestsCount',
-            period: cdk.Duration.minutes(15),
+            period: cdk.Duration.hours(1),
         });
     }
 
@@ -385,8 +385,8 @@ export class FrontendStack extends cdk.Stack {
             alarmName: 'SnippetsFrontendAvailability',
             metric: this.canarySuccessMetric,
             threshold: 99,
-            evaluationPeriods: 5,
-            datapointsToAlarm: 3,
+            evaluationPeriods: 1,
+            datapointsToAlarm: 1,
             comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
             treatMissingData: cloudwatch.TreatMissingData.BREACHING,
         });
@@ -395,20 +395,20 @@ export class FrontendStack extends cdk.Stack {
     setupDashboard() {
         this.dashboard = new cloudwatch.Dashboard(this, 'CW-Dashboard', {
             dashboardName: 'SnippetsFrontend',
-            defaultInterval: cdk.Duration.hours(3),
+            defaultInterval: cdk.Duration.days(1),
         });
 
         this.dashboard.addWidgets(
             new cloudwatch.GraphWidget({
                 width: 12,
-                height: 8,
+                height: 10,
                 title: 'HeartBeatCanarySuccessPercentage',
                 left: [this.canarySuccessMetric],
                 leftAnnotations: [this.availabilityAlarm.toAnnotation()],
             }),
             new cloudwatch.GraphWidget({
                 width: 12,
-                height: 8,
+                height: 10,
                 title: 'CloudFrontRequestsCount',
                 left: [this.frontendRequestsMetric, this.apiRequestsMetric],
             })
