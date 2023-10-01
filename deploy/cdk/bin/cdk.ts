@@ -6,6 +6,7 @@ import { SecretsStack } from '../stacks/SecretsStack';
 import { CertificateStack } from '../stacks/CertificateStack';
 import { FrontendStack } from '../stacks/FrontendStack';
 import { BackendStack } from '../stacks/BackendStack';
+import { MonitoringStack } from '../stacks/MonitoringStack';
 
 dotenv.config();
 const app = new cdk.App();
@@ -33,3 +34,9 @@ const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
     backendApiGateway: backendStack.apiGateway,
 });
 frontendStack.addDependency(certificateStack);
+
+const monitoringStack = new MonitoringStack(app, 'SnippetsMonitoringStack', {
+    ...props,
+    distributionLoggingBucket: frontendStack.distributionLoggingBucket,
+});
+monitoringStack.addDependency(frontendStack);
