@@ -16,6 +16,9 @@ export class MonitoringStack extends cdk.Stack {
     canarySuccessMetric: cloudwatch.Metric;
     frontendRequestsMetric: cloudwatch.Metric;
     apiRequestsMetric: cloudwatch.Metric;
+    apiGwCountMetric: cloudwatch.Metric;
+    apiGw4xxErrorMetric: cloudwatch.Metric;
+    apiGw5xxErrorMetric: cloudwatch.Metric;
     availabilityAlarm: cloudwatch.Alarm;
     dashboard: cloudwatch.Dashboard;
 
@@ -76,6 +79,36 @@ export class MonitoringStack extends cdk.Stack {
             label: 'ApiRequestsCount',
             period: cdk.Duration.hours(1),
         });
+        this.apiGwCountMetric = new cloudwatch.Metric({
+            metricName: 'Count',
+            namespace: 'AWS/ApiGateway',
+            dimensionsMap: {
+                ApiName: 'SnippetsBackendApi',
+            },
+            statistic: cloudwatch.Stats.SUM,
+            label: 'RequestCount',
+            period: cdk.Duration.hours(1),
+        });
+        this.apiGw4xxErrorMetric = new cloudwatch.Metric({
+            metricName: '4XXError',
+            namespace: 'AWS/ApiGateway',
+            dimensionsMap: {
+                ApiName: 'SnippetsBackendApi',
+            },
+            statistic: cloudwatch.Stats.SUM,
+            label: '4XXError',
+            period: cdk.Duration.hours(1),
+        });
+        this.apiGw5xxErrorMetric = new cloudwatch.Metric({
+            metricName: '5XXError',
+            namespace: 'AWS/ApiGateway',
+            dimensionsMap: {
+                ApiName: 'SnippetsBackendApi',
+            },
+            statistic: cloudwatch.Stats.SUM,
+            label: '5XXError',
+            period: cdk.Duration.hours(1),
+        });
     }
 
     setupAvailabilityAlarm() {
@@ -92,7 +125,7 @@ export class MonitoringStack extends cdk.Stack {
 
     setupDashboard() {
         this.dashboard = new cloudwatch.Dashboard(this, 'CW-Dashboard', {
-            dashboardName: 'SnippetsFrontend',
+            dashboardName: 'Snippets',
             defaultInterval: cdk.Duration.days(1),
         });
 
@@ -109,6 +142,12 @@ export class MonitoringStack extends cdk.Stack {
                 height: 10,
                 title: 'CloudFrontRequestsCount',
                 left: [this.frontendRequestsMetric, this.apiRequestsMetric],
+            }),
+            new cloudwatch.GraphWidget({
+                width: 12,
+                height: 10,
+                title: 'ApiGatewayRequestsCount',
+                left: [this.apiGwCountMetric, this.apiGw4xxErrorMetric, this.apiGw5xxErrorMetric],
             })
         );
     }
