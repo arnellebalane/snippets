@@ -3,6 +3,9 @@ import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as cloudwatchActions from 'aws-cdk-lib/aws-cloudwatch-actions';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as snsSubscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as synthetics from '@aws-cdk/aws-synthetics-alpha';
 import { Construct } from 'constructs';
 
@@ -14,6 +17,8 @@ interface MonitoringStackProps extends cdk.StackProps {
 export class MonitoringStack extends cdk.Stack {
     loggingBucket: s3.Bucket;
     backendApiGateway: apigateway.LambdaRestApi;
+
+    snsTopic: sns.Topic;
 
     canary: synthetics.Canary;
     canarySuccessMetric: cloudwatch.Metric;
@@ -38,6 +43,7 @@ export class MonitoringStack extends cdk.Stack {
 
         this.setupCanary();
         this.setupApiCanary();
+        this.setupSnsTopic();
         this.setupMetrics();
         this.setupAvailabilityAlarms();
         this.setupDashboard();
@@ -153,6 +159,15 @@ export class MonitoringStack extends cdk.Stack {
         });
     }
 
+    setupSnsTopic() {
+        this.snsTopic = new sns.Topic(this, 'SNS-AlarmTopic', {
+            topicName: 'CanaryAlarm',
+        });
+        const notificationEmail = process.env.SNS_NOTIFICATION_EMAIL || '';
+
+        this.snsTopic.addSubscription(new snsSubscriptions.EmailSubscription(notificationEmail));
+    }
+
     setupAvailabilityAlarms() {
         this.availabilityAlarm = new cloudwatch.Alarm(this, 'CW-AvailabilityAlarm', {
             alarmName: 'SnippetsFrontendAvailability',
@@ -163,6 +178,7 @@ export class MonitoringStack extends cdk.Stack {
             comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
             treatMissingData: cloudwatch.TreatMissingData.BREACHING,
         });
+        this.availabilityAlarm.addAlarmAction(new cloudwatchActions.SnsAction(this.snsTopic));
 
         this.apiAvailabilityAlarm = new cloudwatch.Alarm(this, 'CW-ApiAvailabilityAlarm', {
             alarmName: 'SnippetsApiAvailability',
@@ -173,6 +189,7 @@ export class MonitoringStack extends cdk.Stack {
             comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
             treatMissingData: cloudwatch.TreatMissingData.BREACHING,
         });
+        this.apiAvailabilityAlarm.addAlarmAction(new cloudwatchActions.SnsAction(this.snsTopic));
     }
 
     setupDashboard() {
