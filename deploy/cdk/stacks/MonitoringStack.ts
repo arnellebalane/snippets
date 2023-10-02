@@ -22,6 +22,7 @@ export class MonitoringStack extends cdk.Stack {
     availabilityAlarm: cloudwatch.Alarm;
 
     apiCanary: synthetics.Canary;
+    apiCanarySuccessMetric: cloudwatch.Metric;
     apiGwCountMetric: cloudwatch.Metric;
     apiGw4xxErrorMetric: cloudwatch.Metric;
     apiGw5xxErrorMetric: cloudwatch.Metric;
@@ -38,7 +39,7 @@ export class MonitoringStack extends cdk.Stack {
         this.setupCanary();
         this.setupApiCanary();
         this.setupMetrics();
-        this.setupAvailabilityAlarm();
+        this.setupAvailabilityAlarms();
         this.setupDashboard();
     }
 
@@ -109,6 +110,17 @@ export class MonitoringStack extends cdk.Stack {
             label: 'ApiRequestsCount',
             period: cdk.Duration.hours(1),
         });
+
+        this.apiCanarySuccessMetric = new cloudwatch.Metric({
+            metricName: 'SuccessPercent',
+            namespace: 'CloudWatchSynthetics',
+            dimensionsMap: {
+                CanaryName: 'api-heartbeat',
+            },
+            statistic: cloudwatch.Stats.AVERAGE,
+            label: 'SuccessPercent',
+            period: cdk.Duration.hours(1),
+        });
         this.apiGwCountMetric = new cloudwatch.Metric({
             metricName: 'Count',
             namespace: 'AWS/ApiGateway',
@@ -141,10 +153,20 @@ export class MonitoringStack extends cdk.Stack {
         });
     }
 
-    setupAvailabilityAlarm() {
+    setupAvailabilityAlarms() {
         this.availabilityAlarm = new cloudwatch.Alarm(this, 'CW-AvailabilityAlarm', {
             alarmName: 'SnippetsFrontendAvailability',
             metric: this.canarySuccessMetric,
+            threshold: 99,
+            evaluationPeriods: 1,
+            datapointsToAlarm: 1,
+            comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
+            treatMissingData: cloudwatch.TreatMissingData.BREACHING,
+        });
+
+        this.apiAvailabilityAlarm = new cloudwatch.Alarm(this, 'CW-ApiAvailabilityAlarm', {
+            alarmName: 'SnippetsApiAvailability',
+            metric: this.apiCanarySuccessMetric,
             threshold: 99,
             evaluationPeriods: 1,
             datapointsToAlarm: 1,
@@ -172,6 +194,13 @@ export class MonitoringStack extends cdk.Stack {
                 height: 10,
                 title: 'CloudFrontRequestsCount',
                 left: [this.frontendRequestsMetric, this.apiRequestsMetric],
+            }),
+            new cloudwatch.GraphWidget({
+                width: 12,
+                height: 10,
+                title: 'ApiGatewayHeartBeatCanarySuccessPercentage',
+                left: [this.apiCanarySuccessMetric],
+                leftAnnotations: [this.apiAvailabilityAlarm.toAnnotation()],
             }),
             new cloudwatch.GraphWidget({
                 width: 12,
