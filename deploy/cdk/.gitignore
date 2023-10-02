@@ -8,3 +8,4 @@
 cdk.out
 
 !functions/heartbeat-canary/nodejs/node_modules/index.js
+!functions/heartbeat-canary-api/nodejs/node_modules/index.js

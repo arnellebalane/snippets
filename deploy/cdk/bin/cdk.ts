@@ -37,6 +37,8 @@ frontendStack.addDependency(certificateStack);
 
 const monitoringStack = new MonitoringStack(app, 'SnippetsMonitoringStack', {
     ...props,
-    distributionLoggingBucket: frontendStack.distributionLoggingBucket,
+    loggingBucket: frontendStack.distributionLoggingBucket,
+    backendApiGateway: backendStack.apiGateway,
 });
 monitoringStack.addDependency(frontendStack);
+monitoringStack.addDependency(backendStack);

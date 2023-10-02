@@ -1,33 +1,42 @@
 import * as path from 'node:path';
 import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as synthetics from '@aws-cdk/aws-synthetics-alpha';
 import { Construct } from 'constructs';
 
 interface MonitoringStackProps extends cdk.StackProps {
-    distributionLoggingBucket: s3.Bucket;
+    loggingBucket: s3.Bucket;
+    backendApiGateway: apigateway.LambdaRestApi;
 }
 
 export class MonitoringStack extends cdk.Stack {
-    distributionLoggingBucket: s3.Bucket;
+    loggingBucket: s3.Bucket;
+    backendApiGateway: apigateway.LambdaRestApi;
 
     canary: synthetics.Canary;
     canarySuccessMetric: cloudwatch.Metric;
     frontendRequestsMetric: cloudwatch.Metric;
     apiRequestsMetric: cloudwatch.Metric;
+    availabilityAlarm: cloudwatch.Alarm;
+
+    apiCanary: synthetics.Canary;
     apiGwCountMetric: cloudwatch.Metric;
     apiGw4xxErrorMetric: cloudwatch.Metric;
     apiGw5xxErrorMetric: cloudwatch.Metric;
-    availabilityAlarm: cloudwatch.Alarm;
+    apiAvailabilityAlarm: cloudwatch.Alarm;
+
     dashboard: cloudwatch.Dashboard;
 
     constructor(scope: Construct, id: string, props: MonitoringStackProps) {
         super(scope, id, props);
 
-        this.distributionLoggingBucket = props.distributionLoggingBucket;
+        this.loggingBucket = props.loggingBucket;
+        this.backendApiGateway = props.backendApiGateway;
 
         this.setupCanary();
+        this.setupApiCanary();
         this.setupMetrics();
         this.setupAvailabilityAlarm();
         this.setupDashboard();
@@ -43,11 +52,32 @@ export class MonitoringStack extends cdk.Stack {
                 handler: 'index.handler',
             }),
             artifactsBucketLocation: {
-                bucket: this.distributionLoggingBucket,
+                bucket: this.loggingBucket,
                 prefix: 'heartbeat-canary',
             },
             environmentVariables: {
                 SNIPPETS_CLIENT_URL: process.env.SNIPPETS_CLIENT_URL || '',
+                SNIPPETS_SEED_HASH: process.env.SNIPPETS_SEED_HASH || '',
+                SNIPPETS_SEED_BODY: process.env.SNIPPETS_SEED_BODY || '',
+            },
+        });
+    }
+
+    setupApiCanary() {
+        this.apiCanary = new synthetics.Canary(this, 'Synthetics-ApiCanary', {
+            canaryName: 'api-heartbeat',
+            runtime: synthetics.Runtime.SYNTHETICS_NODEJS_PUPPETEER_4_0,
+            schedule: synthetics.Schedule.rate(cdk.Duration.hours(1)),
+            test: synthetics.Test.custom({
+                code: synthetics.Code.fromAsset(path.join(__dirname, '../functions/heartbeat-canary-api')),
+                handler: 'index.handler',
+            }),
+            artifactsBucketLocation: {
+                bucket: this.loggingBucket,
+                prefix: 'heartbeat-canary-api',
+            },
+            environmentVariables: {
+                SNIPPETS_API_URL: this.backendApiGateway.url,
                 SNIPPETS_SEED_HASH: process.env.SNIPPETS_SEED_HASH || '',
                 SNIPPETS_SEED_BODY: process.env.SNIPPETS_SEED_BODY || '',
             },
