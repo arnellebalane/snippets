@@ -51,8 +51,8 @@ export class BackendStack extends cdk.Stack {
     setupMigrationLambda() {
         this.migrationLambda = new lambdaNode.NodejsFunction(this, 'Lambda-DatabaseMigrator', {
             functionName: 'SnippetsBackendDatabaseMigrator',
-            depsLockFilePath: path.resolve(__dirname, '../../../backend/package-lock.json'),
-            entry: path.resolve(__dirname, '../../../backend/functions/migrate-database/index.ts'),
+            depsLockFilePath: path.resolve(__dirname, '../../../../backend/package-lock.json'),
+            entry: path.resolve(__dirname, '../../../../backend/dist/functions/migrate-database/index.js'),
             bundling: {
                 nodeModules: ['prisma', '@prisma/client'],
                 commandHooks: {
@@ -61,6 +61,9 @@ export class BackendStack extends cdk.Stack {
                     afterBundling: () => [],
                 },
                 format: lambdaNode.OutputFormat.ESM,
+                esbuildArgs: {
+                    '--packages': 'bundle',
+                },
             },
             runtime: lambda.Runtime.NODEJS_18_X,
             timeout: cdk.Duration.minutes(5),
@@ -83,8 +86,8 @@ export class BackendStack extends cdk.Stack {
     setupApiLambda() {
         this.apiLambda = new lambdaNode.NodejsFunction(this, 'Lambda-SnippetsApi', {
             functionName: 'SnippetsBackendApi',
-            depsLockFilePath: path.resolve(__dirname, '../../../backend/package-lock.json'),
-            entry: path.resolve(__dirname, '../../../backend/functions/snippets-api/index.ts'),
+            depsLockFilePath: path.resolve(__dirname, '../../../../backend/package-lock.json'),
+            entry: path.resolve(__dirname, '../../../../backend/dist/functions/snippets-api/index.js'),
             bundling: {
                 nodeModules: ['prisma', '@prisma/client', 'lambda-api'],
                 commandHooks: {
@@ -96,6 +99,9 @@ export class BackendStack extends cdk.Stack {
                     afterBundling: () => [],
                 },
                 format: lambdaNode.OutputFormat.ESM,
+                esbuildArgs: {
+                    '--packages': 'bundle',
+                },
             },
             runtime: lambda.Runtime.NODEJS_18_X,
             timeout: cdk.Duration.minutes(5),
