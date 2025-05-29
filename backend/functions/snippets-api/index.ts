@@ -1,6 +1,9 @@
 import { APIGatewayProxyEvent, Context, Handler } from 'aws-lambda';
 import createApi, { Request } from 'lambda-api';
-import { createSnippet, readSnippet } from './snippets';
+import { createSnippet, readSnippet } from '../../api/snippets';
+import { loadSecretsToEnvironment } from '../../utils/env';
+
+await loadSecretsToEnvironment();
 
 const api = createApi({ base: '/api/snippets' });
 
