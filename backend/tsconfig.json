@@ -8,7 +8,8 @@
         "allowSyntheticDefaultImports": true
     },
     "include": [
-        "functions/**/*",
+        "core/**/*",
+        "lambda/**/*",
         "utils/**/*"
     ]
 }

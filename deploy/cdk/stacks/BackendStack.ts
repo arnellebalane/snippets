@@ -52,7 +52,7 @@ export class BackendStack extends cdk.Stack {
         this.migrationLambda = new lambdaNode.NodejsFunction(this, 'Lambda-DatabaseMigrator', {
             functionName: 'SnippetsBackendDatabaseMigrator',
             depsLockFilePath: path.resolve(__dirname, '../../../../backend/package-lock.json'),
-            entry: path.resolve(__dirname, '../../../../backend/dist/functions/migrate-database/index.js'),
+            entry: path.resolve(__dirname, '../../../../backend/dist/lambda/migrate-database/index.js'),
             bundling: {
                 nodeModules: ['prisma', '@prisma/client'],
                 commandHooks: {
@@ -87,7 +87,7 @@ export class BackendStack extends cdk.Stack {
         this.apiLambda = new lambdaNode.NodejsFunction(this, 'Lambda-SnippetsApi', {
             functionName: 'SnippetsBackendApi',
             depsLockFilePath: path.resolve(__dirname, '../../../../backend/package-lock.json'),
-            entry: path.resolve(__dirname, '../../../../backend/dist/functions/snippets-api/index.js'),
+            entry: path.resolve(__dirname, '../../../../backend/dist/lambda/snippets-api/index.js'),
             bundling: {
                 nodeModules: ['prisma', '@prisma/client', 'lambda-api'],
                 commandHooks: {

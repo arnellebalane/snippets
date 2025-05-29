@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, Context, Handler } from 'aws-lambda';
 import createApi, { Request } from 'lambda-api';
-import { createSnippet, readSnippet } from '../../api/snippets';
+import { createSnippet, readSnippet } from '../../core/snippets';
 import { loadSecretsToEnvironment } from '../../utils/env';
 
 await loadSecretsToEnvironment();
