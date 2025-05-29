@@ -21,6 +21,7 @@
         "@aws-sdk/client-secrets-manager": "^3.379.1",
         "@prisma/client": "^4.16.1",
         "aws-lambda": "^1.0.7",
+        "express": "^5.1.0",
         "lambda-api": "^1.0.3",
         "prisma": "^4.16.1"
     }
