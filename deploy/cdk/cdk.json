@@ -1,5 +1,5 @@
 {
-    "app": "node dist/bin/cdk.js",
+    "app": "tsx bin/cdk.ts",
     "watch": {
         "include": [
             "**"

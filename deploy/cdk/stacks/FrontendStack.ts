@@ -11,13 +11,11 @@ import * as logs from 'aws-cdk-lib/aws-logs';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNode from 'aws-cdk-lib/aws-lambda-nodejs';
-import * as apiGateway from 'aws-cdk-lib/aws-apigateway';
 import * as customResources from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 
 interface FrontendStackProps extends cdk.StackProps {
     certificate: acm.Certificate;
-    backendApiGateway: apiGateway.LambdaRestApi;
 }
 
 export class FrontendStack extends cdk.Stack {
@@ -26,7 +24,6 @@ export class FrontendStack extends cdk.Stack {
     deployment: s3Deployment.BucketDeployment;
 
     certificate: acm.Certificate;
-    backendApiGateway: apiGateway.LambdaRestApi;
     distribution: cloudfront.CloudFrontWebDistribution;
     distributionInvalidation: customResources.AwsCustomResource;
     distributionLoggingBucket: s3.Bucket;
@@ -40,7 +37,6 @@ export class FrontendStack extends cdk.Stack {
         super(scope, id, props);
 
         this.certificate = props.certificate;
-        this.backendApiGateway = props.backendApiGateway;
 
         this.setupBucketDeployment();
         this.setupLoggingBucket();
@@ -73,10 +69,6 @@ export class FrontendStack extends cdk.Stack {
     }
 
     private getDistributionApiOrigin() {
-        // https://github.com/awslabs/aws-solutions-constructs/blob/09465d65fc5969da5691cf5057c278ded8753b43/source/patterns/%40aws-solutions-constructs/core/lib/cloudfront-distribution-defaults.ts#L38-L39
-        const apiEndpointUrlWithoutProtocol = cdk.Fn.select(1, cdk.Fn.split('://', this.backendApiGateway.url));
-        const apiEndpointDomainName = cdk.Fn.select(0, cdk.Fn.split('/', apiEndpointUrlWithoutProtocol));
-
         return {
             behaviors: [
                 {
@@ -86,8 +78,7 @@ export class FrontendStack extends cdk.Stack {
                 },
             ],
             customOriginSource: {
-                domainName: apiEndpointDomainName,
-                originPath: `/${this.backendApiGateway.deploymentStage.stageName}`,
+                domainName: 'snippets-api.arnelle.dev',
             },
         };
     }
@@ -158,9 +149,9 @@ export class FrontendStack extends cdk.Stack {
             })),
             viewerCertificate: this.certificate
                 ? cloudfront.ViewerCertificate.fromAcmCertificate(this.certificate, {
-                      aliases: domainName ? [domainName] : [],
-                      securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
-                  })
+                    aliases: domainName ? [domainName] : [],
+                    securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
+                })
                 : undefined,
         });
 
@@ -216,7 +207,7 @@ export class FrontendStack extends cdk.Stack {
         const distribution = this.distribution.node.defaultChild as cloudfront.CfnDistribution;
         distribution.addPropertyOverride(
             'DistributionConfig.Origins.0.OriginAccessControlId',
-            this.originAccessControl.attrId
+            this.originAccessControl.attrId,
         );
 
         const oacPolicy = new iam.PolicyStatement({
@@ -232,7 +223,7 @@ export class FrontendStack extends cdk.Stack {
                     resource: 'distribution',
                     resourceName: this.distribution.distributionId,
                 },
-                this
+                this,
             ),
         });
         this.bucket.addToResourcePolicy(oacPolicy);
@@ -289,7 +280,7 @@ export class FrontendStack extends cdk.Stack {
             },
         });
         this.executionRole.addManagedPolicy(
-            iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')
+            iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
         );
     }
 
@@ -314,7 +305,7 @@ export class FrontendStack extends cdk.Stack {
             new s3Notifications.LambdaDestination(this.lambda),
             {
                 prefix: 'snippets-frontend/',
-            }
+            },
         );
     }
 }
