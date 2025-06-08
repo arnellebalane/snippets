@@ -1,25 +1,26 @@
 #!/usr/bin/env node
+import { App } from 'aws-cdk-lib';
 import * as dotenv from 'dotenv';
-import 'source-map-support/register';
-import * as cdk from 'aws-cdk-lib';
 import { CertificateStack } from '../stacks/CertificateStack';
 import { FrontendStack } from '../stacks/FrontendStack';
 
 dotenv.config();
-const app = new cdk.App();
+const app = new App();
 
-const props: cdk.StackProps = {
+const certificateStack = new CertificateStack(app, 'SnippetsCertificateStack', {
     env: {
         account: process.env.CDK_DEFAULT_ACCOUNT,
-        region: process.env.CDK_DEFAULT_REGION,
+        region: 'us-east-1',
     },
     crossRegionReferences: true,
-};
-
-const certificateStack = new CertificateStack(app, 'SnippetsCertificateStack', props);
+});
 
 const frontendStack = new FrontendStack(app, 'SnippetsFrontendStack', {
-    ...props,
-    certificate: certificateStack.frontendCertificate,
+    env: {
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: 'ap-southeast-1',
+    },
+    crossRegionReferences: true,
+    certificate: certificateStack.certificate,
 });
 frontendStack.addDependency(certificateStack);

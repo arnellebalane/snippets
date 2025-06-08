@@ -26,10 +26,10 @@
         "@aws-cdk/aws-synthetics-alpha": "^2.90.0-alpha.0",
         "@aws-sdk/client-cloudwatch-logs": "^3.385.0",
         "@aws-sdk/client-s3": "^3.385.0",
-        "aws-cdk-lib": "^2.90.0",
+        "aws-cdk-lib": "^2.200.1",
         "aws-lambda": "^1.0.7",
         "cdk-ecr-deployment": "^2.5.30",
-        "constructs": "^10.2.69",
+        "constructs": "^10.4.2",
         "dotenv": "^16.3.1",
         "lodash": "^4.17.21",
         "source-map-support": "^0.5.21"

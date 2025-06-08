@@ -1,36 +1,25 @@
-import * as cdk from 'aws-cdk-lib';
-import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
+import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 import { Construct } from 'constructs';
 
-export class CertificateStack extends cdk.Stack {
-    frontendCertificate: acm.Certificate;
-    backendCertificate: acm.Certificate;
+export class CertificateStack extends Stack {
+    certificate: Certificate;
 
-    constructor(scope: Construct, id: string, props: cdk.StackProps) {
-        super(scope, id, {
-            ...props,
-            env: {
-                ...props.env,
-                region: 'us-east-1',
-            },
-        });
+    constructor(scope: Construct, id: string, props: StackProps) {
+        super(scope, id, props);
 
-        this.setupFrontendCertificate();
+        this.certificate = this.createCertificate();
     }
 
-    setupFrontendCertificate() {
-        if (process.env.SNIPPETS_CLIENT_URL) {
-            const url = new URL(process.env.SNIPPETS_CLIENT_URL);
-
-            this.frontendCertificate = new acm.Certificate(this, 'FrontendCertificate', {
-                domainName: url.hostname,
-                certificateName: 'SnippetsFrontendCertificate',
-                validation: acm.CertificateValidation.fromDns(),
-            });
-
-            new cdk.CfnOutput(this, 'FrontendCertificateArn', {
-                value: this.frontendCertificate.certificateArn,
-            });
+    private createCertificate() {
+        if (!process.env.SNIPPETS_CLIENT_URL) {
+            throw new Error('Environment variable "SNIPPETS_CLIENT_URL" is not defined.');
         }
+
+        return new Certificate(this, 'FrontendCertificate', {
+            domainName: new URL(process.env.SNIPPETS_CLIENT_URL).hostname,
+            certificateName: 'SnippetsFrontendCertificate',
+            validation: CertificateValidation.fromDns(),
+        });
     }
 }
