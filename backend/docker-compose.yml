@@ -1,0 +1,22 @@
+name: snippets
+
+services:
+  db:
+    image: postgres:16-alpine
+    env_file: .env
+    volumes:
+      - snippets-data:/var/lib/postgresql/data
+    restart: always
+
+  api:
+    build: .
+    env_file: .env
+    ports:
+      - 3004:3000
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  snippets-data:
+    name: snippets-data
