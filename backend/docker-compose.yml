@@ -6,16 +6,16 @@ services:
     env_file: .env
     volumes:
       - snippets-data:/var/lib/postgresql/data
-    restart: always
+    restart: unless-stopped
 
   api:
     build: .
     env_file: .env
     ports:
-      - 3004:3000
+      - 3002:3000
     depends_on:
       - db
-    restart: always
+    restart: unless-stopped
 
 volumes:
   snippets-data:
