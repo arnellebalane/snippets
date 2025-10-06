@@ -13,7 +13,7 @@ app.post('/api/snippets', async (req, res) => {
         const snippet = await createSnippet(req.body.snippet);
         res.json(snippet);
     } catch {
-        res.status(500);
+        res.status(500).send({ message: 'Internal server error' });
     }
 });
 
@@ -23,9 +23,9 @@ app.get('/api/snippets/:hash', async (req, res) => {
         res.send(snippet);
     } catch (error) {
         if (error instanceof PrismaClientKnownRequestError) {
-            res.status(404);
+            res.status(404).send({ message: 'Snippet not found' });
         } else {
-            res.status(500);
+            res.status(500).send({ message: 'Internal server error' });
         }
     }
 });
