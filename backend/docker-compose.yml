@@ -2,9 +2,10 @@ name: snippets
 
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:16.14-alpine
     env_file: .env
     volumes:
+      # - ./snippets.sql:/docker-entrypoint-initdb.d/snippets.sql
       - snippets-data:/var/lib/postgresql/data
     restart: unless-stopped
 
