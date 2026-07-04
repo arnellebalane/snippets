@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+    push:
+        branches: [main]
+
+concurrency:
+    group: deploy-main
+    cancel-in-progress: false
+
+jobs:
+    # Both jobs share the runner's workspace, which holds the git-ignored
+    # backend/.env, so both checkouts below use clean: false to avoid
+    # git clean -ffdx wiping it.
+    build-check:
+        runs-on: self-hosted
+        defaults:
+            run:
+                working-directory: backend
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  clean: false
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: backend/package-lock.json
+            - run: npm ci
+            - run: npx prisma generate
+            - run: npm run build
+
+    deploy:
+        needs: build-check
+        runs-on: self-hosted
+        defaults:
+            run:
+                working-directory: backend
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  clean: false
+            - name: Build and restart containers
+              run: docker compose up -d --build
+            - name: Remove dangling images
+              run: docker image prune -f
